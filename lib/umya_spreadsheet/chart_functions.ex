@@ -2,7 +2,7 @@ defmodule UmyaSpreadsheet.ChartFunctions do
   @moduledoc """
   Functions for creating and manipulating charts in a spreadsheet.
   """
-  
+
   alias UmyaSpreadsheet.Spreadsheet
   alias UmyaNative
 
@@ -273,13 +273,13 @@ defmodule UmyaSpreadsheet.ChartFunctions do
 
       {:ok, spreadsheet} = UmyaSpreadsheet.read_file("input.xlsx")
       :ok = UmyaSpreadsheet.ChartFunctions.set_chart_data_labels(
-        spreadsheet, 
-        "Sheet1", 
-        0, 
-        true, 
-        false, 
-        true, 
-        false, 
+        spreadsheet,
+        "Sheet1",
+        0,
+        true,
+        false,
+        true,
+        false,
         "outside_end"
       )
   """

@@ -2,13 +2,13 @@ defmodule UmyaSpreadsheet.PerformanceFunctions do
   @moduledoc """
   Functions for optimized file writing with reduced memory usage.
   """
-  
+
   alias UmyaSpreadsheet.Spreadsheet
   alias UmyaNative
 
   @doc """
   Writes a spreadsheet to a file with reduced memory consumption.
-  
+
   This variant is suitable for very large spreadsheets that would otherwise
   exceed memory limits when written with the standard `write/2` function.
 
@@ -37,7 +37,7 @@ defmodule UmyaSpreadsheet.PerformanceFunctions do
 
   @doc """
   Writes a password-protected spreadsheet to a file with reduced memory consumption.
-  
+
   This variant is suitable for very large spreadsheets that would otherwise
   exceed memory limits when written with the standard `write_with_password/3` function.
 

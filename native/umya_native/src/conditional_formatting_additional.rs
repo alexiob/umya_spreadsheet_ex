@@ -267,16 +267,3 @@ fn add_text_rule(
 
 // Note: add_color_scale is now implemented in conditional_formatting.rs
 // This implementation was removed to prevent duplicate function errors
-
-// Helper function to parse CFVO types from strings
-fn parse_cfvo_type(cfvo_type: String) -> Result<ConditionalFormatValueObjectValues, &'static str> {
-    match cfvo_type.to_lowercase().as_str() {
-        "min" => Ok(ConditionalFormatValueObjectValues::Min),
-        "max" => Ok(ConditionalFormatValueObjectValues::Max),
-        "num" | "number" => Ok(ConditionalFormatValueObjectValues::Number),
-        "percent" => Ok(ConditionalFormatValueObjectValues::Percent),
-        "percentile" => Ok(ConditionalFormatValueObjectValues::Percentile),
-        "formula" => Ok(ConditionalFormatValueObjectValues::Formula),
-        _ => Err("Invalid CFVO type"),
-    }
-}

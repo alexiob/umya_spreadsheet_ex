@@ -2,7 +2,7 @@ defmodule UmyaSpreadsheet.CellFunctions do
   @moduledoc """
   Functions for manipulating individual cells in a spreadsheet.
   """
-  
+
   alias UmyaSpreadsheet.Spreadsheet
   alias UmyaNative
 
@@ -89,7 +89,7 @@ defmodule UmyaSpreadsheet.CellFunctions do
       is_atom(value) -> Atom.to_string(value)
       true -> inspect(value)
     end
-    
+
     case UmyaNative.set_cell_value(ref, sheet_name, cell_address, string_value) do
       {:ok, :ok} -> :ok
       :ok -> :ok

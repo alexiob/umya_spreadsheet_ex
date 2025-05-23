@@ -2,7 +2,7 @@ defmodule UmyaSpreadsheet.CSVFunctions do
   @moduledoc """
   Functions for exporting spreadsheets to CSV format.
   """
-  
+
   alias UmyaSpreadsheet.Spreadsheet
   alias UmyaNative
 
@@ -44,14 +44,14 @@ defmodule UmyaSpreadsheet.CSVFunctions do
   ## Examples
 
       {:ok, spreadsheet} = UmyaSpreadsheet.read_file("input.xlsx")
-      
+
       options = %{
         encoding: "UTF8",
-        delimiter: ";", 
+        delimiter: ";",
         do_trim: true,
         wrap_with_char: "\""
       }
-      
+
       :ok = UmyaSpreadsheet.CSVFunctions.write_csv_with_options(spreadsheet, "Sheet1", "output.csv", options)
   """
   def write_csv_with_options(%Spreadsheet{reference: ref}, sheet_name, path, options) do
@@ -92,14 +92,14 @@ defmodule UmyaSpreadsheet.CSVFunctions do
   ## Examples
 
       {:ok, spreadsheet} = UmyaSpreadsheet.read_file("input.xlsx")
-      
+
       options = %{
         encoding: "UTF8",
-        delimiter: ";", 
+        delimiter: ";",
         do_trim: true,
         wrap_with_char: "\""
       }
-      
+
       :ok = UmyaSpreadsheet.CSVFunctions.write_csv(spreadsheet, "Sheet1", "output.csv", options)
   """
   def write_csv(%Spreadsheet{reference: ref}, sheet_name, path, options) do

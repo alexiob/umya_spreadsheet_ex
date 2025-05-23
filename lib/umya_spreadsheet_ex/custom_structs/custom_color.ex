@@ -2,17 +2,17 @@ defmodule UmyaSpreadsheetEx.CustomStructs.CustomColor do
   @moduledoc """
   Struct for representing colors with ARGB values.
   """
-  
+
   defstruct [:argb]
-  
+
   @doc """
   Creates a new CustomColor struct from a hex color string.
-  
+
   ## Examples
-  
+
       iex> UmyaSpreadsheetEx.CustomStructs.CustomColor.from_hex("#FF0000")
       %UmyaSpreadsheetEx.CustomStructs.CustomColor{argb: "FFFF0000"}
-      
+
       iex> UmyaSpreadsheetEx.CustomStructs.CustomColor.from_hex("00FF00")
       %UmyaSpreadsheetEx.CustomStructs.CustomColor{argb: "FF00FF00"}
   """
@@ -25,6 +25,6 @@ defmodule UmyaSpreadsheetEx.CustomStructs.CustomColor do
     end
     %__MODULE__{argb: argb}
   end
-  
+
   def from_hex(nil), do: nil
 end

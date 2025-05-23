@@ -2,7 +2,7 @@ defmodule UmyaSpreadsheet.FontFunctions do
   @moduledoc """
   Functions for manipulating font styles in a spreadsheet.
   """
-  
+
   alias UmyaSpreadsheet.Spreadsheet
   alias UmyaNative
 

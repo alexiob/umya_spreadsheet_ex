@@ -114,7 +114,7 @@ defmodule UmyaSpreadsheet.ConditionalFormattingTest do
                "min",
                # No min value
                nil,
-               # White for minimum 
+               # White for minimum
                %{argb: "FFFFFFFF"},
                # Use percentile for mid-point
                "percentile",

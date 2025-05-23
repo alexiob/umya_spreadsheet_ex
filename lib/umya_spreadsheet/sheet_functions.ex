@@ -2,7 +2,7 @@ defmodule UmyaSpreadsheet.SheetFunctions do
   @moduledoc """
   Functions for manipulating sheets in a spreadsheet.
   """
-  
+
   alias UmyaSpreadsheet.Spreadsheet
   alias UmyaNative
 

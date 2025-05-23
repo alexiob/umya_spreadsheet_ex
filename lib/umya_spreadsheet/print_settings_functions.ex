@@ -2,7 +2,7 @@ defmodule UmyaSpreadsheet.PrintSettings do
   @moduledoc """
   Functions for configuring print settings in worksheets.
   """
-  
+
   alias UmyaSpreadsheet.Spreadsheet
   alias UmyaNative
 

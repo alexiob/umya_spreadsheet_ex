@@ -2,7 +2,7 @@ defmodule UmyaSpreadsheet.BorderFunctions do
   @moduledoc """
   Functions for manipulating cell borders in a spreadsheet.
   """
-  
+
   alias UmyaSpreadsheet.Spreadsheet
   alias UmyaNative
 
@@ -27,7 +27,7 @@ defmodule UmyaSpreadsheet.BorderFunctions do
       {:ok, spreadsheet} = UmyaSpreadsheet.read_file("input.xlsx")
       # Set top border to thick
       :ok = UmyaSpreadsheet.BorderFunctions.set_border_style(spreadsheet, "Sheet1", "A1", "top", "thick")
-      
+
       # Set all borders to thin
       :ok = UmyaSpreadsheet.BorderFunctions.set_border_style(spreadsheet, "Sheet1", "B2", "all", "thin")
   """

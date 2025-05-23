@@ -2,7 +2,7 @@ defmodule UmyaSpreadsheet.WorkbookFunctions do
   @moduledoc """
   Functions for manipulating workbook properties and security.
   """
-  
+
   alias UmyaSpreadsheet.Spreadsheet
   alias UmyaNative
 

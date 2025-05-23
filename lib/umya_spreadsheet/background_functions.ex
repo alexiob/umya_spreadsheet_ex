@@ -2,7 +2,7 @@ defmodule UmyaSpreadsheet.BackgroundFunctions do
   @moduledoc """
   Functions for manipulating cell background colors in a spreadsheet.
   """
-  
+
   alias UmyaSpreadsheet.Spreadsheet
   alias UmyaNative
 

@@ -13,34 +13,15 @@ use umya_spreadsheet::{
 // Removed unused imports: Env, Term
 
 // Use the public modules from lib.rs
-use crate::custom_structs::{CustomColor, CustomFont};
+use crate::custom_structs::CustomColor;
 use crate::UmyaSpreadsheet;
-
-// Helper function to parse font_json into umya_spreadsheet::Font
-fn parse_font(font_json: Option<CustomFont>) -> Option<umya_spreadsheet::Font> {
-    font_json.map(|cf| {
-        let mut font = umya_spreadsheet::Font::default();
-        if let Some(b) = cf.bold {
-            font.set_bold(b);
-        }
-        if let Some(i) = cf.italic {
-            font.set_italic(i);
-        }
-        if let Some(c) = cf.color {
-            let mut color = umya_spreadsheet::Color::default();
-            color.set_argb(c.argb);
-            font.set_color(color);
-        }
-        font
-    })
-}
 
 // Helper function to convert string type to ConditionalFormatValueObjectValues
 fn parse_cfvo_type(type_str: String) -> Result<ConditionalFormatValueObjectValues, String> {
     if type_str.is_empty() {
         return Ok(ConditionalFormatValueObjectValues::Min);
     }
-    
+
     match type_str.to_lowercase().as_str() {
         "formula" => Ok(ConditionalFormatValueObjectValues::Formula),
         "max" => Ok(ConditionalFormatValueObjectValues::Max),
@@ -97,7 +78,7 @@ pub fn add_cell_value_rule(
             let mut formula1 = Formula::default();
             formula1.set_string_value(value1.clone());
             rule.set_formula(formula1);
-            
+
             // For the second value in between operators
             // Just set the formula again with the second value
             // Since setting formula replaces the previous one
@@ -134,7 +115,7 @@ pub fn add_cell_value_rule(
             // Already in ARGB format or other format
             fg_color_obj.set_argb(&format_style);
         }
-        
+
         pattern_fill.set_foreground_color(fg_color_obj);
         fill.set_pattern_fill(pattern_fill);
         style_to_apply.set_fill(fill);
@@ -187,7 +168,7 @@ pub fn add_color_scale(
     } else {
         min_cfvo.set_type(ConditionalFormatValueObjectValues::Min);
     }
-    
+
     if let Some(val) = min_value {
         if !val.is_empty() {
             min_cfvo.set_val(val);
@@ -212,7 +193,7 @@ pub fn add_color_scale(
             mid_cfvo.set_type(ConditionalFormatValueObjectValues::Percentile);
             mid_cfvo.set_val("50"); // Default to 50th percentile
         }
-        
+
         if let Some(val) = mid_value {
             if !val.is_empty() {
                 mid_cfvo.set_val(val);
@@ -236,7 +217,7 @@ pub fn add_color_scale(
     } else {
         max_cfvo.set_type(ConditionalFormatValueObjectValues::Max);
     }
-    
+
     if let Some(val) = max_value {
         if !val.is_empty() {
             max_cfvo.set_val(val);

@@ -2,7 +2,7 @@ defmodule UmyaSpreadsheet.RowColumnFunctions do
   @moduledoc """
   Functions for manipulating rows and columns in a spreadsheet.
   """
-  
+
   alias UmyaSpreadsheet.Spreadsheet
   alias UmyaNative
 
@@ -142,7 +142,7 @@ defmodule UmyaSpreadsheet.RowColumnFunctions do
       {:ok, spreadsheet} = UmyaSpreadsheet.read_file("input.xlsx")
       # Copy styling for all cells in row 1 to row 2
       :ok = UmyaSpreadsheet.RowColumnFunctions.copy_row_styling(spreadsheet, "Sheet1", 1, 2, nil, nil)
-      
+
       # Copy styling only for columns A through C (columns 1-3)
       :ok = UmyaSpreadsheet.RowColumnFunctions.copy_row_styling(spreadsheet, "Sheet1", 1, 2, 1, 3)
   """
@@ -190,7 +190,7 @@ defmodule UmyaSpreadsheet.RowColumnFunctions do
       {:ok, spreadsheet} = UmyaSpreadsheet.read_file("input.xlsx")
       # Copy styling for all cells in column A to column B
       :ok = UmyaSpreadsheet.RowColumnFunctions.copy_column_styling(spreadsheet, "Sheet1", 1, 2, nil, nil)
-      
+
       # Copy styling only for rows 1 through 10
       :ok = UmyaSpreadsheet.RowColumnFunctions.copy_column_styling(spreadsheet, "Sheet1", 1, 2, 1, 10)
   """

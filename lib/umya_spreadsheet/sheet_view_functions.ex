@@ -2,7 +2,7 @@ defmodule UmyaSpreadsheet.SheetViewFunctions do
   @moduledoc """
   Functions for configuring how sheets are displayed in the Excel application.
   """
-  
+
   alias UmyaSpreadsheet.Spreadsheet
   alias UmyaNative
 

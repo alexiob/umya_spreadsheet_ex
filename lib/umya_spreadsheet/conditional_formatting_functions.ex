@@ -398,7 +398,7 @@ defmodule UmyaSpreadsheet.ConditionalFormatting do
 
   # Helper function to convert various color formats to a CustomColor struct with argb field
   alias UmyaSpreadsheetEx.CustomStructs.CustomColor
-  
+
   defp convert_color(nil), do: nil
   defp convert_color(%CustomColor{} = color), do: color  # Already a proper CustomColor struct
   defp convert_color(%{argb: argb}) when is_binary(argb), do: %CustomColor{argb: argb}  # Map with argb field

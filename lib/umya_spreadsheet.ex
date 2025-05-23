@@ -250,29 +250,29 @@ defmodule UmyaSpreadsheet do
 
   # Data Validation Functions delegation
   defdelegate add_list_validation(spreadsheet, sheet_name, range, options), to: DataValidation
-  defdelegate add_list_validation(spreadsheet, sheet_name, range, options, show_dropdown), to: DataValidation  
+  defdelegate add_list_validation(spreadsheet, sheet_name, range, options, show_dropdown), to: DataValidation
   defdelegate add_list_validation(spreadsheet, sheet_name, range, options, show_dropdown, error_message), to: DataValidation
   defdelegate add_list_validation(spreadsheet, sheet_name, range, options, show_dropdown, error_message, error_title, prompt_message, prompt_title), to: DataValidation
-  
+
   defdelegate add_number_validation(spreadsheet, sheet_name, range, operator, value1), to: DataValidation
   defdelegate add_number_validation(spreadsheet, sheet_name, range, operator, value1, value2), to: DataValidation
   defdelegate add_number_validation(spreadsheet, sheet_name, range, operator, value1, value2, error_message), to: DataValidation
   defdelegate add_number_validation(spreadsheet, sheet_name, range, operator, value1, value2, show_dropdown, error_message, error_title, prompt_message, prompt_title), to: DataValidation
-  
+
   defdelegate add_date_validation(spreadsheet, sheet_name, range, operator, value1), to: DataValidation
   defdelegate add_date_validation(spreadsheet, sheet_name, range, operator, value1, value2), to: DataValidation
   defdelegate add_date_validation(spreadsheet, sheet_name, range, operator, value1, value2, error_message), to: DataValidation
   defdelegate add_date_validation(spreadsheet, sheet_name, range, operator, value1, value2, show_dropdown, error_message, error_title, prompt_message, prompt_title), to: DataValidation
-  
+
   defdelegate add_text_length_validation(spreadsheet, sheet_name, range, operator, value1), to: DataValidation
   defdelegate add_text_length_validation(spreadsheet, sheet_name, range, operator, value1, value2), to: DataValidation
   defdelegate add_text_length_validation(spreadsheet, sheet_name, range, operator, value1, value2, error_message), to: DataValidation
   defdelegate add_text_length_validation(spreadsheet, sheet_name, range, operator, value1, value2, show_dropdown, error_message, error_title, prompt_message, prompt_title), to: DataValidation
-  
+
   defdelegate add_custom_validation(spreadsheet, sheet_name, range, formula), to: DataValidation
   defdelegate add_custom_validation(spreadsheet, sheet_name, range, formula, error_message), to: DataValidation
   defdelegate add_custom_validation(spreadsheet, sheet_name, range, formula, show_dropdown, error_message, error_title, prompt_message, prompt_title), to: DataValidation
-  
+
   defdelegate remove_data_validation(spreadsheet, sheet_name, range), to: DataValidation
 
   # Print Settings Functions delegation
@@ -298,7 +298,7 @@ defmodule UmyaSpreadsheet do
     to: PrintSettings
   defdelegate set_print_titles(spreadsheet, sheet_name, rows, columns),
     to: PrintSettings
-    
+
   # Sheet View Functions delegation
   defdelegate set_show_grid_lines(spreadsheet, sheet_name, show_gridlines),
     to: SheetViewFunctions
@@ -440,10 +440,10 @@ defmodule UmyaSpreadsheet do
     to: Drawing
 
   # Backward compatibility functions
-  
+
   @doc """
   Backward compatibility for set_show_gridlines which is now set_show_grid_lines.
-  
+
   @deprecated Use set_show_grid_lines/3 instead
   """
   def set_show_gridlines(%Spreadsheet{} = spreadsheet, sheet_name, show_gridlines) do
@@ -453,7 +453,7 @@ defmodule UmyaSpreadsheet do
   # PivotTable Functions delegation
   defdelegate add_pivot_table(spreadsheet, sheet_name, name, source_sheet, source_range, target_cell, row_fields, column_fields, data_fields),
     to: PivotTable
-    
+
   # Background Functions delegation
   defdelegate set_background_color(spreadsheet, sheet_name, cell_address, color),
     to: BackgroundFunctions

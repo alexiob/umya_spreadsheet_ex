@@ -2,7 +2,7 @@ defmodule UmyaSpreadsheet.ImageFunctions do
   @moduledoc """
   Functions for working with images in a spreadsheet.
   """
-  
+
   alias UmyaSpreadsheet.Spreadsheet
   alias UmyaNative
 
