@@ -169,4 +169,123 @@ defmodule UmyaSpreadsheet.SheetViewFunctions do
       result -> result
     end
   end
+
+  @doc """
+  Sets the sheet view type.
+
+  ## Parameters
+
+  - `spreadsheet` - The spreadsheet struct
+  - `sheet_name` - The name of the sheet
+  - `view_type` - The type of view: "normal", "page_layout", or "page_break_preview"
+
+  ## Examples
+
+      {:ok, spreadsheet} = UmyaSpreadsheet.read_file("input.xlsx")
+
+      # Set to normal view
+      :ok = UmyaSpreadsheet.SheetViewFunctions.set_sheet_view(spreadsheet, "Sheet1", "normal")
+
+      # Set to page layout view
+      :ok = UmyaSpreadsheet.SheetViewFunctions.set_sheet_view(spreadsheet, "Sheet1", "page_layout")
+
+      # Set to page break preview
+      :ok = UmyaSpreadsheet.SheetViewFunctions.set_sheet_view(spreadsheet, "Sheet1", "page_break_preview")
+  """
+  def set_sheet_view(%Spreadsheet{reference: ref}, sheet_name, view_type) do
+    case UmyaNative.set_sheet_view(ref, sheet_name, view_type) do
+      {:ok, :ok} -> :ok
+      :ok -> :ok
+      result -> result
+    end
+  end
+
+  @doc """
+  Sets the zoom scale for the normal view.
+
+  ## Parameters
+
+  - `spreadsheet` - The spreadsheet struct
+  - `sheet_name` - The name of the sheet
+  - `scale` - The zoom scale percentage (e.g., 100 for 100%, 150 for 150%)
+
+  ## Examples
+
+      {:ok, spreadsheet} = UmyaSpreadsheet.read_file("input.xlsx")
+      :ok = UmyaSpreadsheet.SheetViewFunctions.set_zoom_scale_normal(spreadsheet, "Sheet1", 75)
+  """
+  def set_zoom_scale_normal(%Spreadsheet{reference: ref}, sheet_name, scale) do
+    case UmyaNative.set_zoom_scale_normal(ref, sheet_name, scale) do
+      {:ok, :ok} -> :ok
+      :ok -> :ok
+      result -> result
+    end
+  end
+
+  @doc """
+  Sets the zoom scale for the page layout view.
+
+  ## Parameters
+
+  - `spreadsheet` - The spreadsheet struct
+  - `sheet_name` - The name of the sheet
+  - `scale` - The zoom scale percentage (e.g., 100 for 100%, 150 for 150%)
+
+  ## Examples
+
+      {:ok, spreadsheet} = UmyaSpreadsheet.read_file("input.xlsx")
+      :ok = UmyaSpreadsheet.SheetViewFunctions.set_zoom_scale_page_layout(spreadsheet, "Sheet1", 120)
+  """
+  def set_zoom_scale_page_layout(%Spreadsheet{reference: ref}, sheet_name, scale) do
+    case UmyaNative.set_zoom_scale_page_layout(ref, sheet_name, scale) do
+      {:ok, :ok} -> :ok
+      :ok -> :ok
+      result -> result
+    end
+  end
+
+  @doc """
+  Sets the zoom scale for the page break preview view.
+
+  ## Parameters
+
+  - `spreadsheet` - The spreadsheet struct
+  - `sheet_name` - The name of the sheet
+  - `scale` - The zoom scale percentage (e.g., 100 for 100%, 150 for 150%)
+
+  ## Examples
+
+      {:ok, spreadsheet} = UmyaSpreadsheet.read_file("input.xlsx")
+      :ok = UmyaSpreadsheet.SheetViewFunctions.set_zoom_scale_page_break(spreadsheet, "Sheet1", 80)
+  """
+  def set_zoom_scale_page_break(%Spreadsheet{reference: ref}, sheet_name, scale) do
+    case UmyaNative.set_zoom_scale_page_break(ref, sheet_name, scale) do
+      {:ok, :ok} -> :ok
+      :ok -> :ok
+      result -> result
+    end
+  end
+
+  @doc """
+  Sets the active selection in a worksheet.
+
+  ## Parameters
+
+  - `spreadsheet` - The spreadsheet struct
+  - `sheet_name` - The name of the sheet
+  - `active_cell` - The active cell address (e.g., "A1", "B5")
+  - `sqref` - The selection range reference (e.g., "A1:B5")
+
+  ## Examples
+
+      {:ok, spreadsheet} = UmyaSpreadsheet.read_file("input.xlsx")
+      :ok = UmyaSpreadsheet.SheetViewFunctions.set_selection(spreadsheet, "Sheet1", "C3", "C3:D5")
+  """
+  def set_selection(%Spreadsheet{reference: ref}, sheet_name, active_cell, sqref) do
+    case UmyaNative.set_selection(ref, sheet_name, active_cell, sqref) do
+      {:ok, :ok} -> :ok
+      :ok -> :ok
+      result -> result
+    end
+  end
 end

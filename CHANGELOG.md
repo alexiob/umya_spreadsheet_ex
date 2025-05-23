@@ -1,5 +1,38 @@
 # Changelog
 
+## 0.6.2 - 2023-10-15
+
+### Added
+
+- Window settings for workbooks and sheets:
+  - Added `set_selection` for setting active cell and selection range in worksheets
+  - Added `set_active_tab` to control which tab is active when opening the workbook
+  - Added `set_workbook_window_position` to set Excel application window position and size
+- Added new test files:
+  - Added tests for sheet selection functionality
+  - Created comprehensive tests for workbook view settings
+  - Updated existing tests to ensure compatibility with new window features
+
+### Fixed
+
+- Fixed incorrect function name in tests (changed `create_sheet` to `add_sheet`)
+- Fixed Rust API usage for accessing workbook view in spreadsheet structure
+
+## 0.6.1 - 2025-05-23
+
+### Added
+
+- Sheet-level features that have been implemented:
+  - Tab colors (`set_tab_color`)
+  - Sheet views (normal, page layout, page break preview) (`set_sheet_view`)
+  - Zoom settings (`set_zoom_scale`, `set_zoom_scale_normal`, `set_zoom_scale_page_layout`, `set_zoom_scale_page_break`)
+  - Freeze panes (`freeze_panes`)
+  - Split panes (`split_panes`)
+
+### Fixed
+
+- Release builds
+
 ## 0.5.6 - 2025-05-21
 
 ### Added

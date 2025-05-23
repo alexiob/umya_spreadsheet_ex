@@ -348,9 +348,6 @@ defmodule UmyaNative do
   @spec set_sheet_state(reference(), String.t(), String.t()) :: :ok | {:error, atom()}
   def set_sheet_state(_spreadsheet, _sheet_name, _state), do: error()
 
-  @spec set_show_grid_lines(reference(), String.t(), boolean()) :: :ok | {:error, atom()}
-  def set_show_grid_lines(_spreadsheet, _sheet_name, _show), do: error()
-
   @spec add_merge_cells(reference(), String.t(), String.t()) :: :ok | {:error, atom()}
   def add_merge_cells(_spreadsheet, _sheet_name, _range), do: error()
 
@@ -786,8 +783,8 @@ defmodule UmyaNative do
   def set_print_titles(_spreadsheet, _sheet_name, _rows, _columns), do: error()
 
   # Sheet view functions
-  @spec set_show_gridlines(reference(), String.t(), boolean()) :: :ok | {:error, atom()}
-  def set_show_gridlines(_spreadsheet, _sheet_name, _value), do: error()
+  @spec set_show_grid_lines(reference(), String.t(), boolean()) :: :ok | {:error, atom()}
+  def set_show_grid_lines(_spreadsheet, _sheet_name, _value), do: error()
 
   @spec set_tab_selected(reference(), String.t(), boolean()) :: :ok | {:error, atom()}
   def set_tab_selected(_spreadsheet, _sheet_name, _value), do: error()
@@ -798,17 +795,66 @@ defmodule UmyaNative do
   @spec set_zoom_scale(reference(), String.t(), integer()) :: :ok | {:error, atom()}
   def set_zoom_scale(_spreadsheet, _sheet_name, _value), do: error()
 
+  @doc """
+  Sets the view type for a worksheet (normal, page layout, page break preview).
+  """
   @spec set_sheet_view(reference(), String.t(), String.t()) :: :ok | {:error, atom()}
   def set_sheet_view(_spreadsheet, _sheet_name, _view_type), do: error()
 
+  @doc """
+  Sets zoom scale for normal view.
+  """
+  @spec set_zoom_scale_normal(reference(), String.t(), integer()) :: :ok | {:error, atom()}
+  def set_zoom_scale_normal(_spreadsheet, _sheet_name, _scale), do: error()
+
+  @doc """
+  Sets zoom scale for page layout view.
+  """
+  @spec set_zoom_scale_page_layout(reference(), String.t(), integer()) :: :ok | {:error, atom()}
+  def set_zoom_scale_page_layout(_spreadsheet, _sheet_name, _scale), do: error()
+
+  @doc """
+  Sets zoom scale for page break preview.
+  """
+  @spec set_zoom_scale_page_break(reference(), String.t(), integer()) :: :ok | {:error, atom()}
+  def set_zoom_scale_page_break(_spreadsheet, _sheet_name, _scale), do: error()
+
+  @doc """
+  Split panes at the specified position.
+  """
+  @spec split_panes(reference(), String.t(), float(), float()) :: :ok | {:error, atom()}
+  def split_panes(_spreadsheet, _sheet_name, _horizontal_position, _vertical_position), do: error()
+
+  @doc """
+  Freeze panes at the specified rows and columns.
+  """
   @spec freeze_panes(reference(), String.t(), integer(), integer()) :: :ok | {:error, atom()}
-  def freeze_panes(_spreadsheet, _sheet_name, _cols, _rows), do: error()
+  def freeze_panes(_spreadsheet, _sheet_name, _rows, _cols), do: error()
 
-  @spec split_panes(reference(), String.t(), integer(), integer()) :: :ok | {:error, atom()}
-  def split_panes(_spreadsheet, _sheet_name, _height, _width), do: error()
-
+  @doc """
+  Set the tab color for a sheet.
+  """
   @spec set_tab_color(reference(), String.t(), String.t()) :: :ok | {:error, atom()}
   def set_tab_color(_spreadsheet, _sheet_name, _color), do: error()
+
+  @doc """
+  Sets the active selection in a worksheet.
+  """
+  @spec set_selection(reference(), String.t(), String.t(), String.t()) :: :ok | {:error, atom()}
+  def set_selection(_spreadsheet, _sheet_name, _active_cell, _sqref), do: error()
+
+  # Workbook view functions
+  @doc """
+  Sets the active tab (sheet) when opening the workbook.
+  """
+  @spec set_active_tab(reference(), integer()) :: :ok | {:error, atom()}
+  def set_active_tab(_spreadsheet, _tab_index), do: error()
+
+  @doc """
+  Sets the window position and size for the workbook.
+  """
+  @spec set_workbook_window_position(reference(), integer(), integer(), integer(), integer()) :: :ok | {:error, atom()}
+  def set_workbook_window_position(_spreadsheet, _x_position, _y_position, _window_width, _window_height), do: error()
 
   defp error(), do: :erlang.nif_error(:nif_not_loaded)
 end

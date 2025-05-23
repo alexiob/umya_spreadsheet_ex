@@ -8,7 +8,7 @@
 
 ![UmyaSpreadsheetEx Logo](/docs/logo.png)
 
-A powerful Elixir wrapper for the [umya-spreadsheet](https://github.com/MathNya/umya-spreadsheet) Rust library, providing comprehensive Excel file (.xlsx, .xlsm) manipulation capabilities with the performance benefits of Rust.
+An Elixir NIF wrapper for the [umya-spreadsheet](https://github.com/MathNya/umya-spreadsheet) Rust library, providing comprehensive Excel file (.xlsx, .xlsm) manipulation capabilities with the performance benefits of Rust.
 
 ## Features
 
@@ -542,7 +542,7 @@ For more details on development, check out the [DEVELOPMENT.md](DEVELOPMENT.md) 
 
 ## License
 
-UmyaSpreadsheet is available under the MIT License. See the LICENSE file for more info.
+UmyaSpreadsheetEx is available under the MIT License. See the LICENSE file for more info.
 
 ## Acknowledgements
 

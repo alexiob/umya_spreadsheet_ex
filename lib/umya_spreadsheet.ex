@@ -48,6 +48,7 @@ defmodule UmyaSpreadsheet do
   alias UmyaSpreadsheet.SheetViewFunctions
   alias UmyaSpreadsheet.StylingFunctions
   alias UmyaSpreadsheet.WorkbookFunctions
+  alias UmyaSpreadsheet.WorkbookViewFunctions
   alias UmyaSpreadsheet.BackgroundFunctions
   alias UmyaSpreadsheet.PivotTable
 
@@ -308,12 +309,28 @@ defmodule UmyaSpreadsheet do
     to: SheetViewFunctions
   defdelegate set_zoom_scale(spreadsheet, sheet_name, scale),
     to: SheetViewFunctions
+  defdelegate set_sheet_view(spreadsheet, sheet_name, view_type),
+    to: SheetViewFunctions
+  defdelegate set_zoom_scale_normal(spreadsheet, sheet_name, scale),
+    to: SheetViewFunctions
+  defdelegate set_zoom_scale_page_layout(spreadsheet, sheet_name, scale),
+    to: SheetViewFunctions
+  defdelegate set_zoom_scale_page_break(spreadsheet, sheet_name, scale),
+    to: SheetViewFunctions
   defdelegate freeze_panes(spreadsheet, sheet_name, rows, cols),
     to: SheetViewFunctions
   defdelegate split_panes(spreadsheet, sheet_name, height, width),
     to: SheetViewFunctions
   defdelegate set_tab_color(spreadsheet, sheet_name, color),
     to: SheetViewFunctions
+  defdelegate set_selection(spreadsheet, sheet_name, active_cell, sqref),
+    to: SheetViewFunctions
+
+  # Workbook View Functions delegation
+  defdelegate set_active_tab(spreadsheet, tab_index),
+    to: WorkbookViewFunctions
+  defdelegate set_workbook_window_position(spreadsheet, x_position, y_position, window_width, window_height),
+    to: WorkbookViewFunctions
 
   # Cell Functions delegation
   defdelegate get_cell_value(spreadsheet, sheet_name, cell_address),

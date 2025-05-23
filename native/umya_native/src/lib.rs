@@ -49,6 +49,8 @@ pub mod conditional_formatting_additional;
 mod data_validation;
 // Drawing and shape functions
 mod drawing_functions;
+mod sheet_view_functions;
+mod workbook_view_functions;
 // Pivot table functions
 mod cell_formatting;
 pub mod custom_structs;
@@ -995,27 +997,7 @@ fn set_sheet_state(
     }
 }
 
-#[rustler::nif]
-fn set_show_grid_lines(
-    resource: ResourceArc<UmyaSpreadsheet>,
-    sheet_name: String,
-    show_grid_lines: bool,
-) -> Result<Atom, Atom> {
-    let mut guard = resource.spreadsheet.lock().unwrap();
-
-    match guard.get_sheet_by_name_mut(&sheet_name) {
-        Some(sheet) => {
-            sheet
-                .get_sheet_views_mut()
-                .get_sheet_view_list_mut()
-                .get_mut(0)
-                .map(|view| view.set_show_grid_lines(show_grid_lines));
-
-            Ok(atoms::ok())
-        }
-        None => Err(atoms::not_found()),
-    }
-}
+// Removed duplicate set_show_grid_lines function - now in sheet_view_functions.rs
 
 #[rustler::nif]
 fn add_merge_cells(
@@ -1417,14 +1399,20 @@ rustler::init!(
         data_validation::add_custom_validation,
         data_validation::remove_data_validation,
         // Sheet view functions
-        sheet_view_functions::set_show_gridlines,
+        sheet_view_functions::set_show_grid_lines,
         sheet_view_functions::set_tab_selected,
         sheet_view_functions::set_top_left_cell,
         sheet_view_functions::set_zoom_scale,
-        sheet_view_functions::set_sheet_view,
         sheet_view_functions::freeze_panes,
         sheet_view_functions::split_panes,
         sheet_view_functions::set_tab_color,
+        sheet_view_functions::set_sheet_view,
+        sheet_view_functions::set_zoom_scale_normal,
+        sheet_view_functions::set_zoom_scale_page_layout,
+        sheet_view_functions::set_zoom_scale_page_break,
+        sheet_view_functions::set_selection,
+        workbook_view_functions::set_active_tab,
+        workbook_view_functions::set_workbook_window_position,
         copy_column_styling,
     ]
 );
