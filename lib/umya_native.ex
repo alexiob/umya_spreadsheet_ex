@@ -1,0 +1,814 @@
+defmodule UmyaNative do
+  @moduledoc false
+
+  # use Rustler, otp_app: :umya_spreadsheet_ex, crate: "umya_native"
+
+  mix_config = Mix.Project.config()
+  version = mix_config[:version]
+  github_url = mix_config[:package][:links]["GitHub"]
+
+  use RustlerPrecompiled,
+    otp_app: :umya_spreadsheet_ex,
+    crate: "umya_native",
+    version: version,
+    base_url: "#{github_url}/releases/download/v#{version}",
+    force_build: System.get_env("UMYA_SPREADSHEET_BUILD") in ["1", "true"]
+
+  # Spreadsheet operations
+  @spec new_file() :: reference()
+  def new_file(), do: error()
+
+  @spec new_file_empty_worksheet() :: reference()
+  def new_file_empty_worksheet(), do: error()
+
+  @spec read_file(String.t()) :: reference() | {:error, atom()}
+  def read_file(_path), do: error()
+
+  @spec lazy_read_file(String.t()) :: reference() | {:error, atom()}
+  def lazy_read_file(_path), do: error()
+
+  @spec write_file(reference(), String.t()) :: :ok | {:error, atom()}
+  def write_file(_spreadsheet, _path), do: error()
+
+  @spec write_file_light(reference(), String.t()) :: :ok | {:error, atom()}
+  def write_file_light(_spreadsheet, _path), do: error()
+
+  @spec write_file_with_password(reference(), String.t(), String.t()) :: :ok | {:error, atom()}
+  def write_file_with_password(_spreadsheet, _path, _password), do: error()
+
+  @spec write_file_with_password_light(reference(), String.t(), String.t()) ::
+          :ok | {:error, atom()}
+  def write_file_with_password_light(_spreadsheet, _path, _password), do: error()
+
+  # CSV export functions
+  @spec write_csv(reference(), String.t(), String.t()) :: :ok | {:error, atom()}
+  def write_csv(_spreadsheet, _sheet_name, _path), do: error()
+
+  @spec write_csv_with_options(reference(), String.t(), String.t(), String.t(), String.t(), boolean(), String.t()) :: :ok | {:error, atom()}
+  def write_csv_with_options(_spreadsheet, _sheet_name, _path, _encoding, _delimiter, _do_trim, _wrap_with_char), do: error()
+
+  # Aliased functions for compatibility between Rust and Elixir naming
+  @spec write_light(reference(), String.t()) :: :ok | {:error, atom()}
+  def write_light(spreadsheet, path), do: write_file_light(spreadsheet, path)
+
+  @spec write_with_password_light(reference(), String.t(), String.t()) :: :ok | {:error, atom()}
+  def write_with_password_light(spreadsheet, path, password), do: write_file_with_password_light(spreadsheet, path, password)
+
+  # Cell operations
+  @spec get_cell_value(reference(), String.t(), String.t()) :: String.t() | {:error, atom()}
+  def get_cell_value(_spreadsheet, _sheet_name, _cell_address), do: error()
+
+  @spec get_formatted_value(reference(), String.t(), String.t()) :: String.t() | {:error, atom()}
+  def get_formatted_value(_spreadsheet, _sheet_name, _cell_address), do: error()
+
+  @spec set_cell_value(reference(), String.t(), String.t(), String.t()) :: :ok | {:error, atom()}
+  def set_cell_value(_spreadsheet, _sheet_name, _cell_address, _value), do: error()
+
+  @spec remove_cell(reference(), String.t(), String.t()) :: :ok | {:error, atom()}
+  def remove_cell(_spreadsheet, _sheet_name, _cell_address), do: error()
+
+  # Sheet operations
+  @spec get_sheet_names(reference()) :: [String.t()]
+  def get_sheet_names(_spreadsheet), do: error()
+
+  @spec add_sheet(reference(), String.t()) :: :ok | {:error, atom()}
+  def add_sheet(_spreadsheet, _sheet_name), do: error()
+
+  @spec clone_sheet(reference(), String.t(), String.t()) :: :ok | {:error, atom()}
+  def clone_sheet(_spreadsheet, _source_sheet_name, _new_sheet_name), do: error()
+
+  @spec remove_sheet(reference(), String.t()) :: :ok | {:error, atom()}
+  def remove_sheet(_spreadsheet, _sheet_name), do: error()
+
+  @spec insert_new_row(reference(), String.t(), integer(), integer()) :: :ok | {:error, atom()}
+  def insert_new_row(_spreadsheet, _sheet_name, _row_index, _amount), do: error()
+
+  @spec insert_new_column(reference(), String.t(), String.t(), integer()) ::
+          :ok | {:error, atom()}
+  def insert_new_column(_spreadsheet, _sheet_name, _column, _amount), do: error()
+
+  @spec insert_new_column_by_index(reference(), String.t(), integer(), integer()) ::
+          :ok | {:error, atom()}
+  def insert_new_column_by_index(_spreadsheet, _sheet_name, _column_index, _amount), do: error()
+
+  @spec remove_row(reference(), String.t(), integer(), integer()) :: :ok | {:error, atom()}
+  def remove_row(_spreadsheet, _sheet_name, _row_index, _amount), do: error()
+
+  @spec remove_column(reference(), String.t(), String.t(), integer()) :: :ok | {:error, atom()}
+  def remove_column(_spreadsheet, _sheet_name, _column, _amount), do: error()
+
+  @spec remove_column_by_index(reference(), String.t(), integer(), integer()) ::
+          :ok | {:error, atom()}
+  def remove_column_by_index(_spreadsheet, _sheet_name, _column_index, _amount), do: error()
+
+  @spec move_range(reference(), String.t(), String.t(), integer(), integer()) ::
+          :ok | {:error, atom()}
+  def move_range(_spreadsheet, _sheet_name, _range, _row, _column), do: error()
+
+  # Style operations
+  @spec set_background_color(reference(), String.t(), String.t(), String.t()) ::
+          :ok | {:error, atom()}
+  def set_background_color(_spreadsheet, _sheet_name, _cell_address, _color), do: error()
+
+  @spec set_number_format(reference(), String.t(), String.t(), String.t()) ::
+          :ok | {:error, atom()}
+  def set_number_format(_spreadsheet, _sheet_name, _cell_address, _format_code), do: error()
+
+  @spec set_row_height(reference(), String.t(), integer(), float()) :: :ok | {:error, atom()}
+  def set_row_height(_spreadsheet, _sheet_name, _row_number, _height), do: error()
+
+  @spec set_row_style(reference(), String.t(), integer(), String.t(), String.t()) ::
+          :ok | {:error, atom()}
+  def set_row_style(_spreadsheet, _sheet_name, _row_number, _bg_color, _font_color), do: error()
+
+  # Font operations
+  @spec set_font_color(reference(), String.t(), String.t(), String.t()) :: :ok | {:error, atom()}
+  def set_font_color(_spreadsheet, _sheet_name, _cell_address, _color), do: error()
+
+  @spec set_font_size(reference(), String.t(), String.t(), integer()) :: :ok | {:error, atom()}
+  def set_font_size(_spreadsheet, _sheet_name, _cell_address, _size), do: error()
+
+  @spec set_font_bold(reference(), String.t(), String.t(), boolean()) :: :ok | {:error, atom()}
+  def set_font_bold(_spreadsheet, _sheet_name, _cell_address, _is_bold), do: error()
+
+  @spec set_font_name(reference(), String.t(), String.t(), String.t()) :: :ok | {:error, atom()}
+  def set_font_name(_spreadsheet, _sheet_name, _cell_address, _font_name), do: error()
+
+  # Cell formatting functions
+  @spec set_font_italic(reference(), String.t(), String.t(), boolean()) :: :ok | {:error, atom()}
+  def set_font_italic(_spreadsheet, _sheet_name, _cell_address, _is_italic), do: error()
+
+  @spec set_font_underline(reference(), String.t(), String.t(), String.t()) :: :ok | {:error, atom()}
+  def set_font_underline(_spreadsheet, _sheet_name, _cell_address, _underline_style), do: error()
+
+  @spec set_font_strikethrough(reference(), String.t(), String.t(), boolean()) :: :ok | {:error, atom()}
+  def set_font_strikethrough(_spreadsheet, _sheet_name, _cell_address, _is_strikethrough), do: error()
+
+  @spec set_border_style(reference(), String.t(), String.t(), String.t(), String.t()) :: :ok | {:error, atom()}
+  def set_border_style(_spreadsheet, _sheet_name, _cell_address, _border_position, _border_style), do: error()
+
+  @spec set_cell_rotation(reference(), String.t(), String.t(), integer()) :: :ok | {:error, atom()}
+  def set_cell_rotation(_spreadsheet, _sheet_name, _cell_address, _angle), do: error()
+
+  @spec set_cell_indent(reference(), String.t(), String.t(), integer()) :: :ok | {:error, atom()}
+  def set_cell_indent(_spreadsheet, _sheet_name, _cell_address, _indent), do: error()
+
+  @spec set_cell_alignment(reference(), String.t(), String.t(), String.t(), String.t()) :: :ok | {:error, atom()}
+  def set_cell_alignment(_spreadsheet, _sheet_name, _cell_address, _horizontal, _vertical), do: error()
+
+  # Image operations
+  @spec add_image(reference(), String.t(), String.t(), String.t()) :: :ok | {:error, atom()}
+  def add_image(_spreadsheet, _sheet_name, _cell_address, _image_path), do: error()
+
+  @spec download_image(reference(), String.t(), String.t(), String.t()) :: :ok | {:error, atom()}
+  def download_image(_spreadsheet, _sheet_name, _cell_address, _output_path), do: error()
+
+  @spec change_image(reference(), String.t(), String.t(), String.t()) :: :ok | {:error, atom()}
+  def change_image(_spreadsheet, _sheet_name, _cell_address, _new_image_path), do: error()
+
+  # Chart operations
+  @spec add_chart(
+          reference(),
+          String.t(),
+          String.t(),
+          String.t(),
+          String.t(),
+          String.t(),
+          [String.t()],
+          [String.t()],
+          [String.t()]
+        ) :: :ok | {:error, atom()}
+  def add_chart(
+        _spreadsheet,
+        _sheet_name,
+        _chart_type,
+        _from_cell,
+        _to_cell,
+        _title,
+        _data_series,
+        _series_titles,
+        _point_titles
+      ),
+      do: error()
+
+  @spec add_chart_with_options(
+          reference(),
+          String.t(),
+          String.t(),
+          String.t(),
+          String.t(),
+          String.t(),
+          [String.t()],
+          [String.t()],
+          [String.t()],
+          integer(),
+          boolean(),
+          term(),
+          term(),
+          term(),
+          term(),
+          term()
+        ) :: :ok | {:error, atom()}
+  def add_chart_with_options(
+        _spreadsheet,
+        _sheet_name,
+        _chart_type,
+        _from_cell,
+        _to_cell,
+        _title,
+        _data_series,
+        _series_titles,
+        _point_titles,
+        _style,
+        _vary_colors,
+        _view_3d,
+        _legend,
+        _axes,
+        _data_labels,
+        _chart_specific
+      ),
+      do: error()
+
+  @spec set_chart_style(reference(), String.t(), integer(), integer()) :: :ok | {:error, atom()}
+  def set_chart_style(_spreadsheet, _sheet_name, _chart_index, _style), do: error()
+
+  @spec set_chart_data_labels(
+          reference(),
+          String.t(),
+          integer(),
+          boolean(),
+          boolean(),
+          boolean(),
+          boolean(),
+          String.t()
+        ) :: :ok | {:error, atom()}
+  def set_chart_data_labels(
+        _spreadsheet,
+        _sheet_name,
+        _chart_index,
+        _show_values,
+        _show_percent,
+        _show_category_name,
+        _show_series_name,
+        _position
+      ),
+      do: error()
+
+  @spec set_chart_legend_position(reference(), String.t(), integer(), String.t(), boolean()) ::
+          :ok | {:error, atom()}
+  def set_chart_legend_position(_spreadsheet, _sheet_name, _chart_index, _position, _overlay),
+    do: error()
+
+  @spec set_chart_3d_view(
+          reference(),
+          String.t(),
+          integer(),
+          integer(),
+          integer(),
+          integer(),
+          integer()
+        ) :: :ok | {:error, atom()}
+  def set_chart_3d_view(
+        _spreadsheet,
+        _sheet_name,
+        _chart_index,
+        _rot_x,
+        _rot_y,
+        _perspective,
+        _height_percent
+      ),
+      do: error()
+
+  @spec set_chart_axis_titles(reference(), String.t(), integer(), String.t(), String.t()) ::
+          :ok | {:error, atom()}
+  def set_chart_axis_titles(
+        _spreadsheet,
+        _sheet_name,
+        _chart_index,
+        _category_axis_title,
+        _value_axis_title
+      ),
+      do: error()
+
+  # Cell/row/column operations
+  @spec copy_row_styling(
+          reference(),
+          String.t(),
+          integer(),
+          integer(),
+          integer() | nil,
+          integer() | nil
+        ) :: :ok | {:error, atom()}
+  def copy_row_styling(
+        _spreadsheet,
+        _sheet_name,
+        _source_row,
+        _target_row,
+        _start_column,
+        _end_column
+      ),
+      do: error()
+
+  @spec copy_column_styling(
+          reference(),
+          String.t(),
+          integer(),
+          integer(),
+          integer() | nil,
+          integer() | nil
+        ) :: :ok | {:error, atom()}
+  def copy_column_styling(
+        _spreadsheet,
+        _sheet_name,
+        _source_column,
+        _target_column,
+        _start_row,
+        _end_row
+      ),
+      do: error()
+
+  @spec set_wrap_text(reference(), String.t(), String.t(), boolean()) :: :ok | {:error, atom()}
+  def set_wrap_text(_spreadsheet, _sheet_name, _cell_address, _wrap), do: error()
+
+  @spec set_column_width(reference(), String.t(), String.t(), float()) :: :ok | {:error, atom()}
+  def set_column_width(_spreadsheet, _sheet_name, _column, _width), do: error()
+
+  @spec set_column_auto_width(reference(), String.t(), String.t(), boolean()) ::
+          :ok | {:error, atom()}
+  def set_column_auto_width(_spreadsheet, _sheet_name, _column, _auto_width), do: error()
+
+  # Sheet & workbook protection
+  @spec set_sheet_protection(reference(), String.t(), String.t() | nil, boolean()) ::
+          :ok | {:error, atom()}
+  def set_sheet_protection(_spreadsheet, _sheet_name, _password, _is_protected), do: error()
+
+  @spec set_workbook_protection(reference(), String.t()) :: :ok | {:error, atom()}
+  def set_workbook_protection(_spreadsheet, _password), do: error()
+
+  @spec set_sheet_state(reference(), String.t(), String.t()) :: :ok | {:error, atom()}
+  def set_sheet_state(_spreadsheet, _sheet_name, _state), do: error()
+
+  @spec set_show_grid_lines(reference(), String.t(), boolean()) :: :ok | {:error, atom()}
+  def set_show_grid_lines(_spreadsheet, _sheet_name, _show), do: error()
+
+  @spec add_merge_cells(reference(), String.t(), String.t()) :: :ok | {:error, atom()}
+  def add_merge_cells(_spreadsheet, _sheet_name, _range), do: error()
+
+  @spec set_password(String.t(), String.t(), String.t()) :: :ok | {:error, atom()}
+  def set_password(_input_path, _output_path, _password), do: error()
+
+  # Conditional formatting operations
+  @spec add_cell_value_rule(
+          reference(),
+          String.t(),
+          String.t(),
+          String.t(),
+          String.t(),
+          String.t() | nil,
+          String.t()
+        ) :: :ok | {:error, atom()}
+  def add_cell_value_rule(
+        _spreadsheet,
+        _sheet_name,
+        _cell_range,
+        _operator,
+        _value1,
+        _value2,
+        _format_style
+      ),
+      do: error()
+
+  @spec add_color_scale(
+          reference(),
+          String.t(),
+          String.t(),
+          String.t(),
+          String.t() | nil,
+          map() | nil,
+          String.t() | nil,
+          String.t() | nil,
+          map() | nil,
+          String.t(),
+          String.t() | nil,
+          map() | nil
+        ) :: :ok | {:error, atom()} | boolean()
+  def add_color_scale(
+    _spreadsheet,
+    _sheet_name,
+    _range,
+    _min_type,
+    _min_value,
+    _min_color,
+    _mid_type,
+    _mid_value,
+    _mid_color,
+    _max_type,
+    _max_value,
+    _max_color
+),
+      do: error()
+
+  @spec add_data_bar(
+          reference(),
+          String.t(),
+          String.t(),
+          {String.t(), String.t()} | nil,
+          {String.t(), String.t()} | nil,
+          String.t()
+        ) :: :ok | {:error, atom()}
+  def add_data_bar(_spreadsheet, _sheet_name, _cell_range, _min_value, _max_value, _color),
+    do: error()
+
+  @spec add_top_bottom_rule(reference(), String.t(), String.t(), String.t(), integer(), boolean(), String.t()) ::
+          :ok | {:error, atom()}
+  def add_top_bottom_rule(
+        _spreadsheet,
+        _sheet_name,
+        _cell_range,
+        _rule_type,
+        _rank,
+        _percent,
+        _format_style
+      ),
+      do: error()
+
+  @spec add_cell_is_rule(reference(), String.t(), String.t(), String.t(), String.t(), String.t(), String.t()) ::
+          :ok | {:error, atom()}
+  def add_cell_is_rule(_spreadsheet, _sheet_name, _range, _operator, _value1, _value2, _format_style),
+    do: error()
+
+  @spec add_text_rule(reference(), String.t(), String.t(), String.t(), String.t(), String.t()) ::
+          :ok | {:error, atom()}
+  def add_text_rule(_spreadsheet, _sheet_name, _range, _operator, _text, _format_style),
+    do: error()
+
+  # Data validation operations
+  @spec add_list_validation(
+          reference(),
+          String.t(),
+          String.t(),
+          [String.t()],
+          boolean(),
+          String.t(),
+          String.t(),
+          String.t(),
+          boolean()
+        ) ::
+          :ok | {:error, atom()}
+  def add_list_validation(
+        _spreadsheet,
+        _sheet_name,
+        _range,
+        _options,
+        _show_dropdown,
+        _prompt_title,
+        _prompt_text,
+        _error_text,
+        _show_error
+      ),
+      do: error()
+
+  @spec add_list_validation(reference(), String.t(), String.t(), [String.t()]) ::
+          :ok | {:error, atom()}
+  def add_list_validation(_spreadsheet, _sheet_name, _range, _options), do: error()
+
+  @spec add_number_validation(
+          reference(),
+          String.t(),
+          String.t(),
+          String.t(),
+          String.t(),
+          String.t(),
+          boolean(),
+          String.t(),
+          String.t(),
+          String.t(),
+          boolean()
+        ) ::
+          :ok | {:error, atom()}
+  def add_number_validation(
+        _spreadsheet,
+        _sheet_name,
+        _range,
+        _operator,
+        _value1,
+        _value2,
+        _show_dropdown,
+        _prompt_title,
+        _prompt_text,
+        _error_text,
+        _show_error
+      ),
+      do: error()
+
+  @spec add_number_validation(
+          reference(),
+          String.t(),
+          String.t(),
+          String.t(),
+          String.t(),
+          String.t()
+        ) ::
+          :ok | {:error, atom()}
+  def add_number_validation(
+        _spreadsheet,
+        _sheet_name,
+        _range,
+        _operator,
+        _value1,
+        _value2
+      ),
+      do: error()
+
+  @spec add_date_validation(
+          reference(),
+          String.t(),
+          String.t(),
+          String.t(),
+          String.t(),
+          String.t(),
+          boolean(),
+          String.t(),
+          String.t(),
+          String.t(),
+          boolean()
+        ) ::
+          :ok | {:error, atom()}
+  def add_date_validation(
+        _spreadsheet,
+        _sheet_name,
+        _range,
+        _operator,
+        _value1,
+        _value2,
+        _show_dropdown,
+        _prompt_title,
+        _prompt_text,
+        _error_text,
+        _show_error
+      ),
+      do: error()
+
+  @spec add_date_validation(
+          reference(),
+          String.t(),
+          String.t(),
+          String.t(),
+          String.t(),
+          String.t()
+        ) ::
+          :ok | {:error, atom()}
+  def add_date_validation(
+        _spreadsheet,
+        _sheet_name,
+        _range,
+        _operator,
+        _value1,
+        _value2
+      ),
+      do: error()
+
+  @spec add_text_length_validation(
+          reference(),
+          String.t(),
+          String.t(),
+          String.t(),
+          String.t(),
+          String.t(),
+          boolean(),
+          String.t(),
+          String.t(),
+          String.t(),
+          boolean()
+        ) ::
+          :ok | {:error, atom()}
+  def add_text_length_validation(
+        _spreadsheet,
+        _sheet_name,
+        _range,
+        _operator,
+        _value1,
+        _value2,
+        _show_dropdown,
+        _prompt_title,
+        _prompt_text,
+        _error_text,
+        _show_error
+      ),
+      do: error()
+
+  @spec add_text_length_validation(
+          reference(),
+          String.t(),
+          String.t(),
+          String.t(),
+          String.t(),
+          String.t()
+        ) ::
+          :ok | {:error, atom()}
+  def add_text_length_validation(
+        _spreadsheet,
+        _sheet_name,
+        _range,
+        _operator,
+        _value1,
+        _value2
+      ),
+      do: error()
+
+  @spec add_custom_validation(
+          reference(),
+          String.t(),
+          String.t(),
+          String.t(),
+          boolean(),
+          String.t(),
+          String.t(),
+          String.t(),
+          boolean()
+        ) ::
+          :ok | {:error, atom()}
+  def add_custom_validation(
+        _spreadsheet,
+        _sheet_name,
+        _range,
+        _formula,
+        _show_dropdown,
+        _prompt_title,
+        _prompt_text,
+        _error_text,
+        _show_error
+      ),
+      do: error()
+
+  @spec add_custom_validation(
+          reference(),
+          String.t(),
+          String.t(),
+          String.t()
+        ) ::
+          :ok | {:error, atom()}
+  def add_custom_validation(
+        _spreadsheet,
+        _sheet_name,
+        _range,
+        _formula
+      ),
+      do: error()
+
+  @spec remove_data_validation(reference(), String.t(), String.t()) :: :ok | {:error, atom()}
+  def remove_data_validation(_spreadsheet, _sheet_name, _range), do: error()
+
+  # Pivot table operations
+  @spec add_pivot_table(
+          reference(),
+          String.t(),
+          String.t(),
+          String.t(),
+          String.t(),
+          String.t(),
+          [integer()],
+          [integer()],
+          [{integer(), String.t(), String.t()}]
+        ) :: :ok | {:error, atom()}
+  def add_pivot_table(
+        _spreadsheet,
+        _sheet_name,
+        _name,
+        _source_sheet,
+        _source_range,
+        _target_cell,
+        _row_fields,
+        _column_fields,
+        _data_fields
+      ),
+      do: error()
+
+  @spec has_pivot_tables(reference(), String.t()) :: boolean()
+  def has_pivot_tables(_spreadsheet, _sheet_name), do: error()
+
+  @spec count_pivot_tables(reference(), String.t()) :: {:ok, integer()} | {:error, atom()}
+  def count_pivot_tables(_spreadsheet, _sheet_name), do: error()
+
+  @spec refresh_all_pivot_tables(reference()) :: :ok | {:error, atom()}
+  def refresh_all_pivot_tables(_spreadsheet), do: error()
+
+  @spec remove_pivot_table(reference(), String.t(), String.t()) :: :ok | {:error, atom()}
+  def remove_pivot_table(_spreadsheet, _sheet_name, _pivot_table_name), do: error()
+
+  # Drawing operations
+  @spec add_shape(
+          reference(),
+          String.t(),
+          String.t(),
+          String.t(),
+          float(),
+          float(),
+          String.t(),
+          String.t(),
+          float()
+        ) :: :ok | {:error, atom()}
+  def add_shape(
+        _spreadsheet,
+        _sheet_name,
+        _cell_address,
+        _shape_type,
+        _width,
+        _height,
+        _fill_color,
+        _outline_color,
+        _outline_width
+      ),
+      do: error()
+
+  @spec add_text_box(
+          reference(),
+          String.t(),
+          String.t(),
+          String.t(),
+          integer(),
+          integer(),
+          String.t(),
+          String.t(),
+          String.t(),
+          float()
+        ) :: :ok | {:error, atom()}
+  def add_text_box(
+        _spreadsheet,
+        _sheet_name,
+        _cell,
+        _text,
+        _width,
+        _height,
+        _fill_color,
+        _text_color,
+        _border_color,
+        _border_width
+      ),
+      do: error()
+
+  @spec add_connector(reference(), String.t(), String.t(), String.t(), String.t(), float()) ::
+          :ok | {:error, atom()}
+  def add_connector(_spreadsheet, _sheet_name, _from_cell, _to_cell, _color, _width), do: error()
+
+  # Print settings functions
+  @spec set_page_orientation(reference(), String.t(), String.t()) :: :ok | {:error, atom()}
+  def set_page_orientation(_spreadsheet, _sheet_name, _orientation), do: error()
+
+  @spec set_paper_size(reference(), String.t(), integer()) :: :ok | {:error, atom()}
+  def set_paper_size(_spreadsheet, _sheet_name, _paper_size), do: error()
+
+  @spec set_page_scale(reference(), String.t(), integer()) :: :ok | {:error, atom()}
+  def set_page_scale(_spreadsheet, _sheet_name, _scale), do: error()
+
+  @spec set_fit_to_page(reference(), String.t(), integer(), integer()) :: :ok | {:error, atom()}
+  def set_fit_to_page(_spreadsheet, _sheet_name, _width, _height), do: error()
+
+  @spec set_page_margins(reference(), String.t(), float(), float(), float(), float()) :: :ok | {:error, atom()}
+  def set_page_margins(_spreadsheet, _sheet_name, _top, _right, _bottom, _left), do: error()
+
+  @spec set_header_footer_margins(reference(), String.t(), float(), float()) :: :ok | {:error, atom()}
+  def set_header_footer_margins(_spreadsheet, _sheet_name, _header, _footer), do: error()
+
+  @spec set_header(reference(), String.t(), String.t()) :: :ok | {:error, atom()}
+  def set_header(_spreadsheet, _sheet_name, _header), do: error()
+
+  @spec set_footer(reference(), String.t(), String.t()) :: :ok | {:error, atom()}
+  def set_footer(_spreadsheet, _sheet_name, _footer), do: error()
+
+  @spec set_print_centered(reference(), String.t(), boolean(), boolean()) :: :ok | {:error, atom()}
+  def set_print_centered(_spreadsheet, _sheet_name, _horizontal, _vertical), do: error()
+
+  @spec set_print_area(reference(), String.t(), String.t()) :: :ok | {:error, atom()}
+  def set_print_area(_spreadsheet, _sheet_name, _print_area), do: error()
+
+  @spec set_print_titles(reference(), String.t(), String.t(), String.t()) :: :ok | {:error, atom()}
+  def set_print_titles(_spreadsheet, _sheet_name, _rows, _columns), do: error()
+
+  # Sheet view functions
+  @spec set_show_gridlines(reference(), String.t(), boolean()) :: :ok | {:error, atom()}
+  def set_show_gridlines(_spreadsheet, _sheet_name, _value), do: error()
+
+  @spec set_tab_selected(reference(), String.t(), boolean()) :: :ok | {:error, atom()}
+  def set_tab_selected(_spreadsheet, _sheet_name, _value), do: error()
+
+  @spec set_top_left_cell(reference(), String.t(), String.t()) :: :ok | {:error, atom()}
+  def set_top_left_cell(_spreadsheet, _sheet_name, _cell_address), do: error()
+
+  @spec set_zoom_scale(reference(), String.t(), integer()) :: :ok | {:error, atom()}
+  def set_zoom_scale(_spreadsheet, _sheet_name, _value), do: error()
+
+  @spec set_sheet_view(reference(), String.t(), String.t()) :: :ok | {:error, atom()}
+  def set_sheet_view(_spreadsheet, _sheet_name, _view_type), do: error()
+
+  @spec freeze_panes(reference(), String.t(), integer(), integer()) :: :ok | {:error, atom()}
+  def freeze_panes(_spreadsheet, _sheet_name, _cols, _rows), do: error()
+
+  @spec split_panes(reference(), String.t(), integer(), integer()) :: :ok | {:error, atom()}
+  def split_panes(_spreadsheet, _sheet_name, _height, _width), do: error()
+
+  @spec set_tab_color(reference(), String.t(), String.t()) :: :ok | {:error, atom()}
+  def set_tab_color(_spreadsheet, _sheet_name, _color), do: error()
+
+  defp error(), do: :erlang.nif_error(:nif_not_loaded)
+end

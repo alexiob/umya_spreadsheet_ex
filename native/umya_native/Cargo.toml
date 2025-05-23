@@ -1,0 +1,14 @@
+[package]
+name = "umya_native"
+version = "0.1.0"
+authors = []
+edition = "2021"
+
+[lib]
+name = "umya_native"
+path = "src/lib.rs"
+crate-type = ["cdylib"]
+
+[dependencies]
+rustler = "0.36.1"
+umya-spreadsheet = "2.3.0"
