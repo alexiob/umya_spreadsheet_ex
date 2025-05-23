@@ -35,6 +35,7 @@ defmodule UmyaSpreadsheet do
   alias UmyaSpreadsheet.BorderFunctions
   alias UmyaSpreadsheet.CellFunctions
   alias UmyaSpreadsheet.ChartFunctions
+  alias UmyaSpreadsheet.CommentFunctions
   alias UmyaSpreadsheet.ConditionalFormatting
   alias UmyaSpreadsheet.CSVFunctions
   alias UmyaSpreadsheet.DataValidation
@@ -474,4 +475,41 @@ defmodule UmyaSpreadsheet do
   # Background Functions delegation
   defdelegate set_background_color(spreadsheet, sheet_name, cell_address, color),
     to: BackgroundFunctions
+
+  # Comment functions
+  @doc """
+  Adds a comment to a cell.
+  """
+  defdelegate add_comment(spreadsheet, sheet_name, cell_address, text, author),
+    to: CommentFunctions
+
+  @doc """
+  Gets the comment text and author from a cell.
+  """
+  defdelegate get_comment(spreadsheet, sheet_name, cell_address),
+    to: CommentFunctions
+
+  @doc """
+  Updates an existing comment in a cell.
+  """
+  defdelegate update_comment(spreadsheet, sheet_name, cell_address, text, author \\ nil),
+    to: CommentFunctions
+
+  @doc """
+  Removes a comment from a cell.
+  """
+  defdelegate remove_comment(spreadsheet, sheet_name, cell_address),
+    to: CommentFunctions
+
+  @doc """
+  Checks if a sheet has any comments.
+  """
+  defdelegate has_comments(spreadsheet, sheet_name),
+    to: CommentFunctions
+
+  @doc """
+  Gets the number of comments in a sheet.
+  """
+  defdelegate get_comments_count(spreadsheet, sheet_name),
+    to: CommentFunctions
 end

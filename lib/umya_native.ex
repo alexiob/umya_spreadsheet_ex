@@ -856,5 +856,42 @@ defmodule UmyaNative do
   @spec set_workbook_window_position(reference(), integer(), integer(), integer(), integer()) :: :ok | {:error, atom()}
   def set_workbook_window_position(_spreadsheet, _x_position, _y_position, _window_width, _window_height), do: error()
 
+  # Comment functions
+  @doc """
+  Adds a comment to a cell.
+  """
+  @spec add_comment(reference(), String.t(), String.t(), String.t(), String.t()) :: :ok | {:error, atom()}
+  def add_comment(_spreadsheet, _sheet_name, _cell_address, _text, _author), do: error()
+
+  @doc """
+  Gets the comment from a cell.
+  """
+  @spec get_comment(reference(), String.t(), String.t()) :: {:ok, String.t(), String.t()} | {:error, atom()}
+  def get_comment(_spreadsheet, _sheet_name, _cell_address), do: error()
+
+  @doc """
+  Updates an existing comment in a cell.
+  """
+  @spec update_comment(reference(), String.t(), String.t(), String.t(), String.t() | nil) :: :ok | {:error, atom()}
+  def update_comment(_spreadsheet, _sheet_name, _cell_address, _text, _author \\ nil), do: error()
+
+  @doc """
+  Removes a comment from a cell.
+  """
+  @spec remove_comment(reference(), String.t(), String.t()) :: :ok | {:error, atom()}
+  def remove_comment(_spreadsheet, _sheet_name, _cell_address), do: error()
+
+  @doc """
+  Checks if a sheet has any comments.
+  """
+  @spec has_comments(reference(), String.t()) :: boolean() | {:error, atom()}
+  def has_comments(_spreadsheet, _sheet_name), do: error()
+
+  @doc """
+  Gets the number of comments in a sheet.
+  """
+  @spec get_comments_count(reference(), String.t()) :: integer() | {:error, atom()}
+  def get_comments_count(_spreadsheet, _sheet_name), do: error()
+
   defp error(), do: :erlang.nif_error(:nif_not_loaded)
 end

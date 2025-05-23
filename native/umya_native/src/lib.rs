@@ -44,6 +44,7 @@ mod atoms {
 }
 
 mod chart_functions;
+mod comment_functions;
 pub mod conditional_formatting;
 pub mod conditional_formatting_additional;
 mod data_validation;
@@ -57,6 +58,7 @@ pub mod custom_structs;
 mod helpers;
 mod pivot_table_utils;
 mod print_settings;
+// Comment functions already declared above
 mod set_background_color;
 mod set_cell_alignment;
 mod style_helpers;
@@ -1414,5 +1416,19 @@ rustler::init!(
         workbook_view_functions::set_active_tab,
         workbook_view_functions::set_workbook_window_position,
         copy_column_styling,
+        // Comment functions
+        comment_functions::add_comment,
+        comment_functions::get_comment,
+        comment_functions::update_comment,
+        comment_functions::remove_comment,
+        comment_functions::has_comments,
+        comment_functions::get_comments_count,
+        // Comment functions
+        comment_functions::add_comment,
+        comment_functions::get_comment,
+        comment_functions::update_comment,
+        comment_functions::remove_comment,
+        comment_functions::has_comments,
+        comment_functions::get_comments_count,
     ]
 );

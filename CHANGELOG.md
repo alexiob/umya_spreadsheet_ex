@@ -12,6 +12,13 @@
   - Added tests for sheet selection functionality
   - Created comprehensive tests for workbook view settings
   - Updated existing tests to ensure compatibility with new window features
+- Added comment management functionality:
+  - `add_comment` - Adds a comment to a cell with text and author
+  - `get_comment` - Retrieves comment text and author from a cell
+  - `update_comment` - Updates an existing comment with new text and optionally a new author
+  - `remove_comment` - Removes a comment from a cell
+  - `has_comments` - Checks if a worksheet contains any comments
+  - `get_comments_count` - Returns the number of comments in a worksheet
 
 ### Fixed
 
