@@ -52,8 +52,8 @@ defmodule UmyaSpreadsheet.MixProject do
       files: ~w(lib native .formatter.exs mix.exs README.md LICENSE),
       licenses: ["MIT"],
       links: %{
-        "GitHub" => "https://github.com/alexiob/umya_spreadsheet_ex",
-        },
+        "GitHub" => "https://github.com/alexiob/umya_spreadsheet_ex"
+      },
       maintainers: ["Alessandro Iob"],
       organization: nil,
       submitter: "alexiob",
@@ -96,7 +96,7 @@ defmodule UmyaSpreadsheet.MixProject do
           "CHANGELOG.md"
         ]
       ],
-      source_url: "https://github.com/MathNya/umya-spreadsheet",
+      source_url: "https://github.com/alexiob/umya_spreadsheet_ex",
       groups_for_modules: [
         API: [
           UmyaSpreadsheet
