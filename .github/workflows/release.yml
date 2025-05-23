@@ -73,6 +73,7 @@ jobs:
           nif-version: ${{ matrix.nif }}
           use-cross: ${{ matrix.job.use-cross }}
           project-dir: "native/umya_native"
+          cross-version: "0.2.5"
 
       - name: Artifact upload
         uses: actions/upload-artifact@v4

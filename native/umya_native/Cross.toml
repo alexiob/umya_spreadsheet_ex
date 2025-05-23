@@ -1,0 +1,3 @@
+[build.env]
+# Pass the NIF version to the build script
+passthrough = ["RUSTLER_NIF_VERSION"]
