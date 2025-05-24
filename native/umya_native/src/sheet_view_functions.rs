@@ -1,7 +1,6 @@
 use crate::atoms;
-use crate::helpers::error_helper::handle_error;
 use crate::UmyaSpreadsheet;
-use rustler::{Atom, NifResult};
+use rustler::{Atom, NifResult, Error as NifError};
 use std::panic::{self, AssertUnwindSafe};
 use umya_spreadsheet::{PaneStateValues, PaneValues, SheetViewValues};
 
@@ -47,8 +46,12 @@ pub fn set_selection(
 
     match result {
         Ok(Ok(_)) => Ok(atoms::ok()),
-        Ok(Err(msg)) => handle_error(&msg),
-        Err(_) => handle_error("Panic occurred in set_selection"),
+        Ok(Err(msg)) => {
+            Err(NifError::Term(Box::new((atoms::error(), msg))))
+        }
+        Err(_) => {
+            Err(NifError::Term(Box::new((atoms::error(), "Error occurred in set_selection".to_string()))))
+        }
     }
 }
 
@@ -82,8 +85,12 @@ pub fn set_show_grid_lines(
 
     match result {
         Ok(Ok(_)) => Ok(atoms::ok()),
-        Ok(Err(msg)) => handle_error(&msg),
-        Err(_) => handle_error("Panic occurred in set_show_grid_lines"),
+        Ok(Err(msg)) => {
+            Err(NifError::Term(Box::new((atoms::error(), msg))))
+        }
+        Err(_) => {
+            Err(NifError::Term(Box::new((atoms::error(), "Error occurred in set_show_grid_lines".to_string()))))
+        }
     }
 }
 
@@ -117,8 +124,12 @@ pub fn set_tab_selected(
 
     match result {
         Ok(Ok(_)) => Ok(atoms::ok()),
-        Ok(Err(msg)) => handle_error(&msg),
-        Err(_) => handle_error("Panic occurred in set_tab_selected"),
+        Ok(Err(msg)) => {
+            Err(NifError::Term(Box::new((atoms::error(), msg))))
+        }
+        Err(_) => {
+            Err(NifError::Term(Box::new((atoms::error(), "Error occurred in set_tab_selected".to_string()))))
+        }
     }
 }
 
@@ -146,8 +157,12 @@ pub fn set_tab_color(
 
     match result {
         Ok(Ok(_)) => Ok(atoms::ok()),
-        Ok(Err(msg)) => handle_error(&msg),
-        Err(_) => handle_error("Panic occurred in set_tab_color"),
+        Ok(Err(msg)) => {
+            Err(NifError::Term(Box::new((atoms::error(), msg))))
+        }
+        Err(_) => {
+            Err(NifError::Term(Box::new((atoms::error(), "Error occurred in set_tab_color".to_string()))))
+        }
     }
 }
 
@@ -181,8 +196,12 @@ pub fn set_zoom_scale(
 
     match result {
         Ok(Ok(_)) => Ok(atoms::ok()),
-        Ok(Err(msg)) => handle_error(&msg),
-        Err(_) => handle_error("Panic occurred in set_zoom_scale"),
+        Ok(Err(msg)) => {
+            Err(NifError::Term(Box::new((atoms::error(), msg))))
+        }
+        Err(_) => {
+            Err(NifError::Term(Box::new((atoms::error(), "Error occurred in set_zoom_scale".to_string()))))
+        }
     }
 }
 
@@ -223,8 +242,12 @@ pub fn freeze_panes(
 
     match result {
         Ok(Ok(_)) => Ok(atoms::ok()),
-        Ok(Err(msg)) => handle_error(&msg),
-        Err(_) => handle_error("Panic occurred in freeze_panes"),
+        Ok(Err(msg)) => {
+            Err(NifError::Term(Box::new((atoms::error(), msg))))
+        }
+        Err(_) => {
+            Err(NifError::Term(Box::new((atoms::error(), "Error occurred in freeze_panes".to_string()))))
+        }
     }
 }
 
@@ -258,8 +281,12 @@ pub fn set_top_left_cell(
 
     match result {
         Ok(Ok(_)) => Ok(atoms::ok()),
-        Ok(Err(msg)) => handle_error(&msg),
-        Err(_) => handle_error("Panic occurred in set_top_left_cell"),
+        Ok(Err(msg)) => {
+            Err(NifError::Term(Box::new((atoms::error(), msg))))
+        }
+        Err(_) => {
+            Err(NifError::Term(Box::new((atoms::error(), "Error occurred in set_top_left_cell".to_string()))))
+        }
     }
 }
 
@@ -300,8 +327,12 @@ pub fn set_sheet_view(
 
     match result {
         Ok(Ok(_)) => Ok(atoms::ok()),
-        Ok(Err(msg)) => handle_error(&msg),
-        Err(_) => handle_error("Panic occurred in set_sheet_view"),
+        Ok(Err(msg)) => {
+            Err(NifError::Term(Box::new((atoms::error(), msg))))
+        }
+        Err(_) => {
+            Err(NifError::Term(Box::new((atoms::error(), "Error occurred in set_sheet_view".to_string()))))
+        }
     }
 }
 
@@ -342,8 +373,12 @@ pub fn split_panes(
 
     match result {
         Ok(Ok(_)) => Ok(atoms::ok()),
-        Ok(Err(msg)) => handle_error(&msg),
-        Err(_) => handle_error("Panic occurred in split_panes"),
+        Ok(Err(msg)) => {
+            Err(NifError::Term(Box::new((atoms::error(), msg))))
+        }
+        Err(_) => {
+            Err(NifError::Term(Box::new((atoms::error(), "Error occurred in split_panes".to_string()))))
+        }
     }
 }
 
@@ -377,8 +412,12 @@ pub fn set_zoom_scale_normal(
 
     match result {
         Ok(Ok(_)) => Ok(atoms::ok()),
-        Ok(Err(msg)) => handle_error(&msg),
-        Err(_) => handle_error("Panic occurred in set_zoom_scale_normal"),
+        Ok(Err(msg)) => {
+            Err(NifError::Term(Box::new((atoms::error(), msg))))
+        }
+        Err(_) => {
+            Err(NifError::Term(Box::new((atoms::error(), "Error occurred in set_zoom_scale_normal".to_string()))))
+        }
     }
 }
 
@@ -412,8 +451,12 @@ pub fn set_zoom_scale_page_layout(
 
     match result {
         Ok(Ok(_)) => Ok(atoms::ok()),
-        Ok(Err(msg)) => handle_error(&msg),
-        Err(_) => handle_error("Panic occurred in set_zoom_scale_page_layout"),
+        Ok(Err(msg)) => {
+            Err(NifError::Term(Box::new((atoms::error(), msg))))
+        }
+        Err(_) => {
+            Err(NifError::Term(Box::new((atoms::error(), "Error occurred in set_zoom_scale_page_layout".to_string()))))
+        }
     }
 }
 
@@ -447,7 +490,11 @@ pub fn set_zoom_scale_page_break(
 
     match result {
         Ok(Ok(_)) => Ok(atoms::ok()),
-        Ok(Err(msg)) => handle_error(&msg),
-        Err(_) => handle_error("Panic occurred in set_zoom_scale_page_break"),
+        Ok(Err(msg)) => {
+            Err(NifError::Term(Box::new((atoms::error(), msg))))
+        }
+        Err(_) => {
+            Err(NifError::Term(Box::new((atoms::error(), "Error occurred in set_zoom_scale_page_break".to_string()))))
+        }
     }
 }

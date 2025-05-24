@@ -4,6 +4,7 @@ defmodule UmyaSpreadsheet.BorderFunctions do
   """
 
   alias UmyaSpreadsheet.Spreadsheet
+  alias UmyaSpreadsheet.ErrorHandling
   alias UmyaNative
 
   @doc """
@@ -32,10 +33,7 @@ defmodule UmyaSpreadsheet.BorderFunctions do
       :ok = UmyaSpreadsheet.BorderFunctions.set_border_style(spreadsheet, "Sheet1", "B2", "all", "thin")
   """
   def set_border_style(%Spreadsheet{reference: ref}, sheet_name, cell_address, border_position, border_style) do
-    case UmyaNative.set_border_style(ref, sheet_name, cell_address, border_position, border_style) do
-      {:ok, :ok} -> :ok
-      :ok -> :ok
-      result -> result
-    end
+    UmyaNative.set_border_style(ref, sheet_name, cell_address, border_position, border_style)
+    |> ErrorHandling.standardize_result()
   end
 end

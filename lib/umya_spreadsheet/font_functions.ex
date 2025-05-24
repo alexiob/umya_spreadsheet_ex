@@ -4,6 +4,7 @@ defmodule UmyaSpreadsheet.FontFunctions do
   """
 
   alias UmyaSpreadsheet.Spreadsheet
+  alias UmyaSpreadsheet.ErrorHandling
   alias UmyaNative
 
   @doc """
@@ -28,11 +29,8 @@ defmodule UmyaSpreadsheet.FontFunctions do
       :ok = UmyaSpreadsheet.FontFunctions.set_font_color(spreadsheet, "Sheet1", "A1", "#FF0000")
   """
   def set_font_color(%Spreadsheet{reference: ref}, sheet_name, cell_address, color) do
-    case UmyaNative.set_font_color(ref, sheet_name, cell_address, color) do
-      {:ok, :ok} -> :ok
-      :ok -> :ok
-      result -> result
-    end
+    UmyaNative.set_font_color(ref, sheet_name, cell_address, color)
+    |> ErrorHandling.standardize_result()
   end
 
   @doc """
@@ -56,11 +54,8 @@ defmodule UmyaSpreadsheet.FontFunctions do
       :ok = UmyaSpreadsheet.FontFunctions.set_font_size(spreadsheet, "Sheet1", "A1", 14)
   """
   def set_font_size(%Spreadsheet{reference: ref}, sheet_name, cell_address, size) do
-    case UmyaNative.set_font_size(ref, sheet_name, cell_address, size) do
-      {:ok, :ok} -> :ok
-      :ok -> :ok
-      result -> result
-    end
+    UmyaNative.set_font_size(ref, sheet_name, cell_address, size)
+    |> ErrorHandling.standardize_result()
   end
 
   @doc """
@@ -84,11 +79,8 @@ defmodule UmyaSpreadsheet.FontFunctions do
       :ok = UmyaSpreadsheet.FontFunctions.set_font_bold(spreadsheet, "Sheet1", "A1", true)
   """
   def set_font_bold(%Spreadsheet{reference: ref}, sheet_name, cell_address, is_bold) do
-    case UmyaNative.set_font_bold(ref, sheet_name, cell_address, is_bold) do
-      {:ok, :ok} -> :ok
-      :ok -> :ok
-      result -> result
-    end
+    UmyaNative.set_font_bold(ref, sheet_name, cell_address, is_bold)
+    |> ErrorHandling.standardize_result()
   end
 
   @doc """
@@ -112,11 +104,8 @@ defmodule UmyaSpreadsheet.FontFunctions do
       :ok = UmyaSpreadsheet.FontFunctions.set_font_name(spreadsheet, "Sheet1", "A1", "Arial")
   """
   def set_font_name(%Spreadsheet{reference: ref}, sheet_name, cell_address, font_name) do
-    case UmyaNative.set_font_name(ref, sheet_name, cell_address, font_name) do
-      {:ok, :ok} -> :ok
-      :ok -> :ok
-      result -> result
-    end
+    UmyaNative.set_font_name(ref, sheet_name, cell_address, font_name)
+    |> ErrorHandling.standardize_result()
   end
 
   @doc """
@@ -140,11 +129,8 @@ defmodule UmyaSpreadsheet.FontFunctions do
       :ok = UmyaSpreadsheet.FontFunctions.set_font_italic(spreadsheet, "Sheet1", "A1", true)
   """
   def set_font_italic(%Spreadsheet{reference: ref}, sheet_name, cell_address, is_italic) do
-    case UmyaNative.set_font_italic(ref, sheet_name, cell_address, is_italic) do
-      {:ok, :ok} -> :ok
-      :ok -> :ok
-      result -> result
-    end
+    UmyaNative.set_font_italic(ref, sheet_name, cell_address, is_italic)
+    |> ErrorHandling.standardize_result()
   end
 
   @doc """
@@ -168,11 +154,8 @@ defmodule UmyaSpreadsheet.FontFunctions do
       :ok = UmyaSpreadsheet.FontFunctions.set_font_underline(spreadsheet, "Sheet1", "A1", "single")
   """
   def set_font_underline(%Spreadsheet{reference: ref}, sheet_name, cell_address, underline_style) do
-    case UmyaNative.set_font_underline(ref, sheet_name, cell_address, underline_style) do
-      {:ok, :ok} -> :ok
-      :ok -> :ok
-      result -> result
-    end
+    UmyaNative.set_font_underline(ref, sheet_name, cell_address, underline_style)
+    |> ErrorHandling.standardize_result()
   end
 
   @doc """
@@ -196,10 +179,7 @@ defmodule UmyaSpreadsheet.FontFunctions do
       :ok = UmyaSpreadsheet.FontFunctions.set_font_strikethrough(spreadsheet, "Sheet1", "A1", true)
   """
   def set_font_strikethrough(%Spreadsheet{reference: ref}, sheet_name, cell_address, is_strikethrough) do
-    case UmyaNative.set_font_strikethrough(ref, sheet_name, cell_address, is_strikethrough) do
-      {:ok, :ok} -> :ok
-      :ok -> :ok
-      result -> result
-    end
+    UmyaNative.set_font_strikethrough(ref, sheet_name, cell_address, is_strikethrough)
+    |> ErrorHandling.standardize_result()
   end
 end

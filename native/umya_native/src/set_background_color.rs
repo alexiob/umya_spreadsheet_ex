@@ -1,5 +1,5 @@
-use rustler::{Atom, ResourceArc};
-use crate::{UmyaSpreadsheet, atoms, helpers};
+use crate::{atoms, helpers, UmyaSpreadsheet};
+use rustler::{Atom, Error as NifError, NifResult, ResourceArc};
 
 #[rustler::nif]
 fn set_background_color(
@@ -7,7 +7,7 @@ fn set_background_color(
     sheet_name: String,
     cell_address: String,
     color: String,
-) -> Result<Atom, Atom> {
+) -> NifResult<Atom> {
     let mut guard = resource.spreadsheet.lock().unwrap();
 
     match guard.get_sheet_by_name_mut(&sheet_name) {
@@ -15,11 +15,14 @@ fn set_background_color(
             // Use the color helper to create a Color object
             let color_obj = match helpers::color_helper::create_color_object(&color) {
                 Ok(color) => color,
-                Err(e) => return Err(e),
+                Err(_) => return Err(NifError::Term(Box::new((
+                    atoms::error(),
+                    "Invalid color format".to_string(),
+                )))),
             };
 
             // Apply the background color using the style helper
-            helpers::style_helper::apply_cell_style(
+            helpers::style_helpers::apply_cell_style(
                 sheet,
                 &*cell_address,
                 Some(color_obj),
@@ -30,6 +33,9 @@ fn set_background_color(
 
             Ok(atoms::ok())
         }
-        None => Err(atoms::not_found()),
+        None => Err(NifError::Term(Box::new((
+            atoms::error(),
+            "Sheet not found".to_string(),
+        )))),
     }
 }

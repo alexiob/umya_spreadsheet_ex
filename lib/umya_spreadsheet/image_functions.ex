@@ -4,6 +4,7 @@ defmodule UmyaSpreadsheet.ImageFunctions do
   """
 
   alias UmyaSpreadsheet.Spreadsheet
+  alias UmyaSpreadsheet.ErrorHandling
   alias UmyaNative
 
   @doc """
@@ -27,11 +28,8 @@ defmodule UmyaSpreadsheet.ImageFunctions do
       :ok = UmyaSpreadsheet.ImageFunctions.add_image(spreadsheet, "Sheet1", "C5", "path/to/image.png")
   """
   def add_image(%Spreadsheet{reference: ref}, sheet_name, cell_address, image_path) do
-    case UmyaNative.add_image(ref, sheet_name, cell_address, image_path) do
-      {:ok, :ok} -> :ok
-      :ok -> :ok
-      result -> result
-    end
+    UmyaNative.add_image(ref, sheet_name, cell_address, image_path)
+    |> ErrorHandling.standardize_result()
   end
 
   @doc """
@@ -55,11 +53,8 @@ defmodule UmyaSpreadsheet.ImageFunctions do
       :ok = UmyaSpreadsheet.ImageFunctions.download_image(spreadsheet, "Sheet1", "C5", "extracted_image.png")
   """
   def download_image(%Spreadsheet{reference: ref}, sheet_name, cell_address, output_path) do
-    case UmyaNative.download_image(ref, sheet_name, cell_address, output_path) do
-      {:ok, :ok} -> :ok
-      :ok -> :ok
-      result -> result
-    end
+    UmyaNative.download_image(ref, sheet_name, cell_address, output_path)
+    |> ErrorHandling.standardize_result()
   end
 
   @doc """
@@ -83,10 +78,7 @@ defmodule UmyaSpreadsheet.ImageFunctions do
       :ok = UmyaSpreadsheet.ImageFunctions.change_image(spreadsheet, "Sheet1", "C5", "path/to/new_image.png")
   """
   def change_image(%Spreadsheet{reference: ref}, sheet_name, cell_address, new_image_path) do
-    case UmyaNative.change_image(ref, sheet_name, cell_address, new_image_path) do
-      {:ok, :ok} -> :ok
-      :ok -> :ok
-      result -> result
-    end
+    UmyaNative.change_image(ref, sheet_name, cell_address, new_image_path)
+    |> ErrorHandling.standardize_result()
   end
 end

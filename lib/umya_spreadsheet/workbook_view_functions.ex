@@ -5,6 +5,7 @@ defmodule UmyaSpreadsheet.WorkbookViewFunctions do
   """
 
   alias UmyaSpreadsheet.Spreadsheet
+  alias UmyaSpreadsheet.ErrorHandling
   alias UmyaNative
 
   @doc """
@@ -25,11 +26,8 @@ defmodule UmyaSpreadsheet.WorkbookViewFunctions do
       :ok = UmyaSpreadsheet.WorkbookViewFunctions.set_active_tab(spreadsheet, 0)
   """
   def set_active_tab(%Spreadsheet{reference: ref}, tab_index) do
-    case UmyaNative.set_active_tab(ref, tab_index) do
-      {:ok, :ok} -> :ok
-      :ok -> :ok
-      result -> result
-    end
+    UmyaNative.set_active_tab(ref, tab_index)
+    |> ErrorHandling.standardize_result()
   end
 
   @doc """
@@ -50,10 +48,7 @@ defmodule UmyaSpreadsheet.WorkbookViewFunctions do
       :ok = UmyaSpreadsheet.WorkbookViewFunctions.set_workbook_window_position(spreadsheet, 100, 50, 800, 600)
   """
   def set_workbook_window_position(%Spreadsheet{reference: ref}, x_position, y_position, window_width, window_height) do
-    case UmyaNative.set_workbook_window_position(ref, x_position, y_position, window_width, window_height) do
-      {:ok, :ok} -> :ok
-      :ok -> :ok
-      result -> result
-    end
+    UmyaNative.set_workbook_window_position(ref, x_position, y_position, window_width, window_height)
+    |> ErrorHandling.standardize_result()
   end
 end

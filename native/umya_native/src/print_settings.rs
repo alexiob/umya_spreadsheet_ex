@@ -1,5 +1,5 @@
 use crate::{atoms, UmyaSpreadsheet};
-use rustler::{Atom, ResourceArc};
+use rustler::{Atom, Error as NifError, NifResult, ResourceArc};
 use umya_spreadsheet::OrientationValues;
 
 // Function to set page orientation
@@ -8,7 +8,7 @@ fn set_page_orientation(
     resource: ResourceArc<UmyaSpreadsheet>,
     sheet_name: String,
     orientation: String,
-) -> Result<Atom, Atom> {
+) -> NifResult<Atom> {
     let mut guard = resource.spreadsheet.lock().unwrap();
 
     match guard.get_sheet_by_name_mut(&sheet_name) {
@@ -18,13 +18,15 @@ fn set_page_orientation(
             let orientation_value = match orientation.to_lowercase().as_str() {
                 "portrait" => OrientationValues::Portrait,
                 "landscape" => OrientationValues::Landscape,
-                _ => return Err(atoms::error()), // Invalid orientation
+                _ => return Err(NifError::Term(Box::new((atoms::error(), "Invalid orientation".to_string())))),
             };
 
             page_setup.set_orientation(orientation_value);
             Ok(atoms::ok())
         }
-        None => Err(atoms::not_found()),
+        None => {
+            Err(NifError::Term(Box::new((atoms::error(), "Sheet not found".to_string()))))
+        }
     }
 }
 
@@ -34,7 +36,7 @@ fn set_paper_size(
     resource: ResourceArc<UmyaSpreadsheet>,
     sheet_name: String,
     paper_size: u32,
-) -> Result<Atom, Atom> {
+) -> NifResult<Atom> {
     let mut guard = resource.spreadsheet.lock().unwrap();
 
     match guard.get_sheet_by_name_mut(&sheet_name) {
@@ -43,7 +45,9 @@ fn set_paper_size(
             page_setup.set_paper_size(paper_size);
             Ok(atoms::ok())
         }
-        None => Err(atoms::not_found()),
+        None => {
+            Err(NifError::Term(Box::new((atoms::error(), "Sheet not found".to_string()))))
+        }
     }
 }
 
@@ -53,21 +57,23 @@ fn set_page_scale(
     resource: ResourceArc<UmyaSpreadsheet>,
     sheet_name: String,
     scale: u32,
-) -> Result<Atom, Atom> {
+) -> NifResult<Atom> {
     let mut guard = resource.spreadsheet.lock().unwrap();
 
     match guard.get_sheet_by_name_mut(&sheet_name) {
         Some(sheet) => {
             // Scale should be between 10 and 400
             if scale < 10 || scale > 400 {
-                return Err(atoms::error());
+                return Err(NifError::Term(Box::new((atoms::error(), "Scale must be between 10 and 400".to_string()))));
             }
 
             let page_setup = sheet.get_page_setup_mut();
             page_setup.set_scale(scale);
             Ok(atoms::ok())
         }
-        None => Err(atoms::not_found()),
+        None => {
+            Err(NifError::Term(Box::new((atoms::error(), "Sheet not found".to_string()))))
+        }
     }
 }
 
@@ -78,7 +84,7 @@ fn set_fit_to_page(
     sheet_name: String,
     width: u32,
     height: u32,
-) -> Result<Atom, Atom> {
+) -> NifResult<Atom> {
     let mut guard = resource.spreadsheet.lock().unwrap();
 
     match guard.get_sheet_by_name_mut(&sheet_name) {
@@ -88,7 +94,9 @@ fn set_fit_to_page(
             page_setup.set_fit_to_height(height);
             Ok(atoms::ok())
         }
-        None => Err(atoms::not_found()),
+        None => {
+            Err(NifError::Term(Box::new((atoms::error(), "Sheet not found".to_string()))))
+        }
     }
 }
 
@@ -101,7 +109,7 @@ fn set_page_margins(
     right: f64,
     bottom: f64,
     left: f64,
-) -> Result<Atom, Atom> {
+) -> NifResult<Atom> {
     let mut guard = resource.spreadsheet.lock().unwrap();
 
     match guard.get_sheet_by_name_mut(&sheet_name) {
@@ -113,7 +121,9 @@ fn set_page_margins(
             page_margins.set_left(left);
             Ok(atoms::ok())
         }
-        None => Err(atoms::not_found()),
+        None => {
+            Err(NifError::Term(Box::new((atoms::error(), "Sheet not found".to_string()))))
+        }
     }
 }
 
@@ -124,7 +134,7 @@ fn set_header_footer_margins(
     sheet_name: String,
     header: f64,
     footer: f64,
-) -> Result<Atom, Atom> {
+) -> NifResult<Atom> {
     let mut guard = resource.spreadsheet.lock().unwrap();
 
     match guard.get_sheet_by_name_mut(&sheet_name) {
@@ -134,7 +144,9 @@ fn set_header_footer_margins(
             page_margins.set_footer(footer);
             Ok(atoms::ok())
         }
-        None => Err(atoms::not_found()),
+        None => {
+            Err(NifError::Term(Box::new((atoms::error(), "Sheet not found".to_string()))))
+        }
     }
 }
 
@@ -144,7 +156,7 @@ fn set_header(
     resource: ResourceArc<UmyaSpreadsheet>,
     sheet_name: String,
     _header_text: String,
-) -> Result<Atom, Atom> {
+) -> NifResult<Atom> {
     let mut guard = resource.spreadsheet.lock().unwrap();
 
     match guard.get_sheet_by_name_mut(&sheet_name) {
@@ -152,7 +164,9 @@ fn set_header(
             // Simplified implementation for testing purposes
             Ok(atoms::ok())
         }
-        None => Err(atoms::not_found()),
+        None => {
+            Err(NifError::Term(Box::new((atoms::error(), "Sheet not found".to_string()))))
+        }
     }
 }
 
@@ -162,7 +176,7 @@ fn set_footer(
     resource: ResourceArc<UmyaSpreadsheet>,
     sheet_name: String,
     _footer_text: String,
-) -> Result<Atom, Atom> {
+) -> NifResult<Atom> {
     let mut guard = resource.spreadsheet.lock().unwrap();
 
     match guard.get_sheet_by_name_mut(&sheet_name) {
@@ -170,7 +184,9 @@ fn set_footer(
             // Simplified implementation for testing purposes
             Ok(atoms::ok())
         }
-        None => Err(atoms::not_found()),
+        None => {
+            Err(NifError::Term(Box::new((atoms::error(), "Sheet not found".to_string()))))
+        }
     }
 }
 
@@ -181,7 +197,7 @@ fn set_print_centered(
     sheet_name: String,
     horizontal: bool,
     vertical: bool,
-) -> Result<Atom, Atom> {
+) -> NifResult<Atom> {
     let mut guard = resource.spreadsheet.lock().unwrap();
 
     match guard.get_sheet_by_name_mut(&sheet_name) {
@@ -191,7 +207,9 @@ fn set_print_centered(
             print_options.set_vertical_centered(vertical);
             Ok(atoms::ok())
         }
-        None => Err(atoms::not_found()),
+        None => {
+            Err(NifError::Term(Box::new((atoms::error(), "Sheet not found".to_string()))))
+        }
     }
 }
 
@@ -201,7 +219,7 @@ fn set_print_area(
     resource: ResourceArc<UmyaSpreadsheet>,
     sheet_name: String,
     _print_area: String,
-) -> Result<Atom, Atom> {
+) -> NifResult<Atom> {
     let mut guard = resource.spreadsheet.lock().unwrap();
 
     match guard.get_sheet_by_name_mut(&sheet_name) {
@@ -209,7 +227,9 @@ fn set_print_area(
             // Simplified implementation for testing purposes
             Ok(atoms::ok())
         }
-        None => Err(atoms::not_found()),
+        None => {
+            Err(NifError::Term(Box::new((atoms::error(), "Sheet not found".to_string()))))
+        }
     }
 }
 
@@ -220,7 +240,7 @@ fn set_print_titles(
     sheet_name: String,
     _rows: String,
     _columns: String,
-) -> Result<Atom, Atom> {
+) -> NifResult<Atom> {
     let mut guard = resource.spreadsheet.lock().unwrap();
 
     match guard.get_sheet_by_name_mut(&sheet_name) {
@@ -228,6 +248,8 @@ fn set_print_titles(
             // Simplified implementation for testing purposes
             Ok(atoms::ok())
         }
-        None => Err(atoms::not_found()),
+        None => {
+            Err(NifError::Term(Box::new((atoms::error(), "Sheet not found".to_string()))))
+        }
     }
 }

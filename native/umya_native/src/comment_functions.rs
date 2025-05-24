@@ -1,7 +1,6 @@
 use crate::atoms;
-use crate::helpers::error_helper::handle_error;
 use crate::UmyaSpreadsheet;
-use rustler::{Atom, NifResult};
+use rustler::{Atom, Error as NifError, NifResult};
 use std::panic::{self, AssertUnwindSafe};
 use umya_spreadsheet::Comment;
 
@@ -13,32 +12,37 @@ pub fn add_comment(
     text: String,
     author: String,
 ) -> NifResult<Atom> {
-    let result = panic::catch_unwind(AssertUnwindSafe(|| {
-        let mut spreadsheet = spreadsheet_resource.spreadsheet.lock().unwrap();
+    let result = panic::catch_unwind(AssertUnwindSafe(|| -> Result<(), String> {
+        let mut spreadsheet = spreadsheet_resource.spreadsheet.lock()
+            .map_err(|_| "Failed to acquire spreadsheet lock".to_string())?;
 
         // Get sheet by name
-        if let Some(sheet) = spreadsheet.get_sheet_by_name_mut(&sheet_name) {
-            // Create a new comment
-            let mut comment = Comment::default();
+        let sheet = spreadsheet.get_sheet_by_name_mut(&sheet_name)
+            .ok_or_else(|| format!("Sheet '{}' not found", sheet_name))?;
 
-            // Set up the comment with cell address, text and author
-            comment.new_comment(cell_address);
-            comment.set_text_string(text);
-            comment.set_author(author);
-
-            // Add the comment to the worksheet
-            sheet.add_comments(comment);
-
-            Ok(atoms::ok())
-        } else {
-            Err(format!("Sheet '{}' not found", sheet_name))
+        // Validate cell address format
+        if cell_address.trim().is_empty() {
+            return Err("Cell address cannot be empty".to_string());
         }
+
+        // Create a new comment
+        let mut comment = Comment::default();
+
+        // Set up the comment with cell address, text and author
+        comment.new_comment(cell_address.clone());
+        comment.set_text_string(text);
+        comment.set_author(author);
+
+        // Add the comment to the worksheet
+        sheet.add_comments(comment);
+
+        Ok(())
     }));
 
     match result {
-        Ok(Ok(_)) => Ok(atoms::ok()),
-        Ok(Err(msg)) => handle_error(&msg),
-        Err(_) => handle_error("Panic occurred in add_comment"),
+        Ok(Ok(())) => Ok(atoms::ok()),
+        Ok(Err(err_msg)) => Err(NifError::Term(Box::new((atoms::error(), err_msg)))),
+        Err(_) => Err(NifError::Term(Box::new((atoms::error(), "Error occurred in add_comment operation".to_string())))),
     }
 }
 
@@ -48,42 +52,37 @@ pub fn get_comment(
     sheet_name: String,
     cell_address: String,
 ) -> NifResult<(Atom, String, String)> {
-    let result = panic::catch_unwind(AssertUnwindSafe(|| {
-        let mut spreadsheet = spreadsheet_resource.spreadsheet.lock().unwrap();
+    let result = panic::catch_unwind(AssertUnwindSafe(|| -> Result<(String, String), String> {
+        let spreadsheet = spreadsheet_resource.spreadsheet.lock()
+            .map_err(|_| "Failed to acquire spreadsheet lock".to_string())?;
 
         // Get sheet by name
-        if let Some(sheet) = spreadsheet.get_sheet_by_name_mut(&sheet_name) {
-            // Get comments as hashmap for easy lookup
-            let comments = sheet.get_comments_to_hashmap();
+        let sheet = spreadsheet.get_sheet_by_name(&sheet_name)
+            .ok_or_else(|| format!("Sheet '{}' not found", sheet_name))?;
 
-            // Find comment for the specified cell address
-            if let Some(comment) = comments.get(&cell_address) {
-                // Return comment text and author
-                Ok((
-                    atoms::ok(),
-                    comment.get_text().get_text().to_string(),
-                    comment.get_author().to_string(),
-                ))
-            } else {
-                Err(format!("No comment found at cell '{}'", cell_address))
-            }
-        } else {
-            Err(format!("Sheet '{}' not found", sheet_name))
+        // Validate cell address format
+        if cell_address.trim().is_empty() {
+            return Err("Cell address cannot be empty".to_string());
         }
+
+        // Get comments as hashmap for easy lookup
+        let comments = sheet.get_comments_to_hashmap();
+
+        // Find comment for the specified cell address
+        let comment = comments.get(&cell_address)
+            .ok_or_else(|| format!("No comment found at cell '{}'", cell_address))?;
+
+        // Return comment text and author (without the nested ok atom)
+        Ok((
+            comment.get_text().get_text().to_string(),
+            comment.get_author().to_string(),
+        ))
     }));
 
     match result {
-        Ok(Ok(result)) => Ok(result),
-        Ok(Err(msg)) => {
-            let error_atom = handle_error(&msg)?;
-            // Convert to the expected return type
-            Ok((error_atom, "".to_string(), "".to_string()))
-        }
-        Err(_) => {
-            let error_atom = handle_error("Panic occurred in get_comment")?;
-            // Convert to the expected return type
-            Ok((error_atom, "".to_string(), "".to_string()))
-        }
+        Ok(Ok((text, author))) => Ok((atoms::ok(), text, author)),
+        Ok(Err(err_msg)) => Err(NifError::Term(Box::new((atoms::error(), err_msg)))),
+        Err(_) => Err(NifError::Term(Box::new((atoms::error(), "Error occurred in get_comment operation".to_string())))),
     }
 }
 
@@ -95,44 +94,49 @@ pub fn update_comment(
     text: String,
     author: Option<String>,
 ) -> NifResult<Atom> {
-    let result = panic::catch_unwind(AssertUnwindSafe(|| {
-        let mut spreadsheet = spreadsheet_resource.spreadsheet.lock().unwrap();
+    let result = panic::catch_unwind(AssertUnwindSafe(|| -> Result<(), String> {
+        let mut spreadsheet = spreadsheet_resource.spreadsheet.lock()
+            .map_err(|_| "Failed to acquire spreadsheet lock".to_string())?;
 
         // Get sheet by name
-        if let Some(sheet) = spreadsheet.get_sheet_by_name_mut(&sheet_name) {
-            // Try to find the comment
-            let comments = sheet.get_comments_mut();
-            let mut found = false;
+        let sheet = spreadsheet.get_sheet_by_name_mut(&sheet_name)
+            .ok_or_else(|| format!("Sheet '{}' not found", sheet_name))?;
 
-            for comment in comments.iter_mut() {
-                if comment.get_coordinate().to_string() == cell_address {
-                    // Update the comment text
-                    comment.set_text_string(text);
+        // Validate cell address format
+        if cell_address.trim().is_empty() {
+            return Err("Cell address cannot be empty".to_string());
+        }
 
-                    // Update author if provided
-                    if let Some(new_author) = author {
-                        comment.set_author(new_author);
-                    }
+        // Try to find the comment
+        let comments = sheet.get_comments_mut();
+        let mut found = false;
 
-                    found = true;
-                    break;
+        for comment in comments.iter_mut() {
+            if comment.get_coordinate().to_string() == cell_address {
+                // Update the comment text
+                comment.set_text_string(text);
+
+                // Update author if provided
+                if let Some(new_author) = author {
+                    comment.set_author(new_author);
                 }
-            }
 
-            if found {
-                Ok(atoms::ok())
-            } else {
-                Err(format!("No comment found at cell '{}'", cell_address))
+                found = true;
+                break;
             }
+        }
+
+        if found {
+            Ok(())
         } else {
-            Err(format!("Sheet '{}' not found", sheet_name))
+            Err(format!("No comment found at cell '{}'", cell_address))
         }
     }));
 
     match result {
-        Ok(Ok(_)) => Ok(atoms::ok()),
-        Ok(Err(msg)) => handle_error(&msg),
-        Err(_) => handle_error("Panic occurred in update_comment"),
+        Ok(Ok(())) => Ok(atoms::ok()),
+        Ok(Err(err_msg)) => Err(NifError::Term(Box::new((atoms::error(), err_msg)))),
+        Err(_) => Err(NifError::Term(Box::new((atoms::error(), "Error occurred in update_comment operation".to_string())))),
     }
 }
 
@@ -142,39 +146,44 @@ pub fn remove_comment(
     sheet_name: String,
     cell_address: String,
 ) -> NifResult<Atom> {
-    let result = panic::catch_unwind(AssertUnwindSafe(|| {
-        let mut spreadsheet = spreadsheet_resource.spreadsheet.lock().unwrap();
+    let result = panic::catch_unwind(AssertUnwindSafe(|| -> Result<(), String> {
+        let mut spreadsheet = spreadsheet_resource.spreadsheet.lock()
+            .map_err(|_| "Failed to acquire spreadsheet lock".to_string())?;
 
         // Get sheet by name
-        if let Some(sheet) = spreadsheet.get_sheet_by_name_mut(&sheet_name) {
-            // Get all comments
-            let comments = sheet.get_comments_mut();
+        let sheet = spreadsheet.get_sheet_by_name_mut(&sheet_name)
+            .ok_or_else(|| format!("Sheet '{}' not found", sheet_name))?;
 
-            // Find the index of the comment to remove
-            let mut index_to_remove = None;
-            for (i, comment) in comments.iter().enumerate() {
-                if comment.get_coordinate().to_string() == cell_address {
-                    index_to_remove = Some(i);
-                    break;
-                }
-            }
+        // Validate cell address format
+        if cell_address.trim().is_empty() {
+            return Err("Cell address cannot be empty".to_string());
+        }
 
-            // Remove the comment if found
-            if let Some(index) = index_to_remove {
-                comments.remove(index);
-                Ok(atoms::ok())
-            } else {
-                Err(format!("No comment found at cell '{}'", cell_address))
+        // Get all comments
+        let comments = sheet.get_comments_mut();
+
+        // Find the index of the comment to remove
+        let mut index_to_remove = None;
+        for (i, comment) in comments.iter().enumerate() {
+            if comment.get_coordinate().to_string() == cell_address {
+                index_to_remove = Some(i);
+                break;
             }
+        }
+
+        // Remove the comment if found
+        if let Some(index) = index_to_remove {
+            comments.remove(index);
+            Ok(())
         } else {
-            Err(format!("Sheet '{}' not found", sheet_name))
+            Err(format!("No comment found at cell '{}'", cell_address))
         }
     }));
 
     match result {
-        Ok(Ok(_)) => Ok(atoms::ok()),
-        Ok(Err(msg)) => handle_error(&msg),
-        Err(_) => handle_error("Panic occurred in remove_comment"),
+        Ok(Ok(())) => Ok(atoms::ok()),
+        Ok(Err(err_msg)) => Err(NifError::Term(Box::new((atoms::error(), err_msg)))),
+        Err(_) => Err(NifError::Term(Box::new((atoms::error(), "Error occurred in remove_comment operation".to_string())))),
     }
 }
 
@@ -182,7 +191,7 @@ pub fn remove_comment(
 pub fn has_comments(
     spreadsheet_resource: rustler::ResourceArc<UmyaSpreadsheet>,
     sheet_name: String,
-) -> NifResult<bool> {
+) -> bool {
     let result = panic::catch_unwind(AssertUnwindSafe(|| {
         let spreadsheet = spreadsheet_resource.spreadsheet.lock().unwrap();
 
@@ -196,16 +205,14 @@ pub fn has_comments(
     }));
 
     match result {
-        Ok(Ok(result)) => Ok(result),
-        Ok(Err(msg)) => {
-            handle_error(&msg)?;
-            // Return a default value if there's an error
-            Ok(false)
+        Ok(Ok(result)) => result,
+        Ok(Err(_msg)) => {
+            // Silent error handling - just return default value without logging
+            false
         }
         Err(_) => {
-            handle_error("Panic occurred in has_comments")?;
-            // Return a default value if there's an error
-            Ok(false)
+            // Silent error handling - just return default value without logging
+            false
         }
     }
 }
@@ -214,7 +221,7 @@ pub fn has_comments(
 pub fn get_comments_count(
     spreadsheet_resource: rustler::ResourceArc<UmyaSpreadsheet>,
     sheet_name: String,
-) -> NifResult<usize> {
+) -> usize {
     let result = panic::catch_unwind(AssertUnwindSafe(|| {
         let spreadsheet = spreadsheet_resource.spreadsheet.lock().unwrap();
 
@@ -228,16 +235,14 @@ pub fn get_comments_count(
     }));
 
     match result {
-        Ok(Ok(result)) => Ok(result),
-        Ok(Err(msg)) => {
-            handle_error(&msg)?;
-            // Return a default value if there's an error
-            Ok(0)
+        Ok(Ok(result)) => result,
+        Ok(Err(_msg)) => {
+            // Silent error handling - just return default value without logging
+            0
         }
         Err(_) => {
-            handle_error("Panic occurred in get_comments_count")?;
-            // Return a default value if there's an error
-            Ok(0)
+            // Silent error handling - just return default value without logging
+            0
         }
     }
 }

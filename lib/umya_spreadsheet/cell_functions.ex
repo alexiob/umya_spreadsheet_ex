@@ -4,6 +4,7 @@ defmodule UmyaSpreadsheet.CellFunctions do
   """
 
   alias UmyaSpreadsheet.Spreadsheet
+  alias UmyaSpreadsheet.ErrorHandling
   alias UmyaNative
 
   @doc """
@@ -26,10 +27,8 @@ defmodule UmyaSpreadsheet.CellFunctions do
       "Hello" = UmyaSpreadsheet.CellFunctions.get_cell_value(spreadsheet, "Sheet1", "A1")
   """
   def get_cell_value(%Spreadsheet{reference: ref}, sheet_name, cell_address) do
-    case UmyaNative.get_cell_value(ref, sheet_name, cell_address) do
-      {:error, reason} -> {:error, reason}
-      value -> value
-    end
+    UmyaNative.get_cell_value(ref, sheet_name, cell_address)
+    |> ErrorHandling.standardize_result()
   end
 
   @doc """
@@ -52,10 +51,8 @@ defmodule UmyaSpreadsheet.CellFunctions do
       "12/31/2023" = UmyaSpreadsheet.CellFunctions.get_formatted_value(spreadsheet, "Sheet1", "A1")
   """
   def get_formatted_value(%Spreadsheet{reference: ref}, sheet_name, cell_address) do
-    case UmyaNative.get_formatted_value(ref, sheet_name, cell_address) do
-      {:error, reason} -> {:error, reason}
-      value -> value
-    end
+    UmyaNative.get_formatted_value(ref, sheet_name, cell_address)
+    |> ErrorHandling.standardize_result()
   end
 
   @doc """
@@ -90,11 +87,8 @@ defmodule UmyaSpreadsheet.CellFunctions do
       true -> inspect(value)
     end
 
-    case UmyaNative.set_cell_value(ref, sheet_name, cell_address, string_value) do
-      {:ok, :ok} -> :ok
-      :ok -> :ok
-      result -> result
-    end
+    UmyaNative.set_cell_value(ref, sheet_name, cell_address, string_value)
+    |> ErrorHandling.standardize_result()
   end
 
   @doc """
@@ -117,11 +111,8 @@ defmodule UmyaSpreadsheet.CellFunctions do
       :ok = UmyaSpreadsheet.CellFunctions.remove_cell(spreadsheet, "Sheet1", "A1")
   """
   def remove_cell(%Spreadsheet{reference: ref}, sheet_name, cell_address) do
-    case UmyaNative.remove_cell(ref, sheet_name, cell_address) do
-      {:ok, :ok} -> :ok
-      :ok -> :ok
-      result -> result
-    end
+    UmyaNative.remove_cell(ref, sheet_name, cell_address)
+    |> ErrorHandling.standardize_result()
   end
 
   @doc """
@@ -148,11 +139,8 @@ defmodule UmyaSpreadsheet.CellFunctions do
       :ok = UmyaSpreadsheet.CellFunctions.set_number_format(spreadsheet, "Sheet1", "B1", "m/d/yyyy")
   """
   def set_number_format(%Spreadsheet{reference: ref}, sheet_name, cell_address, format_code) do
-    case UmyaNative.set_number_format(ref, sheet_name, cell_address, format_code) do
-      {:ok, :ok} -> :ok
-      :ok -> :ok
-      result -> result
-    end
+    UmyaNative.set_number_format(ref, sheet_name, cell_address, format_code)
+    |> ErrorHandling.standardize_result()
   end
 
   @doc """
@@ -176,11 +164,8 @@ defmodule UmyaSpreadsheet.CellFunctions do
       :ok = UmyaSpreadsheet.CellFunctions.set_wrap_text(spreadsheet, "Sheet1", "A1", true)
   """
   def set_wrap_text(%Spreadsheet{reference: ref}, sheet_name, cell_address, wrap) do
-    case UmyaNative.set_wrap_text(ref, sheet_name, cell_address, wrap) do
-      {:ok, :ok} -> :ok
-      :ok -> :ok
-      result -> result
-    end
+    UmyaNative.set_wrap_text(ref, sheet_name, cell_address, wrap)
+    |> ErrorHandling.standardize_result()
   end
 
   @doc """
@@ -205,11 +190,8 @@ defmodule UmyaSpreadsheet.CellFunctions do
       :ok = UmyaSpreadsheet.CellFunctions.set_cell_alignment(spreadsheet, "Sheet1", "A1", "center", "center")
   """
   def set_cell_alignment(%Spreadsheet{reference: ref}, sheet_name, cell_address, horizontal, vertical) do
-    case UmyaNative.set_cell_alignment(ref, sheet_name, cell_address, horizontal, vertical) do
-      {:ok, :ok} -> :ok
-      :ok -> :ok
-      result -> result
-    end
+    UmyaNative.set_cell_alignment(ref, sheet_name, cell_address, horizontal, vertical)
+    |> ErrorHandling.standardize_result()
   end
 
   @doc """
@@ -233,11 +215,8 @@ defmodule UmyaSpreadsheet.CellFunctions do
       :ok = UmyaSpreadsheet.CellFunctions.set_cell_rotation(spreadsheet, "Sheet1", "A1", 45)
   """
   def set_cell_rotation(%Spreadsheet{reference: ref}, sheet_name, cell_address, angle) do
-    case UmyaNative.set_cell_rotation(ref, sheet_name, cell_address, angle) do
-      {:ok, :ok} -> :ok
-      :ok -> :ok
-      result -> result
-    end
+    UmyaNative.set_cell_rotation(ref, sheet_name, cell_address, angle)
+    |> ErrorHandling.standardize_result()
   end
 
   @doc """
@@ -261,10 +240,7 @@ defmodule UmyaSpreadsheet.CellFunctions do
       :ok = UmyaSpreadsheet.CellFunctions.set_cell_indent(spreadsheet, "Sheet1", "A1", 2)
   """
   def set_cell_indent(%Spreadsheet{reference: ref}, sheet_name, cell_address, level) do
-    case UmyaNative.set_cell_indent(ref, sheet_name, cell_address, level) do
-      {:ok, :ok} -> :ok
-      :ok -> :ok
-      result -> result
-    end
+    UmyaNative.set_cell_indent(ref, sheet_name, cell_address, level)
+    |> ErrorHandling.standardize_result()
   end
 end

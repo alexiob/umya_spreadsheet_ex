@@ -134,14 +134,14 @@ defmodule UmyaSpreadsheetTest do
     test "get cell from non-existent sheet" do
       {:ok, spreadsheet} = UmyaSpreadsheet.new()
 
-      assert {:error, :not_found} =
+      assert {:error, "Sheet not found"} =
                UmyaSpreadsheet.get_cell_value(spreadsheet, "NonExistentSheet", "A1")
     end
 
     test "set cell in non-existent sheet" do
       {:ok, spreadsheet} = UmyaSpreadsheet.new()
 
-      assert {:error, :not_found} =
+      assert {:error, "Sheet not found"} =
                UmyaSpreadsheet.set_cell_value(spreadsheet, "NonExistentSheet", "A1", "Test")
     end
 

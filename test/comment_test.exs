@@ -20,8 +20,8 @@ defmodule UmyaSpreadsheetTest.CommentTest do
              )
 
     # Verify the comment exists
-    assert true == UmyaSpreadsheet.has_comments(spreadsheet, "Sheet1")
-    assert 1 == UmyaSpreadsheet.get_comments_count(spreadsheet, "Sheet1")
+    assert {:ok, true} == UmyaSpreadsheet.has_comments(spreadsheet, "Sheet1")
+    assert {:ok, 1} == UmyaSpreadsheet.get_comments_count(spreadsheet, "Sheet1")
 
     # Get the comment
     assert {:ok, "This is a test comment", "Test User"} =
@@ -79,7 +79,7 @@ defmodule UmyaSpreadsheetTest.CommentTest do
              )
 
     # Verify the comment exists
-    assert 1 == UmyaSpreadsheet.get_comments_count(spreadsheet, "Sheet1")
+    assert {:ok, 1} == UmyaSpreadsheet.get_comments_count(spreadsheet, "Sheet1")
 
     # Remove the comment
     assert :ok =
@@ -91,7 +91,7 @@ defmodule UmyaSpreadsheetTest.CommentTest do
 
     # Verify the comment was removed
     assert {:error, _} = UmyaSpreadsheet.get_comment(spreadsheet, "Sheet1", "C3")
-    assert 0 == UmyaSpreadsheet.get_comments_count(spreadsheet, "Sheet1")
+    assert {:ok, 0} == UmyaSpreadsheet.get_comments_count(spreadsheet, "Sheet1")
   end
 
   test "has_comments and get_comments_count work with multiple comments", %{spreadsheet: spreadsheet} do
@@ -124,8 +124,8 @@ defmodule UmyaSpreadsheetTest.CommentTest do
              )
 
     # Verify all comments exist
-    assert true == UmyaSpreadsheet.has_comments(spreadsheet, "Sheet1")
-    assert 3 == UmyaSpreadsheet.get_comments_count(spreadsheet, "Sheet1")
+    assert {:ok, true} == UmyaSpreadsheet.has_comments(spreadsheet, "Sheet1")
+    assert {:ok, 3} == UmyaSpreadsheet.get_comments_count(spreadsheet, "Sheet1")
   end
 
   test "get_comment returns error for non-existent comment", %{spreadsheet: spreadsheet} do

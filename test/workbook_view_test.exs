@@ -1,5 +1,5 @@
 defmodule UmyaSpreadsheetTest.WorkbookViewTest do
-  use ExUnit.Case
+  use ExUnit.Case, async: true
   doctest UmyaSpreadsheet
 
   @temp_file "test/result_files/workbook_view_test.xlsx"

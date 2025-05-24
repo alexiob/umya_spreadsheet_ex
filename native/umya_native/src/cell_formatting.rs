@@ -1,5 +1,5 @@
 use crate::{atoms, UmyaSpreadsheet};
-use rustler::{Atom, ResourceArc};
+use rustler::{Atom, Error as NifError, NifResult, ResourceArc};
 use umya_spreadsheet::{EnumTrait, UnderlineValues};
 
 #[rustler::nif]
@@ -8,7 +8,7 @@ fn set_font_italic(
     sheet_name: String,
     cell_address: String,
     is_italic: bool,
-) -> Result<Atom, Atom> {
+) -> NifResult<Atom> {
     let mut guard = resource.spreadsheet.lock().unwrap();
 
     match guard.get_sheet_by_name_mut(&sheet_name) {
@@ -17,7 +17,10 @@ fn set_font_italic(
             cell.get_style_mut().get_font_mut().set_italic(is_italic);
             Ok(atoms::ok())
         }
-        None => Err(atoms::not_found()),
+        None => Err(NifError::Term(Box::new((
+            atoms::error(),
+            "Sheet not found".to_string(),
+        )))),
     }
 }
 
@@ -27,7 +30,7 @@ fn set_font_underline(
     sheet_name: String,
     cell_address: String,
     underline_type: String,
-) -> Result<Atom, Atom> {
+) -> NifResult<Atom> {
     let mut guard = resource.spreadsheet.lock().unwrap();
 
     match guard.get_sheet_by_name_mut(&sheet_name) {
@@ -49,7 +52,10 @@ fn set_font_underline(
                 .set_underline(underline_value.get_value_string());
             Ok(atoms::ok())
         }
-        None => Err(atoms::not_found()),
+        None => Err(NifError::Term(Box::new((
+            atoms::error(),
+            "Sheet not found".to_string(),
+        )))),
     }
 }
 
@@ -59,7 +65,7 @@ fn set_font_strikethrough(
     sheet_name: String,
     cell_address: String,
     is_strikethrough: bool,
-) -> Result<Atom, Atom> {
+) -> NifResult<Atom> {
     let mut guard = resource.spreadsheet.lock().unwrap();
 
     match guard.get_sheet_by_name_mut(&sheet_name) {
@@ -69,7 +75,10 @@ fn set_font_strikethrough(
             font.set_strikethrough(is_strikethrough);
             Ok(atoms::ok())
         }
-        None => Err(atoms::not_found()),
+        None => Err(NifError::Term(Box::new((
+            atoms::error(),
+            "Sheet not found".to_string(),
+        )))),
     }
 }
 
@@ -80,7 +89,7 @@ fn set_border_style(
     cell_address: String,
     border_position: String,
     border_style: String,
-) -> Result<Atom, Atom> {
+) -> NifResult<Atom> {
     let mut guard = resource.spreadsheet.lock().unwrap();
 
     match guard.get_sheet_by_name_mut(&sheet_name) {
@@ -110,12 +119,20 @@ fn set_border_style(
                         .set_border_style(border_style.clone());
                     borders.get_right_mut().set_border_style(border_style);
                 }
-                _ => return Err(atoms::error()),
+                _ => {
+                    return Err(NifError::Term(Box::new((
+                        atoms::error(),
+                        "Invalid border position".to_string(),
+                    ))))
+                }
             }
 
             Ok(atoms::ok())
         }
-        None => Err(atoms::not_found()),
+        None => Err(NifError::Term(Box::new((
+            atoms::error(),
+            "Sheet not found".to_string(),
+        )))),
     }
 }
 
@@ -125,7 +142,7 @@ fn set_cell_rotation(
     sheet_name: String,
     cell_address: String,
     rotation: i32,
-) -> Result<Atom, Atom> {
+) -> NifResult<Atom> {
     let mut guard = resource.spreadsheet.lock().unwrap();
 
     match guard.get_sheet_by_name_mut(&sheet_name) {
@@ -144,7 +161,10 @@ fn set_cell_rotation(
                 .set_text_rotation(rotation_value);
             Ok(atoms::ok())
         }
-        None => Err(atoms::not_found()),
+        None => Err(NifError::Term(Box::new((
+            atoms::error(),
+            "Sheet not found".to_string(),
+        )))),
     }
 }
 
@@ -154,7 +174,7 @@ fn set_cell_indent(
     sheet_name: String,
     cell_address: String,
     indent: u32,
-) -> Result<Atom, Atom> {
+) -> NifResult<Atom> {
     let mut guard = resource.spreadsheet.lock().unwrap();
 
     match guard.get_sheet_by_name_mut(&sheet_name) {
@@ -180,6 +200,9 @@ fn set_cell_indent(
 
             Ok(atoms::ok())
         }
-        None => Err(atoms::not_found()),
+        None => Err(NifError::Term(Box::new((
+            atoms::error(),
+            "Sheet not found".to_string(),
+        )))),
     }
 }

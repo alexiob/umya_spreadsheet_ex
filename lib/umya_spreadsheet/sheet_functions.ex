@@ -4,6 +4,7 @@ defmodule UmyaSpreadsheet.SheetFunctions do
   """
 
   alias UmyaSpreadsheet.Spreadsheet
+  alias UmyaSpreadsheet.ErrorHandling
   alias UmyaNative
 
   @doc """
@@ -45,11 +46,8 @@ defmodule UmyaSpreadsheet.SheetFunctions do
       :ok = UmyaSpreadsheet.SheetFunctions.add_sheet(spreadsheet, "NewSheet")
   """
   def add_sheet(%Spreadsheet{reference: ref}, sheet_name) do
-    case UmyaNative.add_sheet(ref, sheet_name) do
-      {:ok, :ok} -> :ok
-      :ok -> :ok
-      result -> result
-    end
+    UmyaNative.add_sheet(ref, sheet_name)
+    |> ErrorHandling.standardize_result()
   end
 
   @doc """
@@ -72,11 +70,8 @@ defmodule UmyaSpreadsheet.SheetFunctions do
       :ok = UmyaSpreadsheet.SheetFunctions.clone_sheet(spreadsheet, "Sheet1", "Sheet1 Copy")
   """
   def clone_sheet(%Spreadsheet{reference: ref}, source_sheet_name, new_sheet_name) do
-    case UmyaNative.clone_sheet(ref, source_sheet_name, new_sheet_name) do
-      {:ok, :ok} -> :ok
-      :ok -> :ok
-      result -> result
-    end
+    UmyaNative.clone_sheet(ref, source_sheet_name, new_sheet_name)
+    |> ErrorHandling.standardize_result()
   end
 
   @doc """
@@ -98,11 +93,8 @@ defmodule UmyaSpreadsheet.SheetFunctions do
       :ok = UmyaSpreadsheet.SheetFunctions.remove_sheet(spreadsheet, "Sheet3")
   """
   def remove_sheet(%Spreadsheet{reference: ref}, sheet_name) do
-    case UmyaNative.remove_sheet(ref, sheet_name) do
-      {:ok, :ok} -> :ok
-      :ok -> :ok
-      result -> result
-    end
+    UmyaNative.remove_sheet(ref, sheet_name)
+    |> ErrorHandling.standardize_result()
   end
 
   @doc """
@@ -125,11 +117,8 @@ defmodule UmyaSpreadsheet.SheetFunctions do
       :ok = UmyaSpreadsheet.SheetFunctions.set_sheet_state(spreadsheet, "Sheet1", "hidden")
   """
   def set_sheet_state(%Spreadsheet{reference: ref}, sheet_name, state) do
-    case UmyaNative.set_sheet_state(ref, sheet_name, state) do
-      {:ok, :ok} -> :ok
-      :ok -> :ok
-      result -> result
-    end
+    UmyaNative.set_sheet_state(ref, sheet_name, state)
+    |> ErrorHandling.standardize_result()
   end
 
   @doc """
@@ -186,11 +175,8 @@ defmodule UmyaSpreadsheet.SheetFunctions do
       :ok = UmyaSpreadsheet.SheetFunctions.move_range(spreadsheet, "Sheet1", "A1:B5", 2, 3)
   """
   def move_range(%Spreadsheet{reference: ref}, sheet_name, range, rows, columns) do
-    case UmyaNative.move_range(ref, sheet_name, range, rows, columns) do
-      {:ok, :ok} -> :ok
-      :ok -> :ok
-      result -> result
-    end
+    UmyaNative.move_range(ref, sheet_name, range, rows, columns)
+    |> ErrorHandling.standardize_result()
   end
 
   @doc """
@@ -213,11 +199,8 @@ defmodule UmyaSpreadsheet.SheetFunctions do
       :ok = UmyaSpreadsheet.SheetFunctions.add_merge_cells(spreadsheet, "Sheet1", "A1:B2")
   """
   def add_merge_cells(%Spreadsheet{reference: ref}, sheet_name, range) do
-    case UmyaNative.add_merge_cells(ref, sheet_name, range) do
-      {:ok, :ok} -> :ok
-      :ok -> :ok
-      result -> result
-    end
+    UmyaNative.add_merge_cells(ref, sheet_name, range)
+    |> ErrorHandling.standardize_result()
   end
 
   @doc """
@@ -242,11 +225,8 @@ defmodule UmyaSpreadsheet.SheetFunctions do
       :ok = UmyaSpreadsheet.SheetFunctions.insert_new_row(spreadsheet, "Sheet1", 3, 2)
   """
   def insert_new_row(%Spreadsheet{reference: ref}, sheet_name, row_index, amount) do
-    case UmyaNative.insert_new_row(ref, sheet_name, row_index, amount) do
-      {:ok, :ok} -> :ok
-      :ok -> :ok
-      result -> result
-    end
+    UmyaNative.insert_new_row(ref, sheet_name, row_index, amount)
+    |> ErrorHandling.standardize_result()
   end
 
   @doc """

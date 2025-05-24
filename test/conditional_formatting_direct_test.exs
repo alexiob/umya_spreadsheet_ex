@@ -1,5 +1,5 @@
 defmodule UmyaSpreadsheet.ConditionalFormattingDirectTest do
-  use ExUnit.Case
+  use ExUnit.Case, async: true
 
   @moduledoc """
   This module tests the conditional formatting functions directly

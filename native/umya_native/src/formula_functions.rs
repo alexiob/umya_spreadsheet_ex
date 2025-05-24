@@ -1,7 +1,6 @@
 use crate::atoms;
-use crate::helpers::error_helper::handle_error;
 use crate::UmyaSpreadsheet;
-use rustler::{Atom, NifResult};
+use rustler::{Atom, Error as NifError, NifResult};
 use std::panic::{self, AssertUnwindSafe};
 use umya_spreadsheet::CellFormula;
 use umya_spreadsheet::CellFormulaValues;
@@ -14,36 +13,44 @@ pub fn set_array_formula(
     range: String,
     formula: String,
 ) -> NifResult<Atom> {
-    let result = panic::catch_unwind(AssertUnwindSafe(|| {
-        let mut spreadsheet = spreadsheet_resource.spreadsheet.lock().unwrap();
-        // Get sheet by name
-        if let Some(sheet) = spreadsheet.get_sheet_by_name_mut(&sheet_name) {
-            // Create a cell formula object
-            let mut cell_formula = CellFormula::default();
+    let result = panic::catch_unwind(AssertUnwindSafe(|| -> Result<(), String> {
+        let mut spreadsheet = spreadsheet_resource.spreadsheet.lock()
+            .map_err(|_| "Failed to acquire spreadsheet lock".to_string())?;
 
-            // Set formula text and type
-            cell_formula.set_text(formula);
-            cell_formula.set_formula_type(CellFormulaValues::Array);
-
-            // First cell in the range is the master cell
-            if let Some(master_coordinate) = range.split(':').next() {
-                // Need to pass the text of the formula, not the CellFormula object
-                sheet
-                    .get_cell_mut(master_coordinate)
-                    .set_formula(cell_formula.get_text());
-                Ok(atoms::ok())
-            } else {
-                Err(format!("Invalid range format: {}", range))
-            }
-        } else {
-            Err(format!("Sheet '{}' not found", sheet_name))
+        // Validate inputs
+        if range.trim().is_empty() {
+            return Err("Range cannot be empty".to_string());
         }
+        if formula.trim().is_empty() {
+            return Err("Formula cannot be empty".to_string());
+        }
+
+        // Get sheet by name
+        let sheet = spreadsheet.get_sheet_by_name_mut(&sheet_name)
+            .ok_or_else(|| format!("Sheet '{}' not found", sheet_name))?;
+
+        // Create a cell formula object
+        let mut cell_formula = CellFormula::default();
+
+        // Set formula text and type
+        cell_formula.set_text(formula);
+        cell_formula.set_formula_type(CellFormulaValues::Array);
+
+        // First cell in the range is the master cell
+        let master_coordinate = range.split(':').next()
+            .ok_or_else(|| format!("Invalid range format: {}", range))?;
+
+        // Need to pass the text of the formula, not the CellFormula object
+        sheet
+            .get_cell_mut(master_coordinate)
+            .set_formula(cell_formula.get_text());
+        Ok(())
     }));
 
     match result {
-        Ok(Ok(_)) => Ok(atoms::ok()),
-        Ok(Err(msg)) => handle_error(&msg),
-        Err(_) => handle_error("Panic occurred in set_array_formula"),
+        Ok(Ok(())) => Ok(atoms::ok()),
+        Ok(Err(err_msg)) => Err(NifError::Term(Box::new((atoms::error(), err_msg)))),
+        Err(_) => Err(NifError::Term(Box::new((atoms::error(), "Error occurred in set_array_formula operation".to_string())))),
     }
 }
 
@@ -54,31 +61,37 @@ pub fn create_named_range(
     sheet_name: String,
     range: String,
 ) -> NifResult<Atom> {
-    let result = panic::catch_unwind(AssertUnwindSafe(|| {
-        let spreadsheet = spreadsheet_resource.spreadsheet.lock().unwrap();
-        // Get sheet by name
-        if let Some(_) = spreadsheet.get_sheet_by_name(&sheet_name) {
-            // Create a new defined name object
-            let mut defined_name = DefinedName::default();
+    let result = panic::catch_unwind(AssertUnwindSafe(|| -> Result<(), String> {
+        let spreadsheet = spreadsheet_resource.spreadsheet.lock()
+            .map_err(|_| "Failed to acquire spreadsheet lock".to_string())?;
 
-            // Set address - format as SheetName!Range
-            let address = format!("{}!{}", sheet_name, range);
-            defined_name.set_address(address);
-
-            // Add the defined name to the spreadsheet
-            // NOTE: We cannot directly add a defined name since the API doesn't expose this
-            // Instead, we just return OK to indicate the function was called
-
-            Ok(atoms::ok())
-        } else {
-            Err(format!("Sheet '{}' not found", sheet_name))
+        // Validate inputs
+        if range.trim().is_empty() {
+            return Err("Range cannot be empty".to_string());
         }
+
+        // Get sheet by name
+        spreadsheet.get_sheet_by_name(&sheet_name)
+            .ok_or_else(|| format!("Sheet '{}' not found", sheet_name))?;
+
+        // Create a new defined name object
+        let mut defined_name = DefinedName::default();
+
+        // Set address - format as SheetName!Range
+        let address = format!("{}!{}", sheet_name, range);
+        defined_name.set_address(address);
+
+        // Add the defined name to the spreadsheet
+        // NOTE: We cannot directly add a defined name since the API doesn't expose this
+        // Instead, we just return OK to indicate the function was called
+
+        Ok(())
     }));
 
     match result {
-        Ok(Ok(_)) => Ok(atoms::ok()),
-        Ok(Err(msg)) => handle_error(&msg),
-        Err(_) => handle_error("Panic occurred in create_named_range"),
+        Ok(Ok(())) => Ok(atoms::ok()),
+        Ok(Err(err_msg)) => Err(NifError::Term(Box::new((atoms::error(), err_msg)))),
+        Err(_) => Err(NifError::Term(Box::new((atoms::error(), "Error occurred in create_named_range operation".to_string())))),
     }
 }
 
@@ -89,8 +102,15 @@ pub fn create_defined_name(
     formula: String,
     sheet_name: Option<String>,
 ) -> NifResult<Atom> {
-    let result = panic::catch_unwind(AssertUnwindSafe(|| {
-        let spreadsheet = spreadsheet_resource.spreadsheet.lock().unwrap();
+    let result = panic::catch_unwind(AssertUnwindSafe(|| -> Result<(), String> {
+        let spreadsheet = spreadsheet_resource.spreadsheet.lock()
+            .map_err(|_| "Failed to acquire spreadsheet lock".to_string())?;
+
+        // Validate inputs
+        if formula.trim().is_empty() {
+            return Err("Formula cannot be empty".to_string());
+        }
+
         // Create a new defined name object
         let mut defined_name = DefinedName::default();
 
@@ -116,20 +136,20 @@ pub fn create_defined_name(
 
         // NOTE: We cannot directly add a defined name since the API doesn't expose this
         // Instead, we just return OK to indicate the function was called
-        Ok(atoms::ok())
+        Ok(())
     }));
 
     match result {
-        Ok(Ok(_)) => Ok(atoms::ok()),
-        Ok(Err(msg)) => handle_error(&msg),
-        Err(_) => handle_error("Panic occurred in create_defined_name"),
+        Ok(Ok(())) => Ok(atoms::ok()),
+        Ok(Err(err_msg)) => Err(NifError::Term(Box::new((atoms::error(), err_msg)))),
+        Err(_) => Err(NifError::Term(Box::new((atoms::error(), "Error occurred in create_defined_name operation".to_string())))),
     }
 }
 
 #[rustler::nif]
 pub fn get_defined_names(
     _spreadsheet_resource: rustler::ResourceArc<UmyaSpreadsheet>,
-) -> NifResult<Vec<(String, String)>> {
+) -> Vec<(String, String)> {
     let result = panic::catch_unwind(AssertUnwindSafe(|| {
         // For now, return mock data for testing purposes
         // In a real implementation, this would be fetched from the spreadsheet
@@ -142,14 +162,14 @@ pub fn get_defined_names(
     }));
 
     match result {
-        Ok(Ok(names)) => Ok(names),
-        Ok(Err(msg)) => {
-            let _: Atom = handle_error::<String>(msg)?;
-            Ok(Vec::new())
+        Ok(Ok(names)) => names,
+        Ok(Err(_msg)) => {
+            // Return empty vector on error
+            Vec::new()
         }
         Err(_) => {
-            let _: Atom = handle_error::<&str>("Panic occurred in get_defined_names")?;
-            Ok(Vec::new())
+            // Return empty vector on error
+            Vec::new()
         }
     }
 }
@@ -161,31 +181,40 @@ pub fn set_formula(
     cell_address: String,
     formula: String,
 ) -> NifResult<Atom> {
-    let result = panic::catch_unwind(AssertUnwindSafe(|| {
-        let mut spreadsheet = spreadsheet_resource.spreadsheet.lock().unwrap();
-        // Get sheet by name
-        if let Some(sheet) = spreadsheet.get_sheet_by_name_mut(&sheet_name) {
-            // Create a cell formula object
-            let mut cell_formula = CellFormula::default();
+    let result = panic::catch_unwind(AssertUnwindSafe(|| -> Result<(), String> {
+        let mut spreadsheet = spreadsheet_resource.spreadsheet.lock()
+            .map_err(|_| "Failed to acquire spreadsheet lock".to_string())?;
 
-            // Set formula text and type
-            cell_formula.set_text(formula);
-            cell_formula.set_formula_type(CellFormulaValues::Normal);
-
-            // Get the cell and set the formula
-            // Notice we're using the formula text directly, not the CellFormula object
-            sheet
-                .get_cell_mut(cell_address)
-                .set_formula(cell_formula.get_text());
-            Ok(atoms::ok())
-        } else {
-            Err(format!("Sheet '{}' not found", sheet_name))
+        // Validate inputs
+        if cell_address.trim().is_empty() {
+            return Err("Cell address cannot be empty".to_string());
         }
+        if formula.trim().is_empty() {
+            return Err("Formula cannot be empty".to_string());
+        }
+
+        // Get sheet by name
+        let sheet = spreadsheet.get_sheet_by_name_mut(&sheet_name)
+            .ok_or_else(|| format!("Sheet '{}' not found", sheet_name))?;
+
+        // Create a cell formula object
+        let mut cell_formula = CellFormula::default();
+
+        // Set formula text and type
+        cell_formula.set_text(formula);
+        cell_formula.set_formula_type(CellFormulaValues::Normal);
+
+        // Get the cell and set the formula
+        // Notice we're using the formula text directly, not the CellFormula object
+        sheet
+            .get_cell_mut(cell_address)
+            .set_formula(cell_formula.get_text());
+        Ok(())
     }));
 
     match result {
-        Ok(Ok(_)) => Ok(atoms::ok()),
-        Ok(Err(msg)) => handle_error(&msg),
-        Err(_) => handle_error("Panic occurred in set_formula"),
+        Ok(Ok(())) => Ok(atoms::ok()),
+        Ok(Err(err_msg)) => Err(NifError::Term(Box::new((atoms::error(), err_msg)))),
+        Err(_) => Err(NifError::Term(Box::new((atoms::error(), "Error occurred in set_formula operation".to_string())))),
     }
 }

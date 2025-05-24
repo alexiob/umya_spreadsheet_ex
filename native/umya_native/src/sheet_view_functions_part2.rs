@@ -1,7 +1,6 @@
 use crate::atoms;
-use crate::helpers::error_helper::handle_error;
 use crate::UmyaSpreadsheet;
-use rustler::{Atom, NifResult};
+use rustler::{Atom, NifResult, Error as NifError};
 use std::panic::{self, AssertUnwindSafe};
 use umya_spreadsheet::SheetViewValues;
 
@@ -35,8 +34,12 @@ pub fn set_zoom_scale_normal(
 
     match result {
         Ok(Ok(_)) => Ok(atoms::ok()),
-        Ok(Err(msg)) => handle_error(&msg),
-        Err(_) => handle_error("Panic occurred in set_zoom_scale_normal"),
+        Ok(Err(msg)) => {
+            Err(NifError::Term(Box::new((atoms::error(), msg))))
+        }
+        Err(_) => {
+            Err(NifError::Term(Box::new((atoms::error(), "Error occurred in set_zoom_scale_normal".to_string()))))
+        }
     }
 }
 
@@ -70,8 +73,12 @@ pub fn set_zoom_scale_page_layout(
 
     match result {
         Ok(Ok(_)) => Ok(atoms::ok()),
-        Ok(Err(msg)) => handle_error(&msg),
-        Err(_) => handle_error("Panic occurred in set_zoom_scale_page_layout"),
+        Ok(Err(msg)) => {
+            Err(NifError::Term(Box::new((atoms::error(), msg))))
+        }
+        Err(_) => {
+            Err(NifError::Term(Box::new((atoms::error(), "Error occurred in set_zoom_scale_page_layout".to_string()))))
+        }
     }
 }
 
@@ -105,8 +112,12 @@ pub fn set_zoom_scale_page_break(
 
     match result {
         Ok(Ok(_)) => Ok(atoms::ok()),
-        Ok(Err(msg)) => handle_error(&msg),
-        Err(_) => handle_error("Panic occurred in set_zoom_scale_page_break"),
+        Ok(Err(msg)) => {
+            Err(NifError::Term(Box::new((atoms::error(), msg))))
+        }
+        Err(_) => {
+            Err(NifError::Term(Box::new((atoms::error(), "Error occurred in set_zoom_scale_page_break".to_string()))))
+        }
     }
 }
 
@@ -147,7 +158,11 @@ pub fn set_sheet_view(
 
     match result {
         Ok(Ok(_)) => Ok(atoms::ok()),
-        Ok(Err(msg)) => handle_error(&msg),
-        Err(_) => handle_error("Panic occurred in set_sheet_view"),
+        Ok(Err(msg)) => {
+            Err(NifError::Term(Box::new((atoms::error(), msg))))
+        }
+        Err(_) => {
+            Err(NifError::Term(Box::new((atoms::error(), "Error occurred in set_sheet_view".to_string()))))
+        }
     }
 }

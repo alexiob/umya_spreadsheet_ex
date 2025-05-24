@@ -73,23 +73,23 @@ defmodule UmyaSpreadsheet.ImageTest do
   test "handle errors for non-existent images", %{spreadsheet: spreadsheet} do
     # Try to add a non-existent image
     result = UmyaSpreadsheet.add_image(spreadsheet, "ImageSheet", "D4", "non_existent_image.png")
-    assert result == {:error, :error}
+    assert result == {:error, "Image not found"}
 
     # Try to download an image from a position where there is no image
     result =
       UmyaSpreadsheet.download_image(spreadsheet, "ImageSheet", "E5", @downloaded_image_path)
 
-    assert result == {:error, :not_found}
+    assert result == {:error, "Sheet not found"}
 
     # Try to change an image that doesn't exist
     result = UmyaSpreadsheet.change_image(spreadsheet, "ImageSheet", "F6", @image_path_2)
-    assert result == {:error, :not_found}
+    assert result == {:error, "Sheet not found"}
   end
 
   test "handle errors for non-existent sheets", %{spreadsheet: spreadsheet} do
     # Try operations on a non-existent sheet
     result = UmyaSpreadsheet.add_image(spreadsheet, "NonExistentSheet", "A1", @image_path_1)
-    assert result == {:error, :not_found}
+    assert result == {:error, "Sheet not found"}
 
     result =
       UmyaSpreadsheet.download_image(
@@ -99,9 +99,9 @@ defmodule UmyaSpreadsheet.ImageTest do
         @downloaded_image_path
       )
 
-    assert result == {:error, :not_found}
+    assert result == {:error, "Sheet not found"}
 
     result = UmyaSpreadsheet.change_image(spreadsheet, "NonExistentSheet", "A1", @image_path_2)
-    assert result == {:error, :not_found}
+    assert result == {:error, "Sheet not found"}
   end
 end

@@ -15,7 +15,7 @@ fn get_worksheet_by_name_mut<'a>(
 ) -> Result<&'a mut umya_spreadsheet::Worksheet, Atom> {
     match spreadsheet.get_sheet_by_name_mut(sheet_name) {
         Some(worksheet) => Ok(worksheet),
-        None => Err(error()),
+        None => Err(atoms::error()),
     }
 }
 

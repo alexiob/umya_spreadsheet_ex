@@ -4,6 +4,7 @@ defmodule UmyaSpreadsheet.CommentFunctions do
   """
 
   alias UmyaSpreadsheet.Spreadsheet
+  alias UmyaSpreadsheet.ErrorHandling
   alias UmyaNative
 
   @doc """
@@ -26,6 +27,7 @@ defmodule UmyaSpreadsheet.CommentFunctions do
   @spec add_comment(Spreadsheet.t(), String.t(), String.t(), String.t(), String.t()) :: :ok | {:error, atom()}
   def add_comment(%Spreadsheet{reference: ref}, sheet_name, cell_address, text, author) do
     UmyaNative.add_comment(ref, sheet_name, cell_address, text, author)
+    |> ErrorHandling.standardize_result()
   end
 
   @doc """
@@ -46,6 +48,11 @@ defmodule UmyaSpreadsheet.CommentFunctions do
   @spec get_comment(Spreadsheet.t(), String.t(), String.t()) :: {:ok, String.t(), String.t()} | {:error, atom()}
   def get_comment(%Spreadsheet{reference: ref}, sheet_name, cell_address) do
     UmyaNative.get_comment(ref, sheet_name, cell_address)
+    |> case do
+      {:ok, {:ok, text, author}} -> {:ok, text, author}  # Fix nested :ok tuples
+      {:ok, text, author} -> {:ok, text, author}
+      error -> ErrorHandling.unwrap_error(error)
+    end
   end
 
   @doc """
@@ -71,6 +78,7 @@ defmodule UmyaSpreadsheet.CommentFunctions do
   @spec update_comment(Spreadsheet.t(), String.t(), String.t(), String.t(), String.t() | nil) :: :ok | {:error, atom()}
   def update_comment(%Spreadsheet{reference: ref}, sheet_name, cell_address, text, author \\ nil) do
     UmyaNative.update_comment(ref, sheet_name, cell_address, text, author)
+    |> ErrorHandling.standardize_result()
   end
 
   @doc """
@@ -91,6 +99,7 @@ defmodule UmyaSpreadsheet.CommentFunctions do
   @spec remove_comment(Spreadsheet.t(), String.t(), String.t()) :: :ok | {:error, atom()}
   def remove_comment(%Spreadsheet{reference: ref}, sheet_name, cell_address) do
     UmyaNative.remove_comment(ref, sheet_name, cell_address)
+    |> ErrorHandling.standardize_result()
   end
 
   @doc """
@@ -110,6 +119,7 @@ defmodule UmyaSpreadsheet.CommentFunctions do
   @spec has_comments(Spreadsheet.t(), String.t()) :: boolean() | {:error, atom()}
   def has_comments(%Spreadsheet{reference: ref}, sheet_name) do
     UmyaNative.has_comments(ref, sheet_name)
+    |> ErrorHandling.standardize_result()
   end
 
   @doc """
@@ -129,5 +139,6 @@ defmodule UmyaSpreadsheet.CommentFunctions do
   @spec get_comments_count(Spreadsheet.t(), String.t()) :: integer() | {:error, atom()}
   def get_comments_count(%Spreadsheet{reference: ref}, sheet_name) do
     UmyaNative.get_comments_count(ref, sheet_name)
+    |> ErrorHandling.standardize_result()
   end
 end

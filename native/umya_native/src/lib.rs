@@ -1,8 +1,11 @@
-use rustler::{Atom, NifResult, ResourceArc};
+use rustler::{Atom, Error as NifError, NifResult, ResourceArc};
 use std::panic::{self, AssertUnwindSafe};
 use std::path::Path;
 use std::sync::Mutex;
 use umya_spreadsheet;
+
+// Import helper modules
+use crate::helpers::style_helpers;
 
 mod atoms {
     rustler::atoms! {
@@ -44,28 +47,23 @@ mod atoms {
 }
 
 mod auto_filter_functions;
+mod cell_formatting;
 mod chart_functions;
 mod comment_functions;
 pub mod conditional_formatting;
 pub mod conditional_formatting_additional;
+pub mod custom_structs;
 mod data_validation;
-// File format and export options
+mod drawing_functions;
 mod file_format_options;
 mod formula_functions;
-// Drawing and shape functions
-mod drawing_functions;
-mod sheet_view_functions;
-mod workbook_view_functions;
-// Pivot table functions
-mod cell_formatting;
-pub mod custom_structs;
 mod helpers;
 mod pivot_table_utils;
 mod print_settings;
-// Comment functions already declared above
 mod set_background_color;
 mod set_cell_alignment;
-mod style_helpers;
+mod sheet_view_functions;
+mod workbook_view_functions;
 mod write_csv_with_options;
 
 pub struct UmyaSpreadsheet {
@@ -91,57 +89,85 @@ fn new_file_empty_worksheet() -> NifResult<ResourceArc<UmyaSpreadsheet>> {
 }
 
 #[rustler::nif]
-fn read_file(path: String) -> Result<ResourceArc<UmyaSpreadsheet>, Atom> {
+fn read_file(path: String) -> NifResult<ResourceArc<UmyaSpreadsheet>> {
     // Use path helper to find a valid file path
     let valid_path = match helpers::path_helper::find_valid_file_path(&path) {
         Some(p) => p,
-        None => return Err(atoms::not_found()),
+        None => {
+            return Err(NifError::Term(Box::new((
+                atoms::error(),
+                "File not found".to_string(),
+            ))))
+        }
     };
 
-    let path = Path::new(&valid_path);
+    let path_obj = Path::new(&valid_path);
 
-    // Improved error handling and support for empty files
-    match umya_spreadsheet::reader::xlsx::read(path) {
+    // Improved error handling with specific error messages for corrupted files
+    match umya_spreadsheet::reader::xlsx::read(path_obj) {
         Ok(spreadsheet) => {
             let resource = ResourceArc::new(UmyaSpreadsheet {
                 spreadsheet: Mutex::new(spreadsheet),
             });
             Ok(resource)
         }
-        Err(_) => {
-            // Don't print the error message to keep test output clean
-            Err(atoms::error())
+        Err(e) => {
+            // Provide specific error messages based on the error type
+            let error_msg = match e.to_string().as_str() {
+                s if s.contains("zip") => "corrupted_file",
+                s if s.contains("xml") => "invalid_format",
+                s if s.contains("permission") => "access_denied",
+                _ => "read_error",
+            };
+            Err(NifError::Term(Box::new((
+                atoms::error(),
+                error_msg.to_string(),
+            ))))
         }
     }
 }
 
 #[rustler::nif]
-fn lazy_read_file(path: String) -> Result<ResourceArc<UmyaSpreadsheet>, Atom> {
+fn lazy_read_file(path: String) -> NifResult<ResourceArc<UmyaSpreadsheet>> {
     // Use path helper to find a valid file path
     let valid_path = match helpers::path_helper::find_valid_file_path(&path) {
         Some(p) => p,
-        None => return Err(atoms::not_found()),
+        None => {
+            return Err(NifError::Term(Box::new((
+                atoms::error(),
+                "File not found".to_string(),
+            ))))
+        }
     };
 
-    let path = Path::new(&valid_path);
+    let path_obj = Path::new(&valid_path);
 
-    // Handle both .xlsx and .xlsm files with lazy loading
-    match umya_spreadsheet::reader::xlsx::lazy_read(path) {
+    // Handle both .xlsx and .xlsm files with lazy loading and improved error handling
+    match umya_spreadsheet::reader::xlsx::lazy_read(path_obj) {
         Ok(spreadsheet) => {
             let resource = ResourceArc::new(UmyaSpreadsheet {
                 spreadsheet: Mutex::new(spreadsheet),
             });
             Ok(resource)
         }
-        Err(_) => {
-            // Don't print the error message to keep test output clean
-            Err(atoms::error())
+        Err(e) => {
+            // Provide specific error messages based on the error type
+            let error_msg = match e.to_string().as_str() {
+                s if s.contains("zip") => "corrupted_file",
+                s if s.contains("xml") => "invalid_format",
+                s if s.contains("permission") => "access_denied",
+                _ => "read_error",
+            };
+            Err(NifError::Term(Box::new((
+                atoms::error(),
+                error_msg.to_string(),
+            ))))
         }
     }
 }
 
 #[rustler::nif]
-fn write_file(resource: ResourceArc<UmyaSpreadsheet>, path: String) -> Result<Atom, Atom> {
+fn write_file(resource: ResourceArc<UmyaSpreadsheet>, path: String) -> NifResult<Atom> {
     // For output paths, we use the direct path since the file might not exist yet
     // We want to ensure the directory exists though
     let path_obj = Path::new(&path);
@@ -150,7 +176,10 @@ fn write_file(resource: ResourceArc<UmyaSpreadsheet>, path: String) -> Result<At
     if let Some(parent) = path_obj.parent() {
         if !parent.exists() {
             if let Err(_) = std::fs::create_dir_all(parent) {
-                return Err(atoms::invalid_path());
+                return Err(NifError::Term(Box::new((
+                    atoms::error(),
+                    "failed_to_create_directory".to_string(),
+                ))));
             }
         }
     }
@@ -159,12 +188,25 @@ fn write_file(resource: ResourceArc<UmyaSpreadsheet>, path: String) -> Result<At
 
     match umya_spreadsheet::writer::xlsx::write(&guard, path_obj) {
         Ok(_) => Ok(atoms::ok()),
-        Err(_) => Err(atoms::error()),
+        Err(e) => {
+            let error_msg = match e.to_string().as_str() {
+                s if s.contains("permission") => "access_denied",
+                s if s.contains("space") => "insufficient_disk_space",
+                _ => "write_error",
+            };
+            Err(NifError::Term(Box::new((
+                atoms::error(),
+                error_msg.to_string(),
+            ))))
+        }
     }
 }
 
 #[rustler::nif]
-fn write_file_light(resource: ResourceArc<UmyaSpreadsheet>, path: String) -> Result<Atom, Atom> {
+fn write_file_light(
+    resource: ResourceArc<UmyaSpreadsheet>,
+    path: String,
+) -> Result<Atom, (Atom, String)> {
     // For output paths, we use the direct path since the file might not exist yet
     // We want to ensure the directory exists though
     let path_obj = Path::new(&path);
@@ -173,7 +215,7 @@ fn write_file_light(resource: ResourceArc<UmyaSpreadsheet>, path: String) -> Res
     if let Some(parent) = path_obj.parent() {
         if !parent.exists() {
             if let Err(_) = std::fs::create_dir_all(parent) {
-                return Err(atoms::invalid_path());
+                return Err((atoms::error(), "failed_to_create_directory".to_string()));
             }
         }
     }
@@ -182,7 +224,14 @@ fn write_file_light(resource: ResourceArc<UmyaSpreadsheet>, path: String) -> Res
 
     match umya_spreadsheet::writer::xlsx::write_light(&guard, path_obj) {
         Ok(_) => Ok(atoms::ok()),
-        Err(_) => Err(atoms::error()),
+        Err(e) => {
+            let error_msg = match e.to_string().as_str() {
+                s if s.contains("permission") => "access_denied",
+                s if s.contains("space") => "insufficient_disk_space",
+                _ => "write_error",
+            };
+            Err((atoms::error(), error_msg.to_string()))
+        }
     }
 }
 
@@ -191,7 +240,7 @@ fn write_file_with_password(
     resource: ResourceArc<UmyaSpreadsheet>,
     path: String,
     password: String,
-) -> Result<Atom, Atom> {
+) -> NifResult<Atom> {
     // For output paths, we use the direct path since the file might not exist yet
     // We want to ensure the directory exists though
     let path_obj = Path::new(&path);
@@ -200,7 +249,10 @@ fn write_file_with_password(
     if let Some(parent) = path_obj.parent() {
         if !parent.exists() {
             if let Err(_) = std::fs::create_dir_all(parent) {
-                return Err(atoms::invalid_path());
+                return Err(NifError::Term(Box::new((
+                    atoms::error(),
+                    "Invalid file path or unable to create directory".to_string(),
+                ))));
             }
         }
     }
@@ -209,7 +261,10 @@ fn write_file_with_password(
 
     match umya_spreadsheet::writer::xlsx::write_with_password(&guard, path_obj, &password) {
         Ok(_) => Ok(atoms::ok()),
-        Err(_) => Err(atoms::error()),
+        Err(_) => Err(NifError::Term(Box::new((
+            atoms::error(),
+            "Failed to write file with password".to_string(),
+        )))),
     }
 }
 
@@ -218,7 +273,7 @@ fn write_file_with_password_light(
     resource: ResourceArc<UmyaSpreadsheet>,
     path: String,
     password: String,
-) -> Result<Atom, Atom> {
+) -> NifResult<Atom> {
     // For output paths, we use the direct path since the file might not exist yet
     // We want to ensure the directory exists though
     let path_obj = Path::new(&path);
@@ -227,7 +282,10 @@ fn write_file_with_password_light(
     if let Some(parent) = path_obj.parent() {
         if !parent.exists() {
             if let Err(_) = std::fs::create_dir_all(parent) {
-                return Err(atoms::invalid_path());
+                return Err(NifError::Term(Box::new((
+                    atoms::error(),
+                    "Invalid file path or unable to create directory".to_string(),
+                ))));
             }
         }
     }
@@ -236,7 +294,10 @@ fn write_file_with_password_light(
 
     match umya_spreadsheet::writer::xlsx::write_with_password_light(&guard, path_obj, &password) {
         Ok(_) => Ok(atoms::ok()),
-        Err(_) => Err(atoms::error()),
+        Err(_) => Err(NifError::Term(Box::new((
+            atoms::error(),
+            "Failed to write file with password".to_string(),
+        )))),
     }
 }
 
@@ -247,7 +308,7 @@ fn get_cell_value(
     resource: ResourceArc<UmyaSpreadsheet>,
     sheet_name: String,
     cell_address: String,
-) -> Result<String, Atom> {
+) -> NifResult<(Atom, String)> {
     let mut guard = resource.spreadsheet.lock().unwrap();
 
     // For lazy-loaded spreadsheets, ensure the sheet is loaded
@@ -256,10 +317,13 @@ fn get_cell_value(
     match guard.get_sheet_by_name(&sheet_name) {
         Some(sheet) => {
             let cell_value = sheet.get_cell_value(&*cell_address);
-            // Get the string representation of the cell value
-            Ok(cell_value.get_value().into_owned())
+            // Get the string representation of the cell value and return as {:ok, value} tuple
+            Ok((atoms::ok(), cell_value.get_value().into_owned()))
         }
-        None => Err(atoms::not_found()),
+        None => Err(NifError::Term(Box::new((
+            atoms::error(),
+            "Sheet not found".to_string(),
+        )))),
     }
 }
 
@@ -269,7 +333,7 @@ fn set_cell_value(
     sheet_name: String,
     cell_address: String,
     value: String,
-) -> Result<Atom, Atom> {
+) -> NifResult<Atom> {
     let mut guard = resource.spreadsheet.lock().unwrap();
 
     match guard.get_sheet_by_name_mut(&sheet_name) {
@@ -279,7 +343,10 @@ fn set_cell_value(
             cell.set_value(&value);
             Ok(atoms::ok())
         }
-        None => Err(atoms::not_found()),
+        None => Err(NifError::Term(Box::new((
+            atoms::error(),
+            "Sheet not found".to_string(),
+        )))),
     }
 }
 
@@ -299,12 +366,15 @@ fn get_sheet_names(resource: ResourceArc<UmyaSpreadsheet>) -> Vec<String> {
 }
 
 #[rustler::nif]
-fn add_sheet(resource: ResourceArc<UmyaSpreadsheet>, sheet_name: String) -> Result<Atom, Atom> {
+fn add_sheet(resource: ResourceArc<UmyaSpreadsheet>, sheet_name: String) -> NifResult<Atom> {
     let mut guard = resource.spreadsheet.lock().unwrap();
 
     match guard.new_sheet(&sheet_name) {
         Ok(_) => Ok(atoms::ok()),
-        Err(_) => Err(atoms::error()),
+        Err(_) => Err(NifError::Term(Box::new((
+            atoms::error(),
+            "Failed to add sheet".to_string(),
+        )))),
     }
 }
 
@@ -315,7 +385,7 @@ fn move_range(
     range: String,
     row: i32,
     column: i32,
-) -> Result<Atom, Atom> {
+) -> NifResult<Atom> {
     let mut guard = resource.spreadsheet.lock().unwrap();
 
     match guard.get_sheet_by_name_mut(&sheet_name) {
@@ -323,7 +393,10 @@ fn move_range(
             sheet.move_range(&range, &row, &column);
             Ok(atoms::ok())
         }
-        None => Err(atoms::not_found()),
+        None => Err(NifError::Term(Box::new((
+            atoms::error(),
+            "Sheet not found".to_string(),
+        )))),
     }
 }
 
@@ -337,7 +410,7 @@ fn set_font_color(
     sheet_name: String,
     cell_address: String,
     color: String,
-) -> Result<Atom, Atom> {
+) -> NifResult<Atom> {
     let mut guard = resource.spreadsheet.lock().unwrap();
 
     match guard.get_sheet_by_name_mut(&sheet_name) {
@@ -345,11 +418,16 @@ fn set_font_color(
             // Use the color helper to parse the color string
             let color_obj = match helpers::color_helper::create_color_object(&color) {
                 Ok(color) => color,
-                Err(e) => return Err(e),
+                Err(_) => {
+                    return Err(NifError::Term(Box::new((
+                        atoms::error(),
+                        "Invalid color format".to_string(),
+                    ))))
+                }
             };
 
             // Apply the font color using the style helper
-            helpers::style_helper::apply_cell_style(
+            style_helpers::apply_cell_style(
                 sheet,
                 &*cell_address,
                 None,
@@ -360,7 +438,10 @@ fn set_font_color(
 
             Ok(atoms::ok())
         }
-        None => Err(atoms::not_found()),
+        None => Err(NifError::Term(Box::new((
+            atoms::error(),
+            "Sheet not found".to_string(),
+        )))),
     }
 }
 
@@ -370,13 +451,13 @@ fn set_font_size(
     sheet_name: String,
     cell_address: String,
     size: i32,
-) -> Result<Atom, Atom> {
+) -> NifResult<Atom> {
     let mut guard = resource.spreadsheet.lock().unwrap();
 
     match guard.get_sheet_by_name_mut(&sheet_name) {
         Some(sheet) => {
             // Apply the font size using the style helper
-            helpers::style_helper::apply_cell_style(
+            style_helpers::apply_cell_style(
                 sheet,
                 &*cell_address,
                 None,
@@ -387,7 +468,10 @@ fn set_font_size(
 
             Ok(atoms::ok())
         }
-        None => Err(atoms::not_found()),
+        None => Err(NifError::Term(Box::new((
+            atoms::error(),
+            "Sheet not found".to_string(),
+        )))),
     }
 }
 
@@ -397,24 +481,20 @@ fn set_font_bold(
     sheet_name: String,
     cell_address: String,
     is_bold: bool,
-) -> Result<Atom, Atom> {
+) -> NifResult<Atom> {
     let mut guard = resource.spreadsheet.lock().unwrap();
 
     match guard.get_sheet_by_name_mut(&sheet_name) {
         Some(sheet) => {
             // Apply the bold setting using the style helper
-            helpers::style_helper::apply_cell_style(
-                sheet,
-                &*cell_address,
-                None,
-                None,
-                None,
-                Some(is_bold),
-            );
+            style_helpers::apply_cell_style(sheet, &*cell_address, None, None, None, Some(is_bold));
 
             Ok(atoms::ok())
         }
-        None => Err(atoms::not_found()),
+        None => Err(NifError::Term(Box::new((
+            atoms::error(),
+            "Sheet not found".to_string(),
+        )))),
     }
 }
 
@@ -424,7 +504,7 @@ fn set_font_name(
     sheet_name: String,
     cell_address: String,
     font_name: String,
-) -> Result<Atom, Atom> {
+) -> NifResult<Atom> {
     let mut guard = resource.spreadsheet.lock().unwrap();
 
     match guard.get_sheet_by_name_mut(&sheet_name) {
@@ -435,7 +515,10 @@ fn set_font_name(
 
             Ok(atoms::ok())
         }
-        None => Err(atoms::not_found()),
+        None => Err(NifError::Term(Box::new((
+            atoms::error(),
+            "Sheet not found".to_string(),
+        )))),
     }
 }
 
@@ -445,7 +528,7 @@ fn set_row_height(
     sheet_name: String,
     row_number: i32,
     height: f64,
-) -> Result<Atom, Atom> {
+) -> NifResult<Atom> {
     let mut guard = resource.spreadsheet.lock().unwrap();
 
     match guard.get_sheet_by_name_mut(&sheet_name) {
@@ -456,7 +539,10 @@ fn set_row_height(
                 .set_height(height);
             Ok(atoms::ok())
         }
-        None => Err(atoms::not_found()),
+        None => Err(NifError::Term(Box::new((
+            atoms::error(),
+            "Sheet not found".to_string(),
+        )))),
     }
 }
 
@@ -465,7 +551,7 @@ fn remove_cell(
     resource: ResourceArc<UmyaSpreadsheet>,
     sheet_name: String,
     cell_address: String,
-) -> Result<Atom, Atom> {
+) -> NifResult<Atom> {
     let mut guard = resource.spreadsheet.lock().unwrap();
 
     match guard.get_sheet_by_name_mut(&sheet_name) {
@@ -476,10 +562,16 @@ fn remove_cell(
                 sheet.remove_cell((&col, &row));
                 Ok(atoms::ok())
             } else {
-                Err(atoms::error())
+                Err(NifError::Term(Box::new((
+                    atoms::error(),
+                    "Invalid cell address".to_string(),
+                ))))
             }
         }
-        None => Err(atoms::not_found()),
+        None => Err(NifError::Term(Box::new((
+            atoms::error(),
+            "Sheet not found".to_string(),
+        )))),
     }
 }
 
@@ -488,7 +580,7 @@ fn get_formatted_value(
     resource: ResourceArc<UmyaSpreadsheet>,
     sheet_name: String,
     cell_address: String,
-) -> Result<String, Atom> {
+) -> NifResult<(Atom, String)> {
     let mut guard = resource.spreadsheet.lock().unwrap();
 
     // For lazy-loaded spreadsheets, ensure the sheet is loaded
@@ -497,9 +589,12 @@ fn get_formatted_value(
     match guard.get_sheet_by_name(&sheet_name) {
         Some(sheet) => {
             let formatted_value = sheet.get_formatted_value(&*cell_address);
-            Ok(formatted_value)
+            Ok((atoms::ok(), formatted_value))
         }
-        None => Err(atoms::not_found()),
+        None => Err(NifError::Term(Box::new((
+            atoms::error(),
+            "Sheet not found".to_string(),
+        )))),
     }
 }
 
@@ -509,7 +604,7 @@ fn set_number_format(
     sheet_name: String,
     cell_address: String,
     format_code: String,
-) -> Result<Atom, Atom> {
+) -> NifResult<Atom> {
     let mut guard = resource.spreadsheet.lock().unwrap();
 
     match guard.get_sheet_by_name_mut(&sheet_name) {
@@ -519,7 +614,10 @@ fn set_number_format(
             style.get_number_format_mut().set_format_code(format_code);
             Ok(atoms::ok())
         }
-        None => Err(atoms::not_found()),
+        None => Err(NifError::Term(Box::new((
+            atoms::error(),
+            "Sheet not found".to_string(),
+        )))),
     }
 }
 
@@ -530,7 +628,7 @@ fn set_row_style(
     row_number: i32,
     bg_color: String,
     font_color: String,
-) -> Result<Atom, Atom> {
+) -> NifResult<Atom> {
     let mut guard = resource.spreadsheet.lock().unwrap();
 
     match guard.get_sheet_by_name_mut(&sheet_name) {
@@ -538,17 +636,27 @@ fn set_row_style(
             // Process background color
             let bg_color_obj = match helpers::color_helper::create_color_object(&bg_color) {
                 Ok(color) => color,
-                Err(e) => return Err(e),
+                Err(_) => {
+                    return Err(NifError::Term(Box::new((
+                        atoms::error(),
+                        "Invalid background color format".to_string(),
+                    ))))
+                }
             };
 
             // Process font color
             let font_color_obj = match helpers::color_helper::create_color_object(&font_color) {
                 Ok(color) => color,
-                Err(e) => return Err(e),
+                Err(_) => {
+                    return Err(NifError::Term(Box::new((
+                        atoms::error(),
+                        "Invalid font color format".to_string(),
+                    ))))
+                }
             };
 
             // Use the style helper to apply both colors at once
-            helpers::style_helper::apply_row_style(
+            style_helpers::apply_row_style(
                 sheet,
                 row_number as u32,
                 Some(bg_color_obj),
@@ -559,7 +667,10 @@ fn set_row_style(
 
             Ok(atoms::ok())
         }
-        None => Err(atoms::not_found()),
+        None => Err(NifError::Term(Box::new((
+            atoms::error(),
+            "Sheet not found".to_string(),
+        )))),
     }
 }
 
@@ -569,7 +680,7 @@ fn add_image(
     sheet_name: String,
     cell_address: String,
     image_path: String,
-) -> Result<Atom, Atom> {
+) -> NifResult<Atom> {
     let mut guard = resource.spreadsheet.lock().unwrap();
 
     match guard.get_sheet_by_name_mut(&sheet_name) {
@@ -597,9 +708,15 @@ fn add_image(
             }
 
             // If we couldn't find a valid path or set the image
-            Err(atoms::error())
+            Err(NifError::Term(Box::new((
+                atoms::error(),
+                "Image not found".to_string(),
+            ))))
         }
-        None => Err(atoms::not_found()),
+        None => Err(NifError::Term(Box::new((
+            atoms::error(),
+            "Sheet not found".to_string(),
+        )))),
     }
 }
 
@@ -609,7 +726,7 @@ fn download_image(
     sheet_name: String,
     cell_address: String,
     output_path: String,
-) -> Result<Atom, Atom> {
+) -> NifResult<Atom> {
     let guard = resource.spreadsheet.lock().unwrap();
 
     match guard.get_sheet_by_name(&sheet_name) {
@@ -625,7 +742,10 @@ fn download_image(
                     if let Some(parent) = path_obj.parent() {
                         if !parent.exists() {
                             if let Err(_) = std::fs::create_dir_all(parent) {
-                                return Err(atoms::invalid_path());
+                                return Err(NifError::Term(Box::new((
+                                    atoms::error(),
+                                    "Invalid output path or unable to create directory".to_string(),
+                                ))));
                             }
                         }
                     }
@@ -634,10 +754,16 @@ fn download_image(
                     image.download_image(&output_path);
                     Ok(atoms::ok())
                 }
-                None => Err(atoms::not_found()),
+                None => Err(NifError::Term(Box::new((
+                    atoms::error(),
+                    "Sheet not found".to_string(),
+                )))),
             }
         }
-        None => Err(atoms::not_found()),
+        None => Err(NifError::Term(Box::new((
+            atoms::error(),
+            "Sheet not found".to_string(),
+        )))),
     }
 }
 
@@ -647,7 +773,7 @@ fn change_image(
     sheet_name: String,
     cell_address: String,
     new_image_path: String,
-) -> Result<Atom, Atom> {
+) -> NifResult<Atom> {
     let mut guard = resource.spreadsheet.lock().unwrap();
 
     match guard.get_sheet_by_name_mut(&sheet_name) {
@@ -671,12 +797,21 @@ fn change_image(
                     }
 
                     // If we couldn't find a valid path or set the image
-                    Err(atoms::error())
+                    Err(NifError::Term(Box::new((
+                        atoms::error(),
+                        "Failed to download image".to_string(),
+                    ))))
                 }
-                None => Err(atoms::not_found()),
+                None => Err(NifError::Term(Box::new((
+                    atoms::error(),
+                    "Sheet not found".to_string(),
+                )))),
             }
         }
-        None => Err(atoms::not_found()),
+        None => Err(NifError::Term(Box::new((
+            atoms::error(),
+            "Sheet not found".to_string(),
+        )))),
     }
 }
 
@@ -685,7 +820,7 @@ fn clone_sheet(
     resource: ResourceArc<UmyaSpreadsheet>,
     source_sheet_name: String,
     new_sheet_name: String,
-) -> Result<Atom, Atom> {
+) -> NifResult<Atom> {
     let mut guard = resource.spreadsheet.lock().unwrap();
 
     match guard.get_sheet_by_name(&source_sheet_name) {
@@ -697,20 +832,29 @@ fn clone_sheet(
             // Add the cloned sheet to the spreadsheet
             match guard.add_sheet(clone_sheet) {
                 Ok(_) => Ok(atoms::ok()),
-                Err(_) => Err(atoms::error()),
+                Err(_) => Err(NifError::Term(Box::new((
+                    atoms::error(),
+                    "Failed to add cloned sheet".to_string(),
+                )))),
             }
         }
-        None => Err(atoms::not_found()),
+        None => Err(NifError::Term(Box::new((
+            atoms::error(),
+            "Sheet not found".to_string(),
+        )))),
     }
 }
 
 #[rustler::nif]
-fn remove_sheet(resource: ResourceArc<UmyaSpreadsheet>, sheet_name: String) -> Result<Atom, Atom> {
+fn remove_sheet(resource: ResourceArc<UmyaSpreadsheet>, sheet_name: String) -> NifResult<Atom> {
     let mut guard = resource.spreadsheet.lock().unwrap();
 
     match guard.remove_sheet_by_name(&sheet_name) {
         Ok(_) => Ok(atoms::ok()),
-        Err(_) => Err(atoms::not_found()),
+        Err(_) => Err(NifError::Term(Box::new((
+            atoms::error(),
+            "Sheet not found".to_string(),
+        )))),
     }
 }
 
@@ -720,7 +864,7 @@ fn insert_new_row(
     sheet_name: String,
     row_index: i32,
     amount: i32,
-) -> Result<Atom, Atom> {
+) -> NifResult<Atom> {
     let mut guard = resource.spreadsheet.lock().unwrap();
 
     match guard.get_sheet_by_name_mut(&sheet_name) {
@@ -730,7 +874,10 @@ fn insert_new_row(
             sheet.insert_new_row(&row_index_u32, &amount_u32);
             Ok(atoms::ok())
         }
-        None => Err(atoms::not_found()),
+        None => Err(NifError::Term(Box::new((
+            atoms::error(),
+            "Sheet not found".to_string(),
+        )))),
     }
 }
 
@@ -740,7 +887,7 @@ fn insert_new_column(
     sheet_name: String,
     column: String,
     amount: i32,
-) -> Result<Atom, Atom> {
+) -> NifResult<Atom> {
     let mut guard = resource.spreadsheet.lock().unwrap();
 
     match guard.get_sheet_by_name_mut(&sheet_name) {
@@ -749,7 +896,10 @@ fn insert_new_column(
             sheet.insert_new_column(&column, &amount_u32);
             Ok(atoms::ok())
         }
-        None => Err(atoms::not_found()),
+        None => Err(NifError::Term(Box::new((
+            atoms::error(),
+            "Sheet not found".to_string(),
+        )))),
     }
 }
 
@@ -759,7 +909,7 @@ fn insert_new_column_by_index(
     sheet_name: String,
     column_index: i32,
     amount: i32,
-) -> Result<Atom, Atom> {
+) -> NifResult<Atom> {
     let mut guard = resource.spreadsheet.lock().unwrap();
 
     match guard.get_sheet_by_name_mut(&sheet_name) {
@@ -769,7 +919,10 @@ fn insert_new_column_by_index(
             sheet.insert_new_column_by_index(&column_index_u32, &amount_u32);
             Ok(atoms::ok())
         }
-        None => Err(atoms::not_found()),
+        None => Err(NifError::Term(Box::new((
+            atoms::error(),
+            "Sheet not found".to_string(),
+        )))),
     }
 }
 
@@ -779,7 +932,7 @@ fn remove_row(
     sheet_name: String,
     row_index: i32,
     amount: i32,
-) -> Result<Atom, Atom> {
+) -> NifResult<Atom> {
     let mut guard = resource.spreadsheet.lock().unwrap();
 
     match guard.get_sheet_by_name_mut(&sheet_name) {
@@ -789,7 +942,10 @@ fn remove_row(
             sheet.remove_row(&row_index_u32, &amount_u32);
             Ok(atoms::ok())
         }
-        None => Err(atoms::not_found()),
+        None => Err(NifError::Term(Box::new((
+            atoms::error(),
+            "Sheet not found".to_string(),
+        )))),
     }
 }
 
@@ -799,7 +955,7 @@ fn remove_column(
     sheet_name: String,
     column: String,
     amount: i32,
-) -> Result<Atom, Atom> {
+) -> NifResult<Atom> {
     let mut guard = resource.spreadsheet.lock().unwrap();
 
     match guard.get_sheet_by_name_mut(&sheet_name) {
@@ -808,7 +964,10 @@ fn remove_column(
             sheet.remove_column(&column, &amount_u32);
             Ok(atoms::ok())
         }
-        None => Err(atoms::not_found()),
+        None => Err(NifError::Term(Box::new((
+            atoms::error(),
+            "Sheet not found".to_string(),
+        )))),
     }
 }
 
@@ -818,7 +977,7 @@ fn remove_column_by_index(
     sheet_name: String,
     column_index: i32,
     amount: i32,
-) -> Result<Atom, Atom> {
+) -> NifResult<Atom> {
     let mut guard = resource.spreadsheet.lock().unwrap();
 
     match guard.get_sheet_by_name_mut(&sheet_name) {
@@ -828,7 +987,10 @@ fn remove_column_by_index(
             sheet.remove_column_by_index(&column_index_u32, &amount_u32);
             Ok(atoms::ok())
         }
-        None => Err(atoms::not_found()),
+        None => Err(NifError::Term(Box::new((
+            atoms::error(),
+            "Sheet not found".to_string(),
+        )))),
     }
 }
 
@@ -840,7 +1002,7 @@ fn copy_row_styling(
     target_row: u32,
     start_column: Option<u32>,
     end_column: Option<u32>,
-) -> Result<Atom, Atom> {
+) -> NifResult<Atom> {
     let mut guard = resource.spreadsheet.lock().unwrap();
 
     match guard.get_sheet_by_name_mut(&sheet_name) {
@@ -853,7 +1015,10 @@ fn copy_row_styling(
             );
             Ok(atoms::ok())
         }
-        None => Err(atoms::not_found()),
+        None => Err(NifError::Term(Box::new((
+            atoms::error(),
+            "Sheet not found".to_string(),
+        )))),
     }
 }
 
@@ -865,7 +1030,7 @@ fn copy_column_styling(
     target_column: u32,
     start_row: Option<u32>,
     end_row: Option<u32>,
-) -> Result<Atom, Atom> {
+) -> NifResult<Atom> {
     let mut guard = resource.spreadsheet.lock().unwrap();
 
     match guard.get_sheet_by_name_mut(&sheet_name) {
@@ -878,7 +1043,10 @@ fn copy_column_styling(
             );
             Ok(atoms::ok())
         }
-        None => Err(atoms::not_found()),
+        None => Err(NifError::Term(Box::new((
+            atoms::error(),
+            "Sheet not found".to_string(),
+        )))),
     }
 }
 
@@ -888,7 +1056,7 @@ fn set_wrap_text(
     sheet_name: String,
     cell_address: String,
     wrap_text: bool,
-) -> Result<Atom, Atom> {
+) -> NifResult<Atom> {
     let mut guard = resource.spreadsheet.lock().unwrap();
 
     match guard.get_sheet_by_name_mut(&sheet_name) {
@@ -900,7 +1068,10 @@ fn set_wrap_text(
                 .set_wrap_text(wrap_text);
             Ok(atoms::ok())
         }
-        None => Err(atoms::not_found()),
+        None => Err(NifError::Term(Box::new((
+            atoms::error(),
+            "Sheet not found".to_string(),
+        )))),
     }
 }
 
@@ -910,7 +1081,7 @@ fn set_column_width(
     sheet_name: String,
     column: String,
     width: f64,
-) -> Result<Atom, Atom> {
+) -> NifResult<Atom> {
     let mut guard = resource.spreadsheet.lock().unwrap();
 
     match guard.get_sheet_by_name_mut(&sheet_name) {
@@ -918,7 +1089,10 @@ fn set_column_width(
             sheet.get_column_dimension_mut(&column).set_width(width);
             Ok(atoms::ok())
         }
-        None => Err(atoms::not_found()),
+        None => Err(NifError::Term(Box::new((
+            atoms::error(),
+            "Sheet not found".to_string(),
+        )))),
     }
 }
 
@@ -928,7 +1102,7 @@ fn set_column_auto_width(
     sheet_name: String,
     column: String,
     auto_width: bool,
-) -> Result<Atom, Atom> {
+) -> NifResult<Atom> {
     let mut guard = resource.spreadsheet.lock().unwrap();
 
     match guard.get_sheet_by_name_mut(&sheet_name) {
@@ -938,7 +1112,10 @@ fn set_column_auto_width(
                 .set_auto_width(auto_width);
             Ok(atoms::ok())
         }
-        None => Err(atoms::not_found()),
+        None => Err(NifError::Term(Box::new((
+            atoms::error(),
+            "Sheet not found".to_string(),
+        )))),
     }
 }
 
@@ -948,7 +1125,7 @@ fn set_sheet_protection(
     sheet_name: String,
     password: Option<String>,
     protected: bool,
-) -> Result<Atom, Atom> {
+) -> NifResult<Atom> {
     let mut guard = resource.spreadsheet.lock().unwrap();
 
     match guard.get_sheet_by_name_mut(&sheet_name) {
@@ -962,7 +1139,10 @@ fn set_sheet_protection(
 
             Ok(atoms::ok())
         }
-        None => Err(atoms::not_found()),
+        None => Err(NifError::Term(Box::new((
+            atoms::error(),
+            "Sheet not found".to_string(),
+        )))),
     }
 }
 
@@ -970,7 +1150,7 @@ fn set_sheet_protection(
 fn set_workbook_protection(
     resource: ResourceArc<UmyaSpreadsheet>,
     password: String,
-) -> Result<Atom, Atom> {
+) -> NifResult<Atom> {
     let mut guard = resource.spreadsheet.lock().unwrap();
 
     guard
@@ -984,7 +1164,7 @@ fn set_sheet_state(
     resource: ResourceArc<UmyaSpreadsheet>,
     sheet_name: String,
     state: String,
-) -> Result<Atom, Atom> {
+) -> NifResult<Atom> {
     let mut guard = resource.spreadsheet.lock().unwrap();
 
     match guard.get_sheet_by_name_mut(&sheet_name) {
@@ -993,13 +1173,21 @@ fn set_sheet_state(
                 "visible" => umya_spreadsheet::SheetStateValues::Visible,
                 "hidden" => umya_spreadsheet::SheetStateValues::Hidden,
                 "very_hidden" => umya_spreadsheet::SheetStateValues::VeryHidden,
-                _ => return Err(atoms::error()),
+                _ => {
+                    return Err(NifError::Term(Box::new((
+                        atoms::error(),
+                        "Invalid sheet state".to_string(),
+                    ))))
+                }
             };
 
             sheet.set_state(state_value);
             Ok(atoms::ok())
         }
-        None => Err(atoms::not_found()),
+        None => Err(NifError::Term(Box::new((
+            atoms::error(),
+            "Sheet not found".to_string(),
+        )))),
     }
 }
 
@@ -1010,7 +1198,7 @@ fn add_merge_cells(
     resource: ResourceArc<UmyaSpreadsheet>,
     sheet_name: String,
     range: String,
-) -> Result<Atom, Atom> {
+) -> NifResult<Atom> {
     let mut guard = resource.spreadsheet.lock().unwrap();
 
     match guard.get_sheet_by_name_mut(&sheet_name) {
@@ -1018,16 +1206,24 @@ fn add_merge_cells(
             sheet.add_merge_cells(&range);
             Ok(atoms::ok())
         }
-        None => Err(atoms::not_found()),
+        None => Err(NifError::Term(Box::new((
+            atoms::error(),
+            "Sheet not found".to_string(),
+        )))),
     }
 }
 
 #[rustler::nif]
-fn set_password(input_path: String, output_path: String, password: String) -> Result<Atom, Atom> {
+fn set_password(input_path: String, output_path: String, password: String) -> NifResult<Atom> {
     // Use the path helper to find valid file paths
     let valid_input_path = match helpers::path_helper::find_valid_file_path(&input_path) {
         Some(path) => path,
-        None => return Err(atoms::not_found()), // Input file not found
+        None => {
+            return Err(NifError::Term(Box::new((
+                atoms::error(),
+                "Sheet not found".to_string(),
+            ))))
+        } // Input file not found
     };
 
     // For output path, we use the direct path since it might not exist yet
@@ -1038,7 +1234,10 @@ fn set_password(input_path: String, output_path: String, password: String) -> Re
 
     match umya_spreadsheet::writer::xlsx::set_password(input_path, output_path, &password) {
         Ok(_) => Ok(atoms::ok()),
-        Err(_) => Err(atoms::error()),
+        Err(_) => Err(NifError::Term(Box::new((
+            atoms::error(),
+            "Failed to set password".to_string(),
+        )))),
     }
 }
 
@@ -1064,7 +1263,7 @@ pub fn add_pivot_table(
     row_fields: Vec<i32>,
     column_fields: Vec<i32>,
     data_fields: Vec<(i32, String, String)>,
-) -> Result<Atom, Atom> {
+) -> NifResult<Atom> {
     let mut guard = resource.spreadsheet.lock().unwrap();
 
     match guard.get_sheet_by_name_mut(&sheet_name) {
@@ -1188,16 +1387,22 @@ pub fn add_pivot_table(
             if found_valid_pt {
                 Ok(atoms::ok())
             } else {
-                Err(atoms::error())
+                Err(NifError::Term(Box::new((
+                    atoms::error(),
+                    "No valid pivot table found".to_string(),
+                ))))
             }
         }
-        None => Err(atoms::not_found()),
+        None => Err(NifError::Term(Box::new((
+            atoms::error(),
+            "Sheet not found".to_string(),
+        )))),
     }
 }
 
 /// Refresh all pivot tables in a spreadsheet
 #[rustler::nif]
-pub fn refresh_all_pivot_tables(resource: ResourceArc<UmyaSpreadsheet>) -> Result<Atom, Atom> {
+pub fn refresh_all_pivot_tables(resource: ResourceArc<UmyaSpreadsheet>) -> NifResult<Atom> {
     let _guard = resource.spreadsheet.lock().unwrap(); // Changed to _guard since it's unused
     Ok(atoms::ok())
 }

@@ -1,7 +1,6 @@
 use crate::atoms;
-use crate::helpers::error_helper::handle_error;
 use crate::UmyaSpreadsheet;
-use rustler::{Atom, NifResult};
+use rustler::{Atom, Error as NifError, NifResult};
 use std::panic::{self, AssertUnwindSafe};
 
 #[rustler::nif]
@@ -10,23 +9,28 @@ pub fn set_auto_filter(
     sheet_name: String,
     range: String,
 ) -> NifResult<Atom> {
-    let result = panic::catch_unwind(AssertUnwindSafe(|| {
-        let mut spreadsheet = spreadsheet_resource.spreadsheet.lock().unwrap();
+    let result = panic::catch_unwind(AssertUnwindSafe(|| -> Result<(), String> {
+        let mut spreadsheet = spreadsheet_resource.spreadsheet.lock()
+            .map_err(|_| "Failed to acquire spreadsheet lock".to_string())?;
+
+        // Validate inputs
+        if range.trim().is_empty() {
+            return Err("Range cannot be empty".to_string());
+        }
 
         // Get sheet by name
-        if let Some(sheet) = spreadsheet.get_sheet_by_name_mut(&sheet_name) {
-            // Set auto filter for the specified range
-            sheet.set_auto_filter(range);
-            Ok(atoms::ok())
-        } else {
-            Err(format!("Sheet '{}' not found", sheet_name))
-        }
+        let sheet = spreadsheet.get_sheet_by_name_mut(&sheet_name)
+            .ok_or_else(|| format!("Sheet '{}' not found", sheet_name))?;
+
+        // Set auto filter for the specified range
+        sheet.set_auto_filter(range);
+        Ok(())
     }));
 
     match result {
-        Ok(Ok(_)) => Ok(atoms::ok()),
-        Ok(Err(msg)) => handle_error(&msg),
-        Err(_) => handle_error("Panic occurred in set_auto_filter"),
+        Ok(Ok(())) => Ok(atoms::ok()),
+        Ok(Err(err_msg)) => Err(NifError::Term(Box::new((atoms::error(), err_msg)))),
+        Err(_) => Err(NifError::Term(Box::new((atoms::error(), "Error occurred in set_auto_filter operation".to_string())))),
     }
 }
 
@@ -35,23 +39,23 @@ pub fn remove_auto_filter(
     spreadsheet_resource: rustler::ResourceArc<UmyaSpreadsheet>,
     sheet_name: String,
 ) -> NifResult<Atom> {
-    let result = panic::catch_unwind(AssertUnwindSafe(|| {
-        let mut spreadsheet = spreadsheet_resource.spreadsheet.lock().unwrap();
+    let result = panic::catch_unwind(AssertUnwindSafe(|| -> Result<(), String> {
+        let mut spreadsheet = spreadsheet_resource.spreadsheet.lock()
+            .map_err(|_| "Failed to acquire spreadsheet lock".to_string())?;
 
         // Get sheet by name
-        if let Some(sheet) = spreadsheet.get_sheet_by_name_mut(&sheet_name) {
-            // Remove auto filter
-            sheet.remove_auto_filter();
-            Ok(atoms::ok())
-        } else {
-            Err(format!("Sheet '{}' not found", sheet_name))
-        }
+        let sheet = spreadsheet.get_sheet_by_name_mut(&sheet_name)
+            .ok_or_else(|| format!("Sheet '{}' not found", sheet_name))?;
+
+        // Remove auto filter
+        sheet.remove_auto_filter();
+        Ok(())
     }));
 
     match result {
-        Ok(Ok(_)) => Ok(atoms::ok()),
-        Ok(Err(msg)) => handle_error(&msg),
-        Err(_) => handle_error("Panic occurred in remove_auto_filter"),
+        Ok(Ok(())) => Ok(atoms::ok()),
+        Ok(Err(err_msg)) => Err(NifError::Term(Box::new((atoms::error(), err_msg)))),
+        Err(_) => Err(NifError::Term(Box::new((atoms::error(), "Error occurred in remove_auto_filter operation".to_string())))),
     }
 }
 
@@ -59,7 +63,7 @@ pub fn remove_auto_filter(
 pub fn has_auto_filter(
     spreadsheet_resource: rustler::ResourceArc<UmyaSpreadsheet>,
     sheet_name: String,
-) -> NifResult<bool> {
+) -> bool {
     let result = panic::catch_unwind(AssertUnwindSafe(|| {
         let spreadsheet = spreadsheet_resource.spreadsheet.lock().unwrap();
 
@@ -73,14 +77,14 @@ pub fn has_auto_filter(
     }));
 
     match result {
-        Ok(Ok(has_filter)) => Ok(has_filter),
-        Ok(Err(msg)) => {
-            let _: Atom = handle_error(&msg)?;
-            Ok(false)
+        Ok(Ok(has_filter)) => has_filter,
+        Ok(Err(_msg)) => {
+            // Silent error handling - return default value
+            false
         }
         Err(_) => {
-            let _: Atom = handle_error("Panic occurred in has_auto_filter")?;
-            Ok(false)
+            // Silent error handling - return default value
+            false
         }
     }
 }
@@ -89,7 +93,7 @@ pub fn has_auto_filter(
 pub fn get_auto_filter_range(
     spreadsheet_resource: rustler::ResourceArc<UmyaSpreadsheet>,
     sheet_name: String,
-) -> NifResult<Option<String>> {
+) -> Option<String> {
     let result = panic::catch_unwind(AssertUnwindSafe(|| {
         let spreadsheet = spreadsheet_resource.spreadsheet.lock().unwrap();
 
@@ -107,14 +111,14 @@ pub fn get_auto_filter_range(
     }));
 
     match result {
-        Ok(Ok(range_opt)) => Ok(range_opt),
-        Ok(Err(msg)) => {
-            let _: Atom = handle_error(&msg)?;
-            Ok(None)
+        Ok(Ok(range_opt)) => range_opt,
+        Ok(Err(_msg)) => {
+            // Silent error handling - return default value
+            None
         }
         Err(_) => {
-            let _: Atom = handle_error("Panic occurred in get_auto_filter_range")?;
-            Ok(None)
+            // Silent error handling - return default value
+            None
         }
     }
 }

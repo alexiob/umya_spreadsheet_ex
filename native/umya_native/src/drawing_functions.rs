@@ -1,4 +1,4 @@
-use rustler::{Atom, ResourceArc};
+use rustler::{Atom, Error as NifError, NifResult, ResourceArc};
 use std::panic::{self, AssertUnwindSafe};
 use umya_spreadsheet::drawing::Transform2D;
 use umya_spreadsheet::structs::drawing::spreadsheet::{
@@ -100,22 +100,22 @@ pub fn add_shape(
     fill_color: String,
     outline_color: String,
     outline_width: f64,
-) -> Result<Atom, Atom> {
+) -> NifResult<Atom> {
     let result = panic::catch_unwind(AssertUnwindSafe(|| {
         let mut spreadsheet_guard = match resource.spreadsheet.lock() {
             Ok(guard) => guard,
-            Err(_) => return Err(error()),
+            Err(_) => return Err("Failed to lock spreadsheet"),
         };
 
         let worksheet = match spreadsheet_guard.get_sheet_by_name_mut(&sheet_name) {
             Some(ws) => ws,
-            None => return Err(error()),
+            None => return Err("Sheet not found"),
         };
 
         // Parse the shape type
         let shape_type = match ShapeType::from_string(&shape_type) {
             Ok(shape_type) => shape_type,
-            Err(_) => return Err(error()),
+            Err(msg) => return Err(msg),
         };
 
         // Create the shape
@@ -138,8 +138,13 @@ pub fn add_shape(
     }));
 
     match result {
-        Ok(res) => res,
-        Err(_) => Err(error()),
+        Ok(Ok(atom)) => Ok(atom),
+        Ok(Err(msg)) => {
+            Err(NifError::Term(Box::new((error(), msg.to_string()))))
+        }
+        Err(_) => {
+            Err(NifError::Term(Box::new((error(), "Error occurred in add_shape".to_string()))))
+        }
     }
 }
 
@@ -156,16 +161,16 @@ pub fn add_text_box(
     text_color: String,
     outline_color: String,
     outline_width: f64,
-) -> Result<Atom, Atom> {
+) -> NifResult<Atom> {
     let result = panic::catch_unwind(AssertUnwindSafe(|| {
         let mut spreadsheet_guard = match resource.spreadsheet.lock() {
             Ok(guard) => guard,
-            Err(_) => return Err(error()),
+            Err(_) => return Err("Failed to lock spreadsheet"),
         };
 
         let worksheet = match spreadsheet_guard.get_sheet_by_name_mut(&sheet_name) {
             Some(ws) => ws,
-            None => return Err(error()),
+            None => return Err("Sheet not found"),
         };
 
         // Create a text box (which is a shape with text)
@@ -217,8 +222,13 @@ pub fn add_text_box(
     }));
 
     match result {
-        Ok(res) => res,
-        Err(_) => Err(error()),
+        Ok(Ok(atom)) => Ok(atom),
+        Ok(Err(msg)) => {
+            Err(NifError::Term(Box::new((error(), msg.to_string()))))
+        }
+        Err(_) => {
+            Err(NifError::Term(Box::new((error(), "Error occurred in add_text_box".to_string()))))
+        }
     }
 }
 
@@ -231,16 +241,16 @@ pub fn add_connector(
     to_cell: String,
     line_color: String,
     line_width: f64,
-) -> Result<Atom, Atom> {
+) -> NifResult<Atom> {
     let result = panic::catch_unwind(AssertUnwindSafe(|| {
         let mut spreadsheet_guard = match resource.spreadsheet.lock() {
             Ok(guard) => guard,
-            Err(_) => return Err(error()),
+            Err(_) => return Err("Failed to lock spreadsheet"),
         };
 
         let worksheet = match spreadsheet_guard.get_sheet_by_name_mut(&sheet_name) {
             Some(ws) => ws,
-            None => return Err(error()),
+            None => return Err("Sheet not found"),
         };
 
         // Create a connector (special line that connects two points)
@@ -255,8 +265,13 @@ pub fn add_connector(
     }));
 
     match result {
-        Ok(res) => res,
-        Err(_) => Err(error()),
+        Ok(Ok(atom)) => Ok(atom),
+        Ok(Err(msg)) => {
+            Err(NifError::Term(Box::new((error(), msg.to_string()))))
+        }
+        Err(_) => {
+            Err(NifError::Term(Box::new((error(), "Error occurred in add_connector".to_string()))))
+        }
     }
 }
 

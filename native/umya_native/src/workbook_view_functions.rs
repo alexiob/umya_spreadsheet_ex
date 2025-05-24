@@ -1,7 +1,6 @@
 use crate::atoms;
-use crate::helpers::error_helper::handle_error;
 use crate::UmyaSpreadsheet;
-use rustler::{Atom, NifResult};
+use rustler::{Atom, NifResult, Error as NifError};
 use std::panic::{self, AssertUnwindSafe};
 
 #[rustler::nif]
@@ -19,13 +18,17 @@ pub fn set_active_tab(
         // Set the active tab directly on the workbook_view
         workbook_view.set_active_tab(tab_index);
 
-        Ok(atoms::ok())
+        Ok::<Atom, String>(atoms::ok())
     }));
 
     match result {
         Ok(Ok(_)) => Ok(atoms::ok()),
-        Ok(Err(msg)) => handle_error::<String>(msg),
-        Err(_) => handle_error::<&str>("Panic occurred in set_active_tab"),
+        Ok(Err(msg)) => {
+            Err(NifError::Term(Box::new((atoms::error(), msg))))
+        }
+        Err(_) => {
+            Err(NifError::Term(Box::new((atoms::error(), "Error occurred in set_active_tab".to_string()))))
+        }
     }
 }
 
@@ -49,12 +52,16 @@ pub fn set_workbook_window_position(
         // For now, we'll just return OK, and in the future we might need to modify
         // the umya-spreadsheet library to expose these methods.
 
-        Ok(atoms::ok())
+        Ok::<Atom, String>(atoms::ok())
     }));
 
     match result {
         Ok(Ok(_)) => Ok(atoms::ok()),
-        Ok(Err(msg)) => handle_error::<String>(msg),
-        Err(_) => handle_error::<&str>("Panic occurred in set_workbook_window_position"),
+        Ok(Err(msg)) => {
+            Err(NifError::Term(Box::new((atoms::error(), msg))))
+        }
+        Err(_) => {
+            Err(NifError::Term(Box::new((atoms::error(), "Error occurred in set_workbook_window_position".to_string()))))
+        }
     }
 }

@@ -1,5 +1,5 @@
 defmodule UmyaSpreadsheetTest.CommentFunctionsTest do
-  use ExUnit.Case
+  use ExUnit.Case, async: true
 
   alias UmyaSpreadsheet
 
@@ -76,30 +76,30 @@ defmodule UmyaSpreadsheetTest.CommentFunctionsTest do
       sheet_name = "Sheet1"
 
       # Initially no comments
-      assert UmyaSpreadsheet.has_comments(spreadsheet, sheet_name) == false
-      assert UmyaSpreadsheet.get_comments_count(spreadsheet, sheet_name) == 0
+      assert UmyaSpreadsheet.has_comments(spreadsheet, sheet_name) == {:ok, false}
+      assert UmyaSpreadsheet.get_comments_count(spreadsheet, sheet_name) == {:ok, 0}
 
       # Add some comments
       :ok = UmyaSpreadsheet.add_comment(spreadsheet, sheet_name, "D4", "Comment 1", "Author 1")
       :ok = UmyaSpreadsheet.add_comment(spreadsheet, sheet_name, "E5", "Comment 2", "Author 2")
 
       # Check again
-      assert UmyaSpreadsheet.has_comments(spreadsheet, sheet_name) == true
-      assert UmyaSpreadsheet.get_comments_count(spreadsheet, sheet_name) == 2
+      assert UmyaSpreadsheet.has_comments(spreadsheet, sheet_name) == {:ok, true}
+      assert UmyaSpreadsheet.get_comments_count(spreadsheet, sheet_name) == {:ok, 2}
 
       # Remove a comment
       :ok = UmyaSpreadsheet.remove_comment(spreadsheet, sheet_name, "D4")
 
       # Check counts again
-      assert UmyaSpreadsheet.has_comments(spreadsheet, sheet_name) == true
-      assert UmyaSpreadsheet.get_comments_count(spreadsheet, sheet_name) == 1
+      assert UmyaSpreadsheet.has_comments(spreadsheet, sheet_name) == {:ok, true}
+      assert UmyaSpreadsheet.get_comments_count(spreadsheet, sheet_name) == {:ok, 1}
 
       # Remove the last comment
       :ok = UmyaSpreadsheet.remove_comment(spreadsheet, sheet_name, "E5")
 
       # No more comments
-      assert UmyaSpreadsheet.has_comments(spreadsheet, sheet_name) == false
-      assert UmyaSpreadsheet.get_comments_count(spreadsheet, sheet_name) == 0
+      assert UmyaSpreadsheet.has_comments(spreadsheet, sheet_name) == {:ok, false}
+      assert UmyaSpreadsheet.get_comments_count(spreadsheet, sheet_name) == {:ok, 0}
     end
   end
 end

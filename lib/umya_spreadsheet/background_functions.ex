@@ -4,6 +4,7 @@ defmodule UmyaSpreadsheet.BackgroundFunctions do
   """
 
   alias UmyaSpreadsheet.Spreadsheet
+  alias UmyaSpreadsheet.ErrorHandling
   alias UmyaNative
 
   @doc """
@@ -28,10 +29,7 @@ defmodule UmyaSpreadsheet.BackgroundFunctions do
       :ok = UmyaSpreadsheet.BackgroundFunctions.set_background_color(spreadsheet, "Sheet1", "A1", "#CCECFF")
   """
   def set_background_color(%Spreadsheet{reference: ref}, sheet_name, cell_address, color) do
-    case UmyaNative.set_background_color(ref, sheet_name, cell_address, color) do
-      {:ok, :ok} -> :ok
-      :ok -> :ok
-      result -> result
-    end
+    UmyaNative.set_background_color(ref, sheet_name, cell_address, color)
+    |> ErrorHandling.standardize_result()
   end
 end

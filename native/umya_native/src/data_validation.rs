@@ -1,5 +1,6 @@
 use rustler::{Atom, ResourceArc};
 use umya_spreadsheet::{DataValidationOperatorValues, DataValidationValues};
+use std::panic::{self, AssertUnwindSafe};
 
 use crate::atoms;
 use crate::UmyaSpreadsheet;
@@ -16,59 +17,74 @@ pub fn add_list_validation(
     error_message: Option<String>,
     prompt_title: Option<String>,
     prompt_message: Option<String>,
-) -> Result<Atom, Atom> {
-    let mut guard = resource.spreadsheet.lock().unwrap();
+) -> Result<Atom, (Atom, String)> {
+    let result = panic::catch_unwind(AssertUnwindSafe(|| -> Result<Atom, String> {
+        let mut guard = resource.spreadsheet.lock()
+            .map_err(|_| "Failed to acquire spreadsheet lock".to_string())?;
 
-    match guard.get_sheet_by_name_mut(&sheet_name) {
-        Some(sheet) => {
-            // Create the data validation
-            let mut validation = umya_spreadsheet::DataValidation::default();
-
-            // Set basic properties
-            validation.set_type(DataValidationValues::List);
-            validation.set_allow_blank(allow_blank);
-
-            // Create and set sequence of references
-            let mut seq_refs = umya_spreadsheet::SequenceOfReferences::default();
-            seq_refs.set_sqref(&cell_range);
-            validation.set_sequence_of_references(seq_refs);
-
-            // Set the formula1 (list source)
-            let formula = list_items.join(",");
-            validation.set_formula1(format!("\"{}\"", formula));
-
-            // Set error title and message if provided
-            if let Some(title) = error_title {
-                validation.set_error_title(title);
-            }
-
-            if let Some(msg) = error_message {
-                validation.set_error_message(msg);
-                validation.set_show_error_message(true);
-            }
-
-            // Set prompt title and message if provided
-            if let Some(title) = prompt_title {
-                validation.set_prompt_title(title);
-            }
-
-            if let Some(msg) = prompt_message {
-                validation.set_prompt(msg);
-                validation.set_show_input_message(true);
-            }
-
-            // Add the validation to the sheet
-            if let Some(validations) = sheet.get_data_validations_mut() {
-                validations.add_data_validation_list(validation);
-            } else {
-                let mut data_validations = umya_spreadsheet::DataValidations::default();
-                data_validations.add_data_validation_list(validation);
-                sheet.set_data_validations(data_validations);
-            }
-
-            Ok(atoms::ok())
+        // Validate inputs
+        if cell_range.trim().is_empty() {
+            return Err("Cell range cannot be empty".to_string());
         }
-        None => Err(atoms::not_found()),
+        if list_items.is_empty() {
+            return Err("List items cannot be empty".to_string());
+        }
+
+        let sheet = guard.get_sheet_by_name_mut(&sheet_name)
+            .ok_or_else(|| format!("Sheet '{}' not found", sheet_name))?;
+
+        // Create the data validation
+        let mut validation = umya_spreadsheet::DataValidation::default();
+
+        // Set basic properties
+        validation.set_type(DataValidationValues::List);
+        validation.set_allow_blank(allow_blank);
+
+        // Create and set sequence of references
+        let mut seq_refs = umya_spreadsheet::SequenceOfReferences::default();
+        seq_refs.set_sqref(&cell_range);
+        validation.set_sequence_of_references(seq_refs);
+
+        // Set the formula1 (list source)
+        let formula = list_items.join(",");
+        validation.set_formula1(format!("\"{}\"", formula));
+
+        // Set error title and message if provided
+        if let Some(title) = error_title {
+            validation.set_error_title(title);
+        }
+
+        if let Some(msg) = error_message {
+            validation.set_error_message(msg);
+            validation.set_show_error_message(true);
+        }
+
+        // Set prompt title and message if provided
+        if let Some(title) = prompt_title {
+            validation.set_prompt_title(title);
+        }
+
+        if let Some(msg) = prompt_message {
+            validation.set_prompt(msg);
+            validation.set_show_input_message(true);
+        }
+
+        // Add the validation to the sheet
+        if let Some(validations) = sheet.get_data_validations_mut() {
+            validations.add_data_validation_list(validation);
+        } else {
+            let mut data_validations = umya_spreadsheet::DataValidations::default();
+            data_validations.add_data_validation_list(validation);
+            sheet.set_data_validations(data_validations);
+        }
+
+        Ok(atoms::ok())
+    }));
+
+    match result {
+        Ok(Ok(atom)) => Ok(atom),
+                Ok(Err(err_msg)) => Err((atoms::error(), err_msg)),
+        Err(_) => Err((atoms::error(), "Error occurred in add_list_validation operation".to_string())),
     }
 }
 
@@ -86,77 +102,89 @@ pub fn add_number_validation(
     error_message: Option<String>,
     prompt_title: Option<String>,
     prompt_message: Option<String>,
-) -> Result<Atom, Atom> {
-    let mut guard = resource.spreadsheet.lock().unwrap();
+) -> Result<Atom, (Atom, String)> {
+    let result = panic::catch_unwind(AssertUnwindSafe(|| -> Result<Atom, String> {
+        let mut guard = resource.spreadsheet.lock()
+            .map_err(|_| "Failed to acquire spreadsheet lock".to_string())?;
 
-    // Convert operator string to Rust enum
-    let op = match operator.as_str() {
-        "between" => DataValidationOperatorValues::Between,
-        "notBetween" | "not_between" => DataValidationOperatorValues::NotBetween,
-        "equal" => DataValidationOperatorValues::Equal,
-        "notEqual" | "not_equal" => DataValidationOperatorValues::NotEqual,
-        "greaterThan" | "greater_than" => DataValidationOperatorValues::GreaterThan,
-        "lessThan" | "less_than" => DataValidationOperatorValues::LessThan,
-        "greaterThanOrEqual" | "greater_than_or_equal" => {
-            DataValidationOperatorValues::GreaterThanOrEqual
+        // Validate inputs
+        if cell_range.trim().is_empty() {
+            return Err("Cell range cannot be empty".to_string());
         }
-        "lessThanOrEqual" | "less_than_or_equal" => DataValidationOperatorValues::LessThanOrEqual,
-        _ => return Err(atoms::error()),
-    };
 
-    match guard.get_sheet_by_name_mut(&sheet_name) {
-        Some(sheet) => {
-            // Create the data validation
-            let mut validation = umya_spreadsheet::DataValidation::default();
-
-            // Set basic properties
-            validation.set_type(DataValidationValues::Decimal);
-            validation.set_operator(op);
-            validation.set_allow_blank(allow_blank);
-
-            // Create and set sequence of references
-            let mut seq_refs = umya_spreadsheet::SequenceOfReferences::default();
-            seq_refs.set_sqref(&cell_range);
-            validation.set_sequence_of_references(seq_refs);
-
-            // Set the formula values
-            validation.set_formula1(value1);
-            if let Some(val2) = value2 {
-                validation.set_formula2(val2);
+        // Convert operator string to Rust enum
+        let op = match operator.as_str() {
+            "between" => DataValidationOperatorValues::Between,
+            "notBetween" | "not_between" => DataValidationOperatorValues::NotBetween,
+            "equal" => DataValidationOperatorValues::Equal,
+            "notEqual" | "not_equal" => DataValidationOperatorValues::NotEqual,
+            "greaterThan" | "greater_than" => DataValidationOperatorValues::GreaterThan,
+            "lessThan" | "less_than" => DataValidationOperatorValues::LessThan,
+            "greaterThanOrEqual" | "greater_than_or_equal" => {
+                DataValidationOperatorValues::GreaterThanOrEqual
             }
+            "lessThanOrEqual" | "less_than_or_equal" => DataValidationOperatorValues::LessThanOrEqual,
+            _ => return Err(format!("Invalid operator: {}", operator)),
+        };
 
-            // Set error title and message if provided
-            if let Some(title) = error_title {
-                validation.set_error_title(title);
-            }
+        let sheet = guard.get_sheet_by_name_mut(&sheet_name)
+            .ok_or_else(|| format!("Sheet '{}' not found", sheet_name))?;
 
-            if let Some(msg) = error_message {
-                validation.set_error_message(msg);
-                validation.set_show_error_message(true);
-            }
+        // Create the data validation
+        let mut validation = umya_spreadsheet::DataValidation::default();
 
-            // Set prompt title and message if provided
-            if let Some(title) = prompt_title {
-                validation.set_prompt_title(title);
-            }
+        // Set basic properties
+        validation.set_type(DataValidationValues::Decimal);
+        validation.set_operator(op);
+        validation.set_allow_blank(allow_blank);
 
-            if let Some(msg) = prompt_message {
-                validation.set_prompt(msg);
-                validation.set_show_input_message(true);
-            }
+        // Create and set sequence of references
+        let mut seq_refs = umya_spreadsheet::SequenceOfReferences::default();
+        seq_refs.set_sqref(&cell_range);
+        validation.set_sequence_of_references(seq_refs);
 
-            // Add the validation to the sheet
-            if let Some(validations) = sheet.get_data_validations_mut() {
-                validations.add_data_validation_list(validation);
-            } else {
-                let mut data_validations = umya_spreadsheet::DataValidations::default();
-                data_validations.add_data_validation_list(validation);
-                sheet.set_data_validations(data_validations);
-            }
-
-            Ok(atoms::ok())
+        // Set the formula values
+        validation.set_formula1(value1);
+        if let Some(val2) = value2 {
+            validation.set_formula2(val2);
         }
-        None => Err(atoms::not_found()),
+
+        // Set error title and message if provided
+        if let Some(title) = error_title {
+            validation.set_error_title(title);
+        }
+
+        if let Some(msg) = error_message {
+            validation.set_error_message(msg);
+            validation.set_show_error_message(true);
+        }
+
+        // Set prompt title and message if provided
+        if let Some(title) = prompt_title {
+            validation.set_prompt_title(title);
+        }
+
+        if let Some(msg) = prompt_message {
+            validation.set_prompt(msg);
+            validation.set_show_input_message(true);
+        }
+
+        // Add the validation to the sheet
+        if let Some(validations) = sheet.get_data_validations_mut() {
+            validations.add_data_validation_list(validation);
+        } else {
+            let mut data_validations = umya_spreadsheet::DataValidations::default();
+            data_validations.add_data_validation_list(validation);
+            sheet.set_data_validations(data_validations);
+        }
+
+        Ok(atoms::ok())
+    }));
+
+    match result {
+        Ok(Ok(atom)) => Ok(atom),
+        Ok(Err(err_msg)) => Err((atoms::error(), err_msg)),
+        Err(_) => Err((atoms::error(), "Error occurred in add_number_validation operation".to_string())),
     }
 }
 
@@ -174,77 +202,89 @@ pub fn add_date_validation(
     error_message: Option<String>,
     prompt_title: Option<String>,
     prompt_message: Option<String>,
-) -> Result<Atom, Atom> {
-    let mut guard = resource.spreadsheet.lock().unwrap();
+) -> Result<Atom, (Atom, String)> {
+    let result = panic::catch_unwind(AssertUnwindSafe(|| -> Result<Atom, String> {
+        let mut guard = resource.spreadsheet.lock()
+            .map_err(|_| "Failed to acquire spreadsheet lock".to_string())?;
 
-    // Convert operator string to Rust enum
-    let op = match operator.as_str() {
-        "between" => DataValidationOperatorValues::Between,
-        "notBetween" | "not_between" => DataValidationOperatorValues::NotBetween,
-        "equal" => DataValidationOperatorValues::Equal,
-        "notEqual" | "not_equal" => DataValidationOperatorValues::NotEqual,
-        "greaterThan" | "greater_than" => DataValidationOperatorValues::GreaterThan,
-        "lessThan" | "less_than" => DataValidationOperatorValues::LessThan,
-        "greaterThanOrEqual" | "greater_than_or_equal" => {
-            DataValidationOperatorValues::GreaterThanOrEqual
+        // Validate inputs
+        if cell_range.trim().is_empty() {
+            return Err("Cell range cannot be empty".to_string());
         }
-        "lessThanOrEqual" | "less_than_or_equal" => DataValidationOperatorValues::LessThanOrEqual,
-        _ => return Err(atoms::error()),
-    };
 
-    match guard.get_sheet_by_name_mut(&sheet_name) {
-        Some(sheet) => {
-            // Create the data validation
-            let mut validation = umya_spreadsheet::DataValidation::default();
-
-            // Set basic properties
-            validation.set_type(DataValidationValues::Date);
-            validation.set_operator(op);
-            validation.set_allow_blank(allow_blank);
-
-            // Create and set sequence of references
-            let mut seq_refs = umya_spreadsheet::SequenceOfReferences::default();
-            seq_refs.set_sqref(&cell_range);
-            validation.set_sequence_of_references(seq_refs);
-
-            // Set the formula values
-            validation.set_formula1(date1);
-            if let Some(date2) = date2 {
-                validation.set_formula2(date2);
+        // Convert operator string to Rust enum
+        let op = match operator.as_str() {
+            "between" => DataValidationOperatorValues::Between,
+            "notBetween" | "not_between" => DataValidationOperatorValues::NotBetween,
+            "equal" => DataValidationOperatorValues::Equal,
+            "notEqual" | "not_equal" => DataValidationOperatorValues::NotEqual,
+            "greaterThan" | "greater_than" => DataValidationOperatorValues::GreaterThan,
+            "lessThan" | "less_than" => DataValidationOperatorValues::LessThan,
+            "greaterThanOrEqual" | "greater_than_or_equal" => {
+                DataValidationOperatorValues::GreaterThanOrEqual
             }
+            "lessThanOrEqual" | "less_than_or_equal" => DataValidationOperatorValues::LessThanOrEqual,
+            _ => return Err(format!("Invalid operator: {}", operator)),
+        };
 
-            // Set error title and message if provided
-            if let Some(title) = error_title {
-                validation.set_error_title(title);
-            }
+        let sheet = guard.get_sheet_by_name_mut(&sheet_name)
+            .ok_or_else(|| format!("Sheet '{}' not found", sheet_name))?;
 
-            if let Some(msg) = error_message {
-                validation.set_error_message(msg);
-                validation.set_show_error_message(true);
-            }
+        // Create the data validation
+        let mut validation = umya_spreadsheet::DataValidation::default();
 
-            // Set prompt title and message if provided
-            if let Some(title) = prompt_title {
-                validation.set_prompt_title(title);
-            }
+        // Set basic properties
+        validation.set_type(DataValidationValues::Date);
+        validation.set_operator(op);
+        validation.set_allow_blank(allow_blank);
 
-            if let Some(msg) = prompt_message {
-                validation.set_prompt(msg);
-                validation.set_show_input_message(true);
-            }
+        // Create and set sequence of references
+        let mut seq_refs = umya_spreadsheet::SequenceOfReferences::default();
+        seq_refs.set_sqref(&cell_range);
+        validation.set_sequence_of_references(seq_refs);
 
-            // Add the validation to the sheet
-            if let Some(validations) = sheet.get_data_validations_mut() {
-                validations.add_data_validation_list(validation);
-            } else {
-                let mut data_validations = umya_spreadsheet::DataValidations::default();
-                data_validations.add_data_validation_list(validation);
-                sheet.set_data_validations(data_validations);
-            }
-
-            Ok(atoms::ok())
+        // Set the formula values
+        validation.set_formula1(date1);
+        if let Some(date2) = date2 {
+            validation.set_formula2(date2);
         }
-        None => Err(atoms::not_found()),
+
+        // Set error title and message if provided
+        if let Some(title) = error_title {
+            validation.set_error_title(title);
+        }
+
+        if let Some(msg) = error_message {
+            validation.set_error_message(msg);
+            validation.set_show_error_message(true);
+        }
+
+        // Set prompt title and message if provided
+        if let Some(title) = prompt_title {
+            validation.set_prompt_title(title);
+        }
+
+        if let Some(msg) = prompt_message {
+            validation.set_prompt(msg);
+            validation.set_show_input_message(true);
+        }
+
+        // Add the validation to the sheet
+        if let Some(validations) = sheet.get_data_validations_mut() {
+            validations.add_data_validation_list(validation);
+        } else {
+            let mut data_validations = umya_spreadsheet::DataValidations::default();
+            data_validations.add_data_validation_list(validation);
+            sheet.set_data_validations(data_validations);
+        }
+
+        Ok(atoms::ok())
+    }));
+
+    match result {
+        Ok(Ok(atom)) => Ok(atom),
+        Ok(Err(err_msg)) => Err((atoms::error(), err_msg)),
+        Err(_) => Err((atoms::error(), "Error occurred in add_date_validation operation".to_string())),
     }
 }
 
@@ -262,77 +302,99 @@ pub fn add_text_length_validation(
     error_message: Option<String>,
     prompt_title: Option<String>,
     prompt_message: Option<String>,
-) -> Result<Atom, Atom> {
-    let mut guard = resource.spreadsheet.lock().unwrap();
+) -> Result<Atom, (Atom, String)> {
+    let result = panic::catch_unwind(AssertUnwindSafe(|| -> Result<Atom, String> {
+        let mut guard = resource.spreadsheet.lock()
+            .map_err(|_| "Failed to acquire spreadsheet lock".to_string())?;
 
-    // Convert operator string to Rust enum
-    let op = match operator.as_str() {
-        "between" => DataValidationOperatorValues::Between,
-        "notBetween" | "not_between" => DataValidationOperatorValues::NotBetween,
-        "equal" => DataValidationOperatorValues::Equal,
-        "notEqual" | "not_equal" => DataValidationOperatorValues::NotEqual,
-        "greaterThan" | "greater_than" => DataValidationOperatorValues::GreaterThan,
-        "lessThan" | "less_than" => DataValidationOperatorValues::LessThan,
-        "greaterThanOrEqual" | "greater_than_or_equal" => {
-            DataValidationOperatorValues::GreaterThanOrEqual
+        // Validate inputs
+        if cell_range.trim().is_empty() {
+            return Err("Cell range cannot be empty".to_string());
         }
-        "lessThanOrEqual" | "less_than_or_equal" => DataValidationOperatorValues::LessThanOrEqual,
-        _ => return Err(atoms::error()),
-    };
 
-    match guard.get_sheet_by_name_mut(&sheet_name) {
-        Some(sheet) => {
-            // Create the data validation
-            let mut validation = umya_spreadsheet::DataValidation::default();
-
-            // Set basic properties
-            validation.set_type(DataValidationValues::TextLength);
-            validation.set_operator(op);
-            validation.set_allow_blank(allow_blank);
-
-            // Create and set sequence of references
-            let mut seq_refs = umya_spreadsheet::SequenceOfReferences::default();
-            seq_refs.set_sqref(&cell_range);
-            validation.set_sequence_of_references(seq_refs);
-
-            // Set the formula values
-            validation.set_formula1(length1.to_string());
-            if let Some(len2) = length2 {
-                validation.set_formula2(len2.to_string());
-            }
-
-            // Set error title and message if provided
-            if let Some(title) = error_title {
-                validation.set_error_title(title);
-            }
-
-            if let Some(msg) = error_message {
-                validation.set_error_message(msg);
-                validation.set_show_error_message(true);
-            }
-
-            // Set prompt title and message if provided
-            if let Some(title) = prompt_title {
-                validation.set_prompt_title(title);
-            }
-
-            if let Some(msg) = prompt_message {
-                validation.set_prompt(msg);
-                validation.set_show_input_message(true);
-            }
-
-            // Add the validation to the sheet
-            if let Some(validations) = sheet.get_data_validations_mut() {
-                validations.add_data_validation_list(validation);
-            } else {
-                let mut data_validations = umya_spreadsheet::DataValidations::default();
-                data_validations.add_data_validation_list(validation);
-                sheet.set_data_validations(data_validations);
-            }
-
-            Ok(atoms::ok())
+        if length1 < 0 {
+            return Err("Length must be a non-negative number".to_string());
         }
-        None => Err(atoms::not_found()),
+
+        if let Some(len2) = length2 {
+            if len2 < 0 {
+                return Err("Second length must be a non-negative number".to_string());
+            }
+        }
+
+        // Convert operator string to Rust enum
+        let op = match operator.as_str() {
+            "between" => DataValidationOperatorValues::Between,
+            "notBetween" | "not_between" => DataValidationOperatorValues::NotBetween,
+            "equal" => DataValidationOperatorValues::Equal,
+            "notEqual" | "not_equal" => DataValidationOperatorValues::NotEqual,
+            "greaterThan" | "greater_than" => DataValidationOperatorValues::GreaterThan,
+            "lessThan" | "less_than" => DataValidationOperatorValues::LessThan,
+            "greaterThanOrEqual" | "greater_than_or_equal" => {
+                DataValidationOperatorValues::GreaterThanOrEqual
+            }
+            "lessThanOrEqual" | "less_than_or_equal" => DataValidationOperatorValues::LessThanOrEqual,
+            _ => return Err(format!("Invalid operator: {}", operator)),
+        };
+
+        let sheet = guard.get_sheet_by_name_mut(&sheet_name)
+            .ok_or_else(|| format!("Sheet '{}' not found", sheet_name))?;
+
+        // Create the data validation
+        let mut validation = umya_spreadsheet::DataValidation::default();
+
+        // Set basic properties
+        validation.set_type(DataValidationValues::TextLength);
+        validation.set_operator(op);
+        validation.set_allow_blank(allow_blank);
+
+        // Create and set sequence of references
+        let mut seq_refs = umya_spreadsheet::SequenceOfReferences::default();
+        seq_refs.set_sqref(&cell_range);
+        validation.set_sequence_of_references(seq_refs);
+
+        // Set the formula values
+        validation.set_formula1(length1.to_string());
+        if let Some(len2) = length2 {
+            validation.set_formula2(len2.to_string());
+        }
+
+        // Set error title and message if provided
+        if let Some(title) = error_title {
+            validation.set_error_title(title);
+        }
+
+        if let Some(msg) = error_message {
+            validation.set_error_message(msg);
+            validation.set_show_error_message(true);
+        }
+
+        // Set prompt title and message if provided
+        if let Some(title) = prompt_title {
+            validation.set_prompt_title(title);
+        }
+
+        if let Some(msg) = prompt_message {
+            validation.set_prompt(msg);
+            validation.set_show_input_message(true);
+        }
+
+        // Add the validation to the sheet
+        if let Some(validations) = sheet.get_data_validations_mut() {
+            validations.add_data_validation_list(validation);
+        } else {
+            let mut data_validations = umya_spreadsheet::DataValidations::default();
+            data_validations.add_data_validation_list(validation);
+            sheet.set_data_validations(data_validations);
+        }
+
+        Ok(atoms::ok())
+    }));
+
+    match result {
+        Ok(Ok(atom)) => Ok(atom),
+        Ok(Err(err_msg)) => Err((atoms::error(), err_msg)),
+        Err(_) => Err((atoms::error(), "Error occurred in add_text_length_validation operation".to_string())),
     }
 }
 
@@ -348,58 +410,74 @@ pub fn add_custom_validation(
     error_message: Option<String>,
     prompt_title: Option<String>,
     prompt_message: Option<String>,
-) -> Result<Atom, Atom> {
-    let mut guard = resource.spreadsheet.lock().unwrap();
+) -> Result<Atom, (Atom, String)> {
+    let result = panic::catch_unwind(AssertUnwindSafe(|| -> Result<Atom, String> {
+        let mut guard = resource.spreadsheet.lock()
+            .map_err(|_| "Failed to acquire spreadsheet lock".to_string())?;
 
-    match guard.get_sheet_by_name_mut(&sheet_name) {
-        Some(sheet) => {
-            // Create the data validation
-            let mut validation = umya_spreadsheet::DataValidation::default();
-
-            // Set basic properties
-            validation.set_type(DataValidationValues::Custom);
-            validation.set_allow_blank(allow_blank);
-
-            // Create and set sequence of references
-            let mut seq_refs = umya_spreadsheet::SequenceOfReferences::default();
-            seq_refs.set_sqref(&cell_range);
-            validation.set_sequence_of_references(seq_refs);
-
-            // Set the formula
-            validation.set_formula1(formula);
-
-            // Set error title and message if provided
-            if let Some(title) = error_title {
-                validation.set_error_title(title);
-            }
-
-            if let Some(msg) = error_message {
-                validation.set_error_message(msg);
-                validation.set_show_error_message(true);
-            }
-
-            // Set prompt title and message if provided
-            if let Some(title) = prompt_title {
-                validation.set_prompt_title(title);
-            }
-
-            if let Some(msg) = prompt_message {
-                validation.set_prompt(msg);
-                validation.set_show_input_message(true);
-            }
-
-            // Add the validation to the sheet
-            if let Some(validations) = sheet.get_data_validations_mut() {
-                validations.add_data_validation_list(validation);
-            } else {
-                let mut data_validations = umya_spreadsheet::DataValidations::default();
-                data_validations.add_data_validation_list(validation);
-                sheet.set_data_validations(data_validations);
-            }
-
-            Ok(atoms::ok())
+        // Validate inputs
+        if cell_range.trim().is_empty() {
+            return Err("Cell range cannot be empty".to_string());
         }
-        None => Err(atoms::not_found()),
+
+        if formula.trim().is_empty() {
+            return Err("Formula cannot be empty".to_string());
+        }
+
+        let sheet = guard.get_sheet_by_name_mut(&sheet_name)
+            .ok_or_else(|| format!("Sheet '{}' not found", sheet_name))?;
+
+        // Create the data validation
+        let mut validation = umya_spreadsheet::DataValidation::default();
+
+        // Set basic properties
+        validation.set_type(DataValidationValues::Custom);
+        validation.set_allow_blank(allow_blank);
+
+        // Create and set sequence of references
+        let mut seq_refs = umya_spreadsheet::SequenceOfReferences::default();
+        seq_refs.set_sqref(&cell_range);
+        validation.set_sequence_of_references(seq_refs);
+
+        // Set the formula
+        validation.set_formula1(formula);
+
+        // Set error title and message if provided
+        if let Some(title) = error_title {
+            validation.set_error_title(title);
+        }
+
+        if let Some(msg) = error_message {
+            validation.set_error_message(msg);
+            validation.set_show_error_message(true);
+        }
+
+        // Set prompt title and message if provided
+        if let Some(title) = prompt_title {
+            validation.set_prompt_title(title);
+        }
+
+        if let Some(msg) = prompt_message {
+            validation.set_prompt(msg);
+            validation.set_show_input_message(true);
+        }
+
+        // Add the validation to the sheet
+        if let Some(validations) = sheet.get_data_validations_mut() {
+            validations.add_data_validation_list(validation);
+        } else {
+            let mut data_validations = umya_spreadsheet::DataValidations::default();
+            data_validations.add_data_validation_list(validation);
+            sheet.set_data_validations(data_validations);
+        }
+
+        Ok(atoms::ok())
+    }));
+
+    match result {
+        Ok(Ok(atom)) => Ok(atom),
+        Ok(Err(err_msg)) => Err((atoms::error(), err_msg)),
+        Err(_) => Err((atoms::error(), "Error occurred in add_custom_validation operation".to_string())),
     }
 }
 
@@ -409,35 +487,47 @@ pub fn remove_data_validation(
     resource: ResourceArc<UmyaSpreadsheet>,
     sheet_name: String,
     cell_range: String,
-) -> Result<Atom, Atom> {
-    let mut guard = resource.spreadsheet.lock().unwrap();
+) -> Result<Atom, (Atom, String)> {
+    let result = panic::catch_unwind(AssertUnwindSafe(|| -> Result<Atom, String> {
+        let mut guard = resource.spreadsheet.lock()
+            .map_err(|_| "Failed to acquire spreadsheet lock".to_string())?;
 
-    match guard.get_sheet_by_name_mut(&sheet_name) {
-        Some(sheet) => {
-            // Get current validations
-            if let Some(validations) = sheet.get_data_validations_mut() {
-                // Filter out validations that match the cell range
-                let mut range_to_remove = umya_spreadsheet::SequenceOfReferences::default();
-                range_to_remove.set_sqref(&cell_range);
+        // Validate inputs
+        if cell_range.trim().is_empty() {
+            return Err("Cell range cannot be empty".to_string());
+        }
 
-                // Since we can't directly remove validations from the list, we'll collect
-                // the validations to keep and then replace the original list
-                let mut validations_to_keep = Vec::new();
+        let sheet = guard.get_sheet_by_name_mut(&sheet_name)
+            .ok_or_else(|| format!("Sheet '{}' not found", sheet_name))?;
 
-                for validation in validations.get_data_validation_list().iter() {
-                    if validation.get_sequence_of_references().get_sqref()
-                        != range_to_remove.get_sqref()
-                    {
-                        validations_to_keep.push(validation.clone());
-                    }
+        // Get current validations
+        if let Some(validations) = sheet.get_data_validations_mut() {
+            // Filter out validations that match the cell range
+            let mut range_to_remove = umya_spreadsheet::SequenceOfReferences::default();
+            range_to_remove.set_sqref(&cell_range);
+
+            // Since we can't directly remove validations from the list, we'll collect
+            // the validations to keep and then replace the original list
+            let mut validations_to_keep = Vec::new();
+
+            for validation in validations.get_data_validation_list().iter() {
+                if validation.get_sequence_of_references().get_sqref()
+                    != range_to_remove.get_sqref()
+                {
+                    validations_to_keep.push(validation.clone());
                 }
-
-                // Replace the original list with our filtered list
-                validations.set_data_validation_list(validations_to_keep);
             }
 
-            Ok(atoms::ok())
+            // Replace the original list with our filtered list
+            validations.set_data_validation_list(validations_to_keep);
         }
-        None => Err(atoms::not_found()),
+
+        Ok(atoms::ok())
+    }));
+
+    match result {
+        Ok(Ok(atom)) => Ok(atom),
+        Ok(Err(err_msg)) => Err((atoms::error(), err_msg)),
+        Err(_) => Err((atoms::error(), "Error occurred in remove_data_validation operation".to_string())),
     }
 }

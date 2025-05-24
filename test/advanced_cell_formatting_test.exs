@@ -89,7 +89,7 @@ defmodule AdvancedCellFormattingTest do
 
     test "handles errors gracefully", %{spreadsheet: spreadsheet} do
       # Invalid sheet name
-      assert {:error, :not_found} = UmyaSpreadsheet.set_font_italic(spreadsheet, "NonExistentSheet", "A1", true)
+      assert {:error, "Sheet not found"} = UmyaSpreadsheet.set_font_italic(spreadsheet, "NonExistentSheet", "A1", true)
 
       # We don't need to test every function with invalid inputs,
       # since they all use the same error handling mechanism
