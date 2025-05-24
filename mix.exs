@@ -4,7 +4,7 @@ defmodule UmyaSpreadsheet.MixProject do
   def project do
     [
       app: :umya_spreadsheet_ex,
-      version: "0.6.3",
+      version: "0.6.4",
       elixir: "~> 1.14",
       start_permanent: Mix.env() == :prod,
       deps: deps(),
@@ -119,7 +119,7 @@ defmodule UmyaSpreadsheet.MixProject do
           "docs/print_settings.md",
           "docs/window_settings.md"
         ],
-        "Technical": [
+        Technical: [
           "docs/thread_safety.md"
         ],
         Development: [

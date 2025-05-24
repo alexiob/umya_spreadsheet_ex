@@ -1,5 +1,39 @@
 # Changelog
 
+## 0.6.4 - 2025-05-24
+
+### Fixed
+
+- **GitHub Actions workflows**: Fixed critical issues in CI/CD pipeline
+  - Updated project paths from incorrect "example" to correct "umya_native"
+  - Upgraded to modern action versions (actions/checkout@v4, actions/upload-artifact@v4)
+  - Fixed cross-compilation setup with proper musl target handling
+  - Added RUSTLER_NIF_VERSION environment variable passthrough for consistent builds
+- **Cross-compilation configuration**: Created comprehensive Cross.toml setup
+  - Added target-specific Docker images for reliable cross-platform builds
+  - Configured environment variable passthrough for NIF compilation
+  - Added support for all major platforms (Linux, macOS, Windows)
+- **Rust build system improvements**:
+  - Created build.rs script with platform-specific link arguments
+  - Added musl target detection and handling
+  - Fixed umya-spreadsheet dependency from incorrect path to proper crates.io version "2.3.0"
+  - Enhanced error handling in compilation process
+- **Formula functions**: Fixed test failures in defined name functionality
+  - Resolved private method access issues with DefinedName.set_name()
+  - Updated to use worksheet.add_defined_name() for proper name creation
+  - Improved error handling and validation in formula operations
+- **CI environment enhancements**:
+  - Added UMYA_SPREADSHEET_BUILD=true environment variable
+  - Improved Rust toolchain setup and system dependencies
+  - Enhanced build reliability across different platforms
+
+### Improved
+
+- Enhanced build reliability and cross-platform compatibility
+- Streamlined release process with proper artifact generation
+- Better error reporting in CI/CD pipeline
+- Improved documentation for build and release processes
+
 ## 0.6.3 - 2025-05-24
 
 ### Added
