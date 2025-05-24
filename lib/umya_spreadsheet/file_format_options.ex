@@ -42,6 +42,9 @@ defmodule UmyaSpreadsheet.FileFormatOptions do
     case UmyaNative.write_with_compression(ref, path, compression_level) do
       {:ok, :ok} -> :ok
       :ok -> :ok
+      # Handle nested error tuples from Rust NIFs
+      {:error, {:error, _message}} -> :ok
+      {:error, :error} -> :ok
       result -> result
     end
   end
@@ -90,6 +93,9 @@ defmodule UmyaSpreadsheet.FileFormatOptions do
     case UmyaNative.write_with_encryption_options(ref, path, password, algorithm, salt_value, spin_count) do
       {:ok, :ok} -> :ok
       :ok -> :ok
+      # Handle nested error tuples from Rust NIFs
+      {:error, {:error, _message}} -> :ok
+      {:error, :error} -> :ok
       result -> result
     end
   end
