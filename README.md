@@ -27,6 +27,7 @@ An Elixir NIF wrapper for the [umya-spreadsheet](https://github.com/MathNya/umya
   - Move ranges of cells
   - Merge cells
   - Remove cells
+  - Add and manage comments with author info
 
 - **Styling & Formatting**
 
@@ -46,6 +47,8 @@ An Elixir NIF wrapper for the [umya-spreadsheet](https://github.com/MathNya/umya
   - Hide/show sheets
   - Set grid lines visibility
   - Move and reorder sheets
+  - Configure window settings and active tab
+  - Set cell selection and worksheet view
 
 - **Security**
 
@@ -66,6 +69,13 @@ An Elixir NIF wrapper for the [umya-spreadsheet](https://github.com/MathNya/umya
   - Set page margins and headers/footers
   - Define print areas and titles (repeating rows/columns)
   - Control print centering and fit-to-page options
+
+- **Formula Support**
+  - Set regular formulas in individual cells
+  - Create array formulas across multiple cells
+  - Define named ranges for easier formula references
+  - Create defined names for constants and formulas
+  - List defined names in workbooks
 
 - **Visual Elements**
   - Add images (PNG, JPEG)
@@ -94,6 +104,17 @@ This package is built on:
 - **umya-spreadsheet**: v2.3.0 - Robust Rust Excel library
 - **Rustler**: v0.36.1 - Seamless Rust/Elixir interop with excellent performance
 
+## Documentation
+
+UmyaSpreadsheet has comprehensive guides for all major features:
+
+- [**Guides Index**](https://hexdocs.pm/umya_spreadsheet_ex/guides.html) - Starting point for all documentation
+- [**Formula Functions**](https://hexdocs.pm/umya_spreadsheet_ex/formula_functions.html) - Working with formulas and named references
+- [**Window Settings**](https://hexdocs.pm/umya_spreadsheet_ex/window_settings.html) - Control how Excel displays your workbooks
+- [**Comments**](https://hexdocs.pm/umya_spreadsheet_ex/comments.html) - Adding and managing cell comments
+- [**Charts**](https://hexdocs.pm/umya_spreadsheet_ex/charts.html) - Creating and customizing charts
+- [**Data Validation**](https://hexdocs.pm/umya_spreadsheet_ex/data_validation.html) - Setting input rules for cells
+
 ## Installation
 
 Add `umya_spreadsheet_ex` to your list of dependencies in `mix.exs`:
@@ -101,7 +122,7 @@ Add `umya_spreadsheet_ex` to your list of dependencies in `mix.exs`:
 ```elixir
 def deps do
   [
-    {:umya_spreadsheet_ex, "~> 0.6.0"}
+    {:umya_spreadsheet_ex, "~> 0.6.3"}
   ]
 end
 ```

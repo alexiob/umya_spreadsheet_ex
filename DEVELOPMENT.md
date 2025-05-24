@@ -70,20 +70,7 @@
 
 ## Features Available in Rust but Missing in the Elixir Wrapper
 
-1. Comment Support
-
-The Rust library has comment functionality (comment.rs, comment.rs).
-No corresponding functions in the Elixir wrapper for adding/editing cell comments.
-
-2. Advanced Formula Support
-
-While basic cell values are supported, there seems to be no specific handling for:
-
-- Array formulas
-- Named ranges
-- Defined names
-
-3. Auto Filters
+1. Auto Filters
 
 The Rust library has auto filter capability (auto_filter.rs).
 The Elixir wrapper doesn't expose this filtering functionality.

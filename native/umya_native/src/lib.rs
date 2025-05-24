@@ -48,6 +48,7 @@ mod comment_functions;
 pub mod conditional_formatting;
 pub mod conditional_formatting_additional;
 mod data_validation;
+mod formula_functions;
 // Drawing and shape functions
 mod drawing_functions;
 mod sheet_view_functions;
@@ -1423,6 +1424,12 @@ rustler::init!(
         comment_functions::remove_comment,
         comment_functions::has_comments,
         comment_functions::get_comments_count,
+        // Formula functions
+        formula_functions::set_formula,
+        formula_functions::set_array_formula,
+        formula_functions::create_named_range,
+        formula_functions::create_defined_name,
+        formula_functions::get_defined_names,
         // Comment functions
         comment_functions::add_comment,
         comment_functions::get_comment,

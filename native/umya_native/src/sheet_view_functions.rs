@@ -83,7 +83,7 @@ pub fn set_show_grid_lines(
     match result {
         Ok(Ok(_)) => Ok(atoms::ok()),
         Ok(Err(msg)) => handle_error(&msg),
-        Err(_) => handle_error("Panic occurred in set_show_gridlines"),
+        Err(_) => handle_error("Panic occurred in set_show_grid_lines"),
     }
 }
 

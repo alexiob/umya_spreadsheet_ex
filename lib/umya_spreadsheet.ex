@@ -41,6 +41,7 @@ defmodule UmyaSpreadsheet do
   alias UmyaSpreadsheet.DataValidation
   alias UmyaSpreadsheet.Drawing
   alias UmyaSpreadsheet.FontFunctions
+  alias UmyaSpreadsheet.FormulaFunctions
   alias UmyaSpreadsheet.ImageFunctions
   alias UmyaSpreadsheet.PerformanceFunctions
   alias UmyaSpreadsheet.PrintSettings
@@ -457,17 +458,6 @@ defmodule UmyaSpreadsheet do
   defdelegate add_connector(spreadsheet, sheet_name, from_cell, to_cell, line_color, line_width),
     to: Drawing
 
-  # Backward compatibility functions
-
-  @doc """
-  Backward compatibility for set_show_gridlines which is now set_show_grid_lines.
-
-  @deprecated Use set_show_grid_lines/3 instead
-  """
-  def set_show_gridlines(%Spreadsheet{} = spreadsheet, sheet_name, show_gridlines) do
-    set_show_grid_lines(spreadsheet, sheet_name, show_gridlines)
-  end
-
   # PivotTable Functions delegation
   defdelegate add_pivot_table(spreadsheet, sheet_name, name, source_sheet, source_range, target_cell, row_fields, column_fields, data_fields),
     to: PivotTable
@@ -512,4 +502,74 @@ defmodule UmyaSpreadsheet do
   """
   defdelegate get_comments_count(spreadsheet, sheet_name),
     to: CommentFunctions
+
+  # Formula functions
+
+  @doc """
+  Sets a regular formula in a cell.
+
+  ## Examples
+
+      iex> {:ok, spreadsheet} = UmyaSpreadsheet.new()
+      iex> UmyaSpreadsheet.set_formula(spreadsheet, "Sheet1", "A1", "SUM(B1:B10)")
+      :ok
+  """
+  defdelegate set_formula(spreadsheet, sheet_name, cell_address, formula),
+    to: FormulaFunctions
+
+  @doc """
+  Sets an array formula for a range of cells. Array formulas can return multiple values
+  across a range of cells.
+
+  ## Examples
+
+      iex> {:ok, spreadsheet} = UmyaSpreadsheet.new()
+      iex> UmyaSpreadsheet.set_array_formula(spreadsheet, "Sheet1", "A1:A3", "ROW(1:3)")
+      :ok
+  """
+  defdelegate set_array_formula(spreadsheet, sheet_name, range, formula),
+    to: FormulaFunctions
+
+  @doc """
+  Creates a named range in the spreadsheet.
+
+  ## Examples
+
+      iex> {:ok, spreadsheet} = UmyaSpreadsheet.new()
+      iex> UmyaSpreadsheet.create_named_range(spreadsheet, "MyRange", "Sheet1", "A1:B10")
+      :ok
+  """
+  defdelegate create_named_range(spreadsheet, name, sheet_name, range),
+    to: FormulaFunctions
+
+  @doc """
+  Creates a defined name in the spreadsheet with an associated formula.
+
+  ## Examples
+
+      iex> {:ok, spreadsheet} = UmyaSpreadsheet.new()
+      iex> UmyaSpreadsheet.create_defined_name(spreadsheet, "TaxRate", "0.15")
+      :ok
+
+      iex> {:ok, spreadsheet} = UmyaSpreadsheet.new()
+      iex> UmyaSpreadsheet.create_defined_name(spreadsheet, "Department", "Sales", "Sheet1")
+      :ok
+  """
+  defdelegate create_defined_name(spreadsheet, name, formula, sheet_name \\ nil),
+    to: FormulaFunctions
+
+  @doc """
+  Gets all defined names in the spreadsheet.
+
+  ## Examples
+
+      iex> {:ok, spreadsheet} = UmyaSpreadsheet.new()
+      iex> UmyaSpreadsheet.create_named_range(spreadsheet, "MyRange", "Sheet1", "A1:B10")
+      iex> UmyaSpreadsheet.create_defined_name(spreadsheet, "TaxRate", "0.15")
+      iex> defined_names = UmyaSpreadsheet.get_defined_names(spreadsheet)
+      iex> is_list(defined_names)
+      true
+  """
+  defdelegate get_defined_names(spreadsheet),
+    to: FormulaFunctions
 end

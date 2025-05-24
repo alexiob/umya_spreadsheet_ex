@@ -10,6 +10,12 @@ Welcome to the UmyaSpreadsheet documentation. This collection of guides provides
   - Customizing chart appearance with styles and options
   - Advanced 3D chart customization
 
+- [**Comments**](comments.html): Working with cell comments
+
+  - Adding comments to cells with author information
+  - Retrieving and updating existing comments
+  - Removing comments and counting comments in worksheets
+
 - [**Conditional Formatting**](conditional_formatting.html): Apply dynamic formatting based on cell contents
 
   - Cell value rules (greater than, less than, equal to, etc.)
@@ -29,6 +35,13 @@ Welcome to the UmyaSpreadsheet documentation. This collection of guides provides
   - Custom formula-based validation rules
   - Input messages and error alerts
 
+- [**Formula Functions**](formula_functions.html): Work with formulas and named references
+
+  - Setting regular cell formulas
+  - Creating array formulas that span multiple cells
+  - Defining named ranges and defined names
+  - Listing and managing defined names
+
 - [**Image Handling**](image_handling.html): Working with images in spreadsheets
 
   - Adding images to cells
@@ -47,8 +60,12 @@ Welcome to the UmyaSpreadsheet documentation. This collection of guides provides
   - Adding text boxes with formatted text
   - Creating connectors between cells
   - Building diagrams and flowcharts
-  - Managing pivot table location and layout
-  - Refreshing and removing pivot tables
+
+- [**Window Settings**](window_settings.html): Control Excel viewing experience
+
+  - Setting active sheet selection and focus
+  - Configuring which tab is active when opening the workbook
+  - Setting the Excel application window position and size
 
 - [**Thread Safety**](thread_safety.html): Using UmyaSpreadsheet in concurrent environments
 

@@ -1,6 +1,20 @@
 # Changelog
 
-## 0.6.2 - 2023-10-15
+## 0.6.3 - 2025-05-24
+
+### Added
+
+- Advanced formula functionality:
+  - `set_formula` - Sets a regular formula in a cell
+  - `set_array_formula` - Sets an array formula for a range of cells
+  - `create_named_range` - Creates a named range reference
+  - `create_defined_name` - Creates a defined name with an associated formula
+  - `get_defined_names` - Retrieves all defined names in the workbook
+- Added test coverage for formula functionality:
+  - Tests for regular and array formulas
+  - Tests for named ranges and defined names
+
+## 0.6.2 - 2025-05-23
 
 ### Added
 

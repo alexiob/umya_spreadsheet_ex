@@ -893,5 +893,37 @@ defmodule UmyaNative do
   @spec get_comments_count(reference(), String.t()) :: integer() | {:error, atom()}
   def get_comments_count(_spreadsheet, _sheet_name), do: error()
 
+  # Formula functions
+
+  @doc """
+  Sets a regular formula in a cell.
+  """
+  @spec set_formula(reference(), String.t(), String.t(), String.t()) :: :ok | {:error, atom()}
+  def set_formula(_spreadsheet, _sheet_name, _cell_address, _formula), do: error()
+
+  @doc """
+  Sets an array formula for a range of cells.
+  """
+  @spec set_array_formula(reference(), String.t(), String.t(), String.t()) :: :ok | {:error, atom()}
+  def set_array_formula(_spreadsheet, _sheet_name, _range, _formula), do: error()
+
+  @doc """
+  Creates a named range in the spreadsheet.
+  """
+  @spec create_named_range(reference(), String.t(), String.t(), String.t()) :: :ok | {:error, atom()}
+  def create_named_range(_spreadsheet, _name, _sheet_name, _range), do: error()
+
+  @doc """
+  Creates a defined name in the spreadsheet.
+  """
+  @spec create_defined_name(reference(), String.t(), String.t(), String.t() | nil) :: :ok | {:error, atom()}
+  def create_defined_name(_spreadsheet, _name, _formula, _sheet_name \\ nil), do: error()
+
+  @doc """
+  Gets all defined names in the spreadsheet.
+  """
+  @spec get_defined_names(reference()) :: [{String.t(), String.t()}] | {:error, atom()}
+  def get_defined_names(_spreadsheet), do: error()
+
   defp error(), do: :erlang.nif_error(:nif_not_loaded)
 end
