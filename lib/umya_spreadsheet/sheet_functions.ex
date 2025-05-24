@@ -145,11 +145,8 @@ defmodule UmyaSpreadsheet.SheetFunctions do
       :ok = UmyaSpreadsheet.SheetFunctions.set_sheet_protection(spreadsheet, "Sheet1", nil, false)
   """
   def set_sheet_protection(%Spreadsheet{reference: ref}, sheet_name, password, is_protected) do
-    case UmyaNative.set_sheet_protection(ref, sheet_name, password, is_protected) do
-      {:ok, :ok} -> :ok
-      :ok -> :ok
-      result -> result
-    end
+    UmyaNative.set_sheet_protection(ref, sheet_name, password, is_protected)
+    |> ErrorHandling.standardize_result()
   end
 
   @doc """
@@ -251,11 +248,8 @@ defmodule UmyaSpreadsheet.SheetFunctions do
       :ok = UmyaSpreadsheet.SheetFunctions.insert_new_column(spreadsheet, "Sheet1", "C", 2)
   """
   def insert_new_column(%Spreadsheet{reference: ref}, sheet_name, column, amount) do
-    case UmyaNative.insert_new_column(ref, sheet_name, column, amount) do
-      {:ok, :ok} -> :ok
-      :ok -> :ok
-      result -> result
-    end
+    UmyaNative.insert_new_column(ref, sheet_name, column, amount)
+    |> ErrorHandling.standardize_result()
   end
 
   @doc """
@@ -280,11 +274,8 @@ defmodule UmyaSpreadsheet.SheetFunctions do
       :ok = UmyaSpreadsheet.SheetFunctions.insert_new_column_by_index(spreadsheet, "Sheet1", 3, 2)
   """
   def insert_new_column_by_index(%Spreadsheet{reference: ref}, sheet_name, column_index, amount) do
-    case UmyaNative.insert_new_column_by_index(ref, sheet_name, column_index, amount) do
-      {:ok, :ok} -> :ok
-      :ok -> :ok
-      result -> result
-    end
+    UmyaNative.insert_new_column_by_index(ref, sheet_name, column_index, amount)
+    |> ErrorHandling.standardize_result()
   end
 
   @doc """
@@ -305,15 +296,12 @@ defmodule UmyaSpreadsheet.SheetFunctions do
   ## Examples
 
       {:ok, spreadsheet} = UmyaSpreadsheet.read_file("input.xlsx")
-      # Remove 2 rows starting at row 3
+      # Remove 2 rows starting from row 3
       :ok = UmyaSpreadsheet.SheetFunctions.remove_row(spreadsheet, "Sheet1", 3, 2)
   """
   def remove_row(%Spreadsheet{reference: ref}, sheet_name, row_index, amount) do
-    case UmyaNative.remove_row(ref, sheet_name, row_index, amount) do
-      {:ok, :ok} -> :ok
-      :ok -> :ok
-      result -> result
-    end
+    UmyaNative.remove_row(ref, sheet_name, row_index, amount)
+    |> ErrorHandling.standardize_result()
   end
 
   @doc """
@@ -334,15 +322,12 @@ defmodule UmyaSpreadsheet.SheetFunctions do
   ## Examples
 
       {:ok, spreadsheet} = UmyaSpreadsheet.read_file("input.xlsx")
-      # Remove 2 columns starting at column C
+      # Remove 2 columns starting from column C
       :ok = UmyaSpreadsheet.SheetFunctions.remove_column(spreadsheet, "Sheet1", "C", 2)
   """
   def remove_column(%Spreadsheet{reference: ref}, sheet_name, column, amount) do
-    case UmyaNative.remove_column(ref, sheet_name, column, amount) do
-      {:ok, :ok} -> :ok
-      :ok -> :ok
-      result -> result
-    end
+    UmyaNative.remove_column(ref, sheet_name, column, amount)
+    |> ErrorHandling.standardize_result()
   end
 
   @doc """
@@ -363,14 +348,11 @@ defmodule UmyaSpreadsheet.SheetFunctions do
   ## Examples
 
       {:ok, spreadsheet} = UmyaSpreadsheet.read_file("input.xlsx")
-      # Remove 2 columns starting at column index 3 (column C)
+      # Remove 2 columns starting from column index 3 (column C)
       :ok = UmyaSpreadsheet.SheetFunctions.remove_column_by_index(spreadsheet, "Sheet1", 3, 2)
   """
   def remove_column_by_index(%Spreadsheet{reference: ref}, sheet_name, column_index, amount) do
-    case UmyaNative.remove_column_by_index(ref, sheet_name, column_index, amount) do
-      {:ok, :ok} -> :ok
-      :ok -> :ok
-      result -> result
-    end
+    UmyaNative.remove_column_by_index(ref, sheet_name, column_index, amount)
+    |> ErrorHandling.standardize_result()
   end
 end

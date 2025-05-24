@@ -7,6 +7,7 @@ defmodule UmyaSpreadsheet.AutoFilterFunctions do
 
   alias UmyaSpreadsheet.Spreadsheet
   alias UmyaNative
+  alias UmyaSpreadsheet.ErrorHandling
 
   @doc """
   Sets an auto filter for a range of cells in a worksheet.
@@ -26,9 +27,10 @@ defmodule UmyaSpreadsheet.AutoFilterFunctions do
       :ok
 
   """
-  @spec set_auto_filter(Spreadsheet.t(), String.t(), String.t()) :: :ok | {:error, atom()}
+  @spec set_auto_filter(Spreadsheet.t(), String.t(), String.t()) :: :ok | {:error, String.t()}
   def set_auto_filter(%Spreadsheet{reference: ref}, sheet_name, range) do
     UmyaNative.set_auto_filter(ref, sheet_name, range)
+    |> ErrorHandling.standardize_result()
   end
 
   @doc """
@@ -47,9 +49,10 @@ defmodule UmyaSpreadsheet.AutoFilterFunctions do
       :ok
 
   """
-  @spec remove_auto_filter(Spreadsheet.t(), String.t()) :: :ok | {:error, atom()}
+  @spec remove_auto_filter(Spreadsheet.t(), String.t()) :: :ok | {:error, String.t()}
   def remove_auto_filter(%Spreadsheet{reference: ref}, sheet_name) do
     UmyaNative.remove_auto_filter(ref, sheet_name)
+    |> ErrorHandling.standardize_result()
   end
 
   @doc """
@@ -72,9 +75,10 @@ defmodule UmyaSpreadsheet.AutoFilterFunctions do
       true
 
   """
-  @spec has_auto_filter(Spreadsheet.t(), String.t()) :: boolean() | {:error, atom()}
+  @spec has_auto_filter(Spreadsheet.t(), String.t()) :: {:ok, boolean()} | {:error, String.t()}
   def has_auto_filter(%Spreadsheet{reference: ref}, sheet_name) do
     UmyaNative.has_auto_filter(ref, sheet_name)
+    |> ErrorHandling.standardize_result()
   end
 
   @doc """
@@ -97,8 +101,9 @@ defmodule UmyaSpreadsheet.AutoFilterFunctions do
       "A1:E10"
 
   """
-  @spec get_auto_filter_range(Spreadsheet.t(), String.t()) :: String.t() | nil | {:error, atom()}
+  @spec get_auto_filter_range(Spreadsheet.t(), String.t()) :: {:ok, String.t() | nil} | {:error, String.t()}
   def get_auto_filter_range(%Spreadsheet{reference: ref}, sheet_name) do
     UmyaNative.get_auto_filter_range(ref, sheet_name)
+    |> ErrorHandling.standardize_result()
   end
 end
