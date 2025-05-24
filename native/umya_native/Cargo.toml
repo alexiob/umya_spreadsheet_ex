@@ -11,5 +11,5 @@ crate-type = ["cdylib"]
 
 [dependencies]
 rustler = "0.36.1"
-umya-spreadsheet = "2.3.0"
+umya-spreadsheet = { path = "../../../" }
 zip = "2.4.2"
