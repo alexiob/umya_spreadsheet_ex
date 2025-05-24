@@ -58,7 +58,6 @@ mod drawing_functions;
 mod file_format_options;
 mod formula_functions;
 mod helpers;
-mod pivot_table_utils;
 mod print_settings;
 mod set_background_color;
 mod set_cell_alignment;
