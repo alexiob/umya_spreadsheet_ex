@@ -10,12 +10,9 @@
 2. Improve error handling:
 
    - Rust wrapper should propagate errors to Elixir, and not println
-   - Use Elixir's `{:ok, result}` and `{:error, reason}` pattern
-   - Handle errors in a more user-friendly way
-   - Provide more context in error messages
+   - Some functions, like `pub fn has_comments(` trap some errors to return a default value. THIS MUST BE RESPECTED
+   - Use Elixir's `{:ok, result}` and `{:error, reason}` pattern. The reason must always be a string.
    - Use Elixir's `with` construct for better error handling
-   - More specific error types/messages
-   - Better validation for inputs
    - Improved handling of corrupted files
 
 3. Add more comprehensive documentation:
