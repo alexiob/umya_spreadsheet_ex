@@ -1,8 +1,6 @@
 defmodule UmyaNative do
   @moduledoc false
 
-  # use Rustler, otp_app: :umya_spreadsheet_ex, crate: "umya_native"
-
   mix_config = Mix.Project.config()
   version = mix_config[:version]
   github_url = mix_config[:package][:links]["GitHub"]
