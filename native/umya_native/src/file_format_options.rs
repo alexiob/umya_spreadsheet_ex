@@ -1,5 +1,5 @@
 use crate::{atoms, UmyaSpreadsheet};
-use rustler::{Atom, Binary, Env, OwnedBinary, ResourceArc};
+use rustler::{Atom, Binary, Env, Error as NifError, NifResult, OwnedBinary, ResourceArc};
 use std::path::Path;
 use umya_spreadsheet::writer::xlsx;
 
@@ -11,7 +11,7 @@ pub fn write_with_compression(
     resource: ResourceArc<UmyaSpreadsheet>,
     path: String,
     compression_level: i64,
-) -> Result<Atom, Atom> {
+) -> NifResult<Atom> {
     // For output paths, we use the direct path since the file might not exist yet
     let path_obj = Path::new(&path);
 
@@ -19,7 +19,10 @@ pub fn write_with_compression(
     if let Some(parent) = path_obj.parent() {
         if !parent.exists() {
             if std::fs::create_dir_all(parent).is_err() {
-                return Err(atoms::invalid_path());
+                return Err(NifError::Term(Box::new((
+                    atoms::error(),
+                    "Invalid file path or unable to create directory".to_string(),
+                ))));
             }
         }
     }
@@ -40,7 +43,12 @@ pub fn write_with_compression(
         // Just use the standard write function as it uses default compression
         match xlsx::write(&guard, path_obj) {
             Ok(_) => return Ok(atoms::ok()),
-            Err(_) => return Err(atoms::error()),
+            Err(_) => {
+                return Err(NifError::Term(Box::new((
+                    atoms::error(),
+                    "Failed to write file with compression".to_string(),
+                ))))
+            }
         }
     }
 
@@ -52,7 +60,10 @@ pub fn write_with_compression(
     // Future enhancement: could use direct ZIP library manipulation
     match xlsx::write(&guard, path_obj) {
         Ok(_) => Ok(atoms::ok()),
-        Err(_) => Err(atoms::error()),
+        Err(_) => Err(NifError::Term(Box::new((
+            atoms::error(),
+            "Failed to write file with compression".to_string(),
+        )))),
     }
 }
 
@@ -65,7 +76,7 @@ pub fn write_with_encryption_options(
     algorithm: String,
     salt_value: Option<String>,
     spin_count: Option<u32>,
-) -> Result<Atom, Atom> {
+) -> NifResult<Atom> {
     // For output paths, we use the direct path since the file might not exist yet
     let path_obj = Path::new(&path);
 
@@ -73,7 +84,10 @@ pub fn write_with_encryption_options(
     if let Some(parent) = path_obj.parent() {
         if !parent.exists() {
             if std::fs::create_dir_all(parent).is_err() {
-                return Err(atoms::invalid_path());
+                return Err(NifError::Term(Box::new((
+                    atoms::error(),
+                    "Invalid file path or unable to create directory".to_string(),
+                ))));
             }
         }
     }
@@ -109,7 +123,10 @@ pub fn write_with_encryption_options(
 
         // Write the file with protection settings
         if xlsx::write(&spreadsheet_mut, temp_path).is_err() {
-            return Err(atoms::error());
+            return Err(NifError::Term(Box::new((
+                atoms::error(),
+                "Failed to write temporary file".to_string(),
+            ))));
         }
 
         // Now encrypt the file with password
@@ -121,7 +138,10 @@ pub fn write_with_encryption_options(
             }
             Err(_) => {
                 let _ = std::fs::remove_file(temp_path);
-                Err(atoms::error())
+                Err(NifError::Term(Box::new((
+                    atoms::error(),
+                    "Failed to write file with encryption".to_string(),
+                ))))
             }
         }
     }

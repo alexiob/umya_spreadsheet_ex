@@ -87,4 +87,14 @@ defmodule UmyaSpreadsheet.ExtendedProtectionTest do
     # Verify file was created
     assert File.exists?(@temp_output_path)
   end
+
+  test "write_with_password error handling" do
+    # Create a new spreadsheet
+    {:ok, spreadsheet} = UmyaSpreadsheet.new()
+
+    # Test 1: Try to write to an invalid path (should fail gracefully)
+    invalid_path = "/invalid/nonexistent/directory/test.xlsx"
+    {:error, _message} = UmyaSpreadsheet.write_with_password(spreadsheet, invalid_path, "password123")
+
+  end
 end

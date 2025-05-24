@@ -43,8 +43,8 @@ defmodule UmyaSpreadsheet.FileFormatOptions do
       {:ok, :ok} -> :ok
       :ok -> :ok
       # Handle nested error tuples from Rust NIFs
-      {:error, {:error, _message}} -> :ok
-      {:error, :error} -> :ok
+      {:error, :error} -> {:error, "Failed to write file with compression"}
+      {:error, message} -> {:error, message}
       result -> result
     end
   end
@@ -94,8 +94,8 @@ defmodule UmyaSpreadsheet.FileFormatOptions do
       {:ok, :ok} -> :ok
       :ok -> :ok
       # Handle nested error tuples from Rust NIFs
-      {:error, {:error, _message}} -> :ok
-      {:error, :error} -> :ok
+      {:error, {:error, message}} -> {:error, message}
+      {:error, :error} -> {:error, "Failed to write file with encryption"}
       result -> result
     end
   end

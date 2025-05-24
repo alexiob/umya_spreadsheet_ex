@@ -213,8 +213,8 @@ defmodule UmyaSpreadsheet do
       # Handle the {:ok, :ok} tuple from Rustler 0.36.1
       {:ok, :ok} -> :ok
       # Handle nested error tuples from Rust NIFs
-      {:error, {:error, _message}} -> :ok
-      {:error, :error} -> :ok
+      {:error, {:error, message}} -> {:error, message}
+      {:error, :error} -> {:error, "Failed to write file with password"}
       {:error, reason} -> {:error, reason}
     end
   end
