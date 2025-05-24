@@ -42,6 +42,13 @@ Welcome to the UmyaSpreadsheet documentation. This collection of guides provides
   - Defining named ranges and defined names
   - Listing and managing defined names
 
+- [**Auto Filters**](auto_filters.html): Enable Excel's filtering capability
+
+  - Adding filter dropdown buttons to data ranges
+  - Checking and removing auto filters
+  - Getting filter range information
+  - Best practices for using auto filters
+
 - [**Image Handling**](image_handling.html): Working with images in spreadsheets
 
   - Adding images to cells

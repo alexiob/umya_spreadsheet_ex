@@ -10,9 +10,16 @@
   - `create_named_range` - Creates a named range reference
   - `create_defined_name` - Creates a defined name with an associated formula
   - `get_defined_names` - Retrieves all defined names in the workbook
-- Added test coverage for formula functionality:
+- Auto Filter functionality:
+  - `set_auto_filter` - Adds filter dropdown buttons to a range of cells
+  - `remove_auto_filter` - Removes an auto filter from a worksheet
+  - `has_auto_filter` - Checks if a worksheet has an auto filter
+  - `get_auto_filter_range` - Gets the range of an existing auto filter
+- Added test coverage for formula and auto filter functionality:
   - Tests for regular and array formulas
   - Tests for named ranges and defined names
+  - Tests for creating, removing, and querying auto filters
+  - Tests for auto filter persistence between save and load operations
 
 ## 0.6.2 - 2025-05-23
 

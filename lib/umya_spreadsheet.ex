@@ -32,6 +32,8 @@ defmodule UmyaSpreadsheet do
   alias UmyaNative
 
   # Import specialized function modules
+  alias UmyaSpreadsheet.AutoFilterFunctions
+  alias UmyaSpreadsheet.BackgroundFunctions
   alias UmyaSpreadsheet.BorderFunctions
   alias UmyaSpreadsheet.CellFunctions
   alias UmyaSpreadsheet.ChartFunctions
@@ -44,6 +46,7 @@ defmodule UmyaSpreadsheet do
   alias UmyaSpreadsheet.FormulaFunctions
   alias UmyaSpreadsheet.ImageFunctions
   alias UmyaSpreadsheet.PerformanceFunctions
+  alias UmyaSpreadsheet.PivotTable
   alias UmyaSpreadsheet.PrintSettings
   alias UmyaSpreadsheet.RowColumnFunctions
   alias UmyaSpreadsheet.SheetFunctions
@@ -51,8 +54,6 @@ defmodule UmyaSpreadsheet do
   alias UmyaSpreadsheet.StylingFunctions
   alias UmyaSpreadsheet.WorkbookFunctions
   alias UmyaSpreadsheet.WorkbookViewFunctions
-  alias UmyaSpreadsheet.BackgroundFunctions
-  alias UmyaSpreadsheet.PivotTable
 
   defmodule Spreadsheet do
     @moduledoc """
@@ -572,4 +573,57 @@ defmodule UmyaSpreadsheet do
   """
   defdelegate get_defined_names(spreadsheet),
     to: FormulaFunctions
+
+  @doc """
+  Sets an auto filter for a range of cells in a worksheet.
+
+  Auto filters allow users to filter data in Excel by adding dropdown menus to column headers.
+
+  ## Examples
+
+      iex> {:ok, spreadsheet} = UmyaSpreadsheet.new()
+      iex> UmyaSpreadsheet.set_auto_filter(spreadsheet, "Sheet1", "A1:E10")
+      :ok
+  """
+  defdelegate set_auto_filter(spreadsheet, sheet_name, range),
+    to: AutoFilterFunctions
+
+  @doc """
+  Removes an auto filter from a worksheet.
+
+  ## Examples
+
+      iex> {:ok, spreadsheet} = UmyaSpreadsheet.new()
+      iex> UmyaSpreadsheet.set_auto_filter(spreadsheet, "Sheet1", "A1:E10")
+      iex> UmyaSpreadsheet.remove_auto_filter(spreadsheet, "Sheet1")
+      :ok
+  """
+  defdelegate remove_auto_filter(spreadsheet, sheet_name),
+    to: AutoFilterFunctions
+
+  @doc """
+  Checks if a worksheet has an auto filter.
+
+  ## Examples
+
+      iex> {:ok, spreadsheet} = UmyaSpreadsheet.new()
+      iex> UmyaSpreadsheet.set_auto_filter(spreadsheet, "Sheet1", "A1:E10")
+      iex> UmyaSpreadsheet.has_auto_filter(spreadsheet, "Sheet1")
+      true
+  """
+  defdelegate has_auto_filter(spreadsheet, sheet_name),
+    to: AutoFilterFunctions
+
+  @doc """
+  Gets the range of an auto filter in a worksheet.
+
+  ## Examples
+
+      iex> {:ok, spreadsheet} = UmyaSpreadsheet.new()
+      iex> UmyaSpreadsheet.set_auto_filter(spreadsheet, "Sheet1", "A1:E10")
+      iex> UmyaSpreadsheet.get_auto_filter_range(spreadsheet, "Sheet1")
+      "A1:E10"
+  """
+  defdelegate get_auto_filter_range(spreadsheet, sheet_name),
+    to: AutoFilterFunctions
 end

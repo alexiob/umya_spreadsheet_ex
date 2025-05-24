@@ -925,5 +925,29 @@ defmodule UmyaNative do
   @spec get_defined_names(reference()) :: [{String.t(), String.t()}] | {:error, atom()}
   def get_defined_names(_spreadsheet), do: error()
 
+  @doc """
+  Sets an auto filter for a range of cells in a worksheet.
+  """
+  @spec set_auto_filter(reference(), String.t(), String.t()) :: :ok | {:error, atom()}
+  def set_auto_filter(_spreadsheet, _sheet_name, _range), do: error()
+
+  @doc """
+  Removes an auto filter from a worksheet.
+  """
+  @spec remove_auto_filter(reference(), String.t()) :: :ok | {:error, atom()}
+  def remove_auto_filter(_spreadsheet, _sheet_name), do: error()
+
+  @doc """
+  Checks if a worksheet has an auto filter.
+  """
+  @spec has_auto_filter(reference(), String.t()) :: boolean() | {:error, atom()}
+  def has_auto_filter(_spreadsheet, _sheet_name), do: error()
+
+  @doc """
+  Gets the range of an auto filter in a worksheet.
+  """
+  @spec get_auto_filter_range(reference(), String.t()) :: String.t() | nil | {:error, atom()}
+  def get_auto_filter_range(_spreadsheet, _sheet_name), do: error()
+
   defp error(), do: :erlang.nif_error(:nif_not_loaded)
 end

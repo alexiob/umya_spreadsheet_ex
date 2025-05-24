@@ -77,6 +77,12 @@ An Elixir NIF wrapper for the [umya-spreadsheet](https://github.com/MathNya/umya
   - Create defined names for constants and formulas
   - List defined names in workbooks
 
+- **Data Organization & Analysis**
+  - Add auto filters to column headers for interactive filtering
+  - Enable/disable and manage auto filters in worksheets
+  - Query auto filter ranges and states
+  - Create worksheets with filtered views for easier data analysis
+
 - **Visual Elements**
   - Add images (PNG, JPEG)
   - Create charts (Line, Bar, Pie, and more)
@@ -110,6 +116,7 @@ UmyaSpreadsheet has comprehensive guides for all major features:
 
 - [**Guides Index**](https://hexdocs.pm/umya_spreadsheet_ex/guides.html) - Starting point for all documentation
 - [**Formula Functions**](https://hexdocs.pm/umya_spreadsheet_ex/formula_functions.html) - Working with formulas and named references
+- [**Auto Filters**](https://hexdocs.pm/umya_spreadsheet_ex/auto_filters.html) - Creating and managing Excel filter controls
 - [**Window Settings**](https://hexdocs.pm/umya_spreadsheet_ex/window_settings.html) - Control how Excel displays your workbooks
 - [**Comments**](https://hexdocs.pm/umya_spreadsheet_ex/comments.html) - Adding and managing cell comments
 - [**Charts**](https://hexdocs.pm/umya_spreadsheet_ex/charts.html) - Creating and customizing charts

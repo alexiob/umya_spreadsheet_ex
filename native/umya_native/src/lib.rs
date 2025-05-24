@@ -43,6 +43,7 @@ mod atoms {
     }
 }
 
+mod auto_filter_functions;
 mod chart_functions;
 mod comment_functions;
 pub mod conditional_formatting;
@@ -1430,6 +1431,11 @@ rustler::init!(
         formula_functions::create_named_range,
         formula_functions::create_defined_name,
         formula_functions::get_defined_names,
+        // Auto filter functions
+        auto_filter_functions::set_auto_filter,
+        auto_filter_functions::remove_auto_filter,
+        auto_filter_functions::has_auto_filter,
+        auto_filter_functions::get_auto_filter_range,
         // Comment functions
         comment_functions::add_comment,
         comment_functions::get_comment,
