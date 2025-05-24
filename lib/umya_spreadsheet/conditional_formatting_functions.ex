@@ -407,4 +407,132 @@ defmodule UmyaSpreadsheet.ConditionalFormatting do
     CustomColor.from_hex(hex_color)
   end
   defp convert_color(_), do: %CustomColor{argb: "FFFFFFFF"}  # Default to white for unknown formats
+
+  @doc """
+  Adds an icon set rule for conditional formatting.
+
+  Icon sets display different icons based on the values in the cells, providing a visual
+  representation of data trends.
+
+  ## Parameters
+
+  - `spreadsheet` - The spreadsheet struct
+  - `sheet_name` - The name of the sheet
+  - `range` - The cell range to apply formatting to (e.g., "A1:A10")
+  - `icon_style` - The style of icons to use (currently supports basic icon sets)
+  - `thresholds` - A list of threshold tuples {type, value} defining the icon boundaries
+
+  ## Threshold Types
+
+  - `{"min", ""}` - Use the minimum value in the range
+  - `{"max", ""}` - Use the maximum value in the range
+  - `{"number", "X"}` - Use a specific number
+  - `{"percent", "X"}` - Use X percent of the range
+  - `{"percentile", "X"}` - Use the Xth percentile
+  - `{"formula", "X"}` - Use a formula result
+
+  ## Examples
+
+      {:ok, spreadsheet} = UmyaSpreadsheet.read_file("input.xlsx")
+
+      # Simple 3-icon set with percentile thresholds
+      :ok = UmyaSpreadsheet.add_icon_set(
+        spreadsheet,
+        "Sheet1",
+        "A1:A10",
+        "3_traffic_lights",
+        [
+          {"percentile", "33"},
+          {"percentile", "67"}
+        ]
+      )
+
+      # 5-icon set with custom number thresholds
+      :ok = UmyaSpreadsheet.add_icon_set(
+        spreadsheet,
+        "Sheet1",
+        "B1:B10",
+        "5_arrows",
+        [
+          {"number", "20"},
+          {"number", "40"},
+          {"number", "60"},
+          {"number", "80"}
+        ]
+      )
+  """
+  def add_icon_set(%Spreadsheet{reference: ref}, sheet_name, range, icon_style, thresholds) do
+    case UmyaNative.add_icon_set(ref, sheet_name, range, icon_style, thresholds) do
+      {:ok, :ok} -> :ok
+      {:ok, true} -> :ok  # Handle the true boolean return value
+      :ok -> :ok  # Handle simple ok atoms
+      {:error, reason} -> {:error, reason}
+      result -> result
+    end
+  end
+
+  @doc """
+  Adds an above or below average rule for conditional formatting.
+
+  This rule highlights cells that are above or below the average value of the selected range.
+
+  ## Parameters
+
+  - `spreadsheet` - The spreadsheet struct
+  - `sheet_name` - The name of the sheet
+  - `range` - The cell range to apply formatting to (e.g., "A1:A10")
+  - `rule_type` - The type of rule: "above", "below", "above_equal", "below_equal"
+  - `std_dev` - Optional standard deviation for more advanced rules (nil for basic average)
+  - `format_style` - The color to apply when the condition is met (e.g., "#FF0000" for red)
+
+  ## Rule Types
+
+  - `"above"` - Highlight cells above the average
+  - `"below"` - Highlight cells below the average
+  - `"above_equal"` - Highlight cells above or equal to the average
+  - `"below_equal"` - Highlight cells below or equal to the average
+
+  ## Examples
+
+      {:ok, spreadsheet} = UmyaSpreadsheet.read_file("input.xlsx")
+
+      # Highlight cells above average in green
+      :ok = UmyaSpreadsheet.add_above_below_average_rule(
+        spreadsheet,
+        "Sheet1",
+        "A1:A10",
+        "above",
+        nil,
+        "#00FF00"
+      )
+
+      # Highlight cells below average in red
+      :ok = UmyaSpreadsheet.add_above_below_average_rule(
+        spreadsheet,
+        "Sheet1",
+        "B1:B10",
+        "below",
+        nil,
+        "#FF0000"
+      )
+
+      # Highlight cells above average plus one standard deviation in blue
+      :ok = UmyaSpreadsheet.add_above_below_average_rule(
+        spreadsheet,
+        "Sheet1",
+        "C1:C10",
+        "above",
+        1,
+        "#0000FF"
+      )
+  """
+  def add_above_below_average_rule(%Spreadsheet{reference: ref}, sheet_name, range, rule_type, std_dev, format_style) do
+    case UmyaNative.add_above_below_average_rule(ref, sheet_name, range, rule_type, std_dev, format_style) do
+      {:ok, :ok} -> :ok
+      {:ok, true} -> :ok  # Handle the true boolean return value
+      :ok -> :ok  # Handle simple ok atoms
+      {:error, reason} -> {:error, reason}
+      result -> result
+    end
+  end
 end

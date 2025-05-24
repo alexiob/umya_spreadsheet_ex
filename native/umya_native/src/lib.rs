@@ -378,6 +378,35 @@ fn add_sheet(resource: ResourceArc<UmyaSpreadsheet>, sheet_name: String) -> NifR
 }
 
 #[rustler::nif]
+fn rename_sheet(
+    resource: ResourceArc<UmyaSpreadsheet>,
+    old_sheet_name: String,
+    new_sheet_name: String,
+) -> NifResult<Atom> {
+    let mut guard = resource.spreadsheet.lock().unwrap();
+
+    // Check if the new sheet name already exists
+    if guard.get_sheet_by_name(&new_sheet_name).is_some() {
+        return Err(NifError::Term(Box::new((
+            atoms::error(),
+            "Sheet name already exists".to_string(),
+        ))));
+    }
+
+    // Find and rename the sheet
+    match guard.get_sheet_by_name_mut(&old_sheet_name) {
+        Some(sheet) => {
+            sheet.set_name(&new_sheet_name);
+            Ok(atoms::ok())
+        }
+        None => Err(NifError::Term(Box::new((
+            atoms::error(),
+            "Sheet not found".to_string(),
+        )))),
+    }
+}
+
+#[rustler::nif]
 fn move_range(
     resource: ResourceArc<UmyaSpreadsheet>,
     sheet_name: String,
@@ -1551,6 +1580,7 @@ rustler::init!(
         set_cell_value,
         get_sheet_names,
         add_sheet,
+        rename_sheet,
         move_range,
         set_font_color,
         set_font_size,
@@ -1594,6 +1624,8 @@ rustler::init!(
         conditional_formatting_additional::add_data_bar,
         conditional_formatting_additional::add_top_bottom_rule,
         conditional_formatting_additional::add_text_rule,
+        conditional_formatting_additional::add_icon_set,
+        conditional_formatting_additional::add_above_below_average_rule,
         // CSV functions
         write_csv_with_options::write_csv,
         write_csv_with_options::write_csv_with_options,

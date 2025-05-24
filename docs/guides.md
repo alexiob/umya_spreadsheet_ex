@@ -106,6 +106,20 @@ Welcome to the UmyaSpreadsheet documentation. This collection of guides provides
   - Text rotation and orientation control
   - Cell text indentation for hierarchical displays
 
+- [**Limitations & Compatibility**](limitations.html): Understanding constraints and compatibility
+  - File format support matrix and limitations
+  - Excel feature support levels and workarounds
+  - Platform and version compatibility information
+  - Performance limitations and guidelines
+  - Known issues and future roadmap
+
+- [**Troubleshooting Guide**](troubleshooting.html): Solutions for common issues and problems
+  - Installation and compilation issues
+  - Runtime errors and debugging techniques
+  - Performance optimization strategies
+  - File format and memory management issues
+  - Platform-specific solutions and best practices
+
 ## Getting Started
 
 For a quick introduction to UmyaSpreadsheet, visit the [README](../readme.html).

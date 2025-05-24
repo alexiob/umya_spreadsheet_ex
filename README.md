@@ -114,6 +114,8 @@ This package is built on:
 
 UmyaSpreadsheet has comprehensive guides for all major features:
 
+### Online Documentation
+
 - [**Guides Index**](https://hexdocs.pm/umya_spreadsheet_ex/guides.html) - Starting point for all documentation
 - [**Formula Functions**](https://hexdocs.pm/umya_spreadsheet_ex/formula_functions.html) - Working with formulas and named references
 - [**Auto Filters**](https://hexdocs.pm/umya_spreadsheet_ex/auto_filters.html) - Creating and managing Excel filter controls
@@ -122,6 +124,11 @@ UmyaSpreadsheet has comprehensive guides for all major features:
 - [**Charts**](https://hexdocs.pm/umya_spreadsheet_ex/charts.html) - Creating and customizing charts
 - [**Data Validation**](https://hexdocs.pm/umya_spreadsheet_ex/data_validation.html) - Setting input rules for cells
 - [**File Format Options**](https://hexdocs.pm/umya_spreadsheet_ex/file_format_options.html) - Control compression, encryption, and binary format generation
+
+### Reference Documentation
+
+- [**Troubleshooting Guide**](TROUBLESHOOTING.md) - Solutions for common issues and problems
+- [**Limitations & Compatibility**](LIMITATIONS.md) - Known limitations, compatibility matrix, and workarounds
 
 ## Installation
 

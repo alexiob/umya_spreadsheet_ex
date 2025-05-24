@@ -88,6 +88,8 @@ defmodule UmyaSpreadsheet.MixProject do
         "docs/sheet_operations.md",
         "docs/styling_and_formatting.md",
         "docs/thread_safety.md",
+        "docs/troubleshooting.md",
+        "docs/limitations.md",
         "docs/window_settings.md"
       ],
       groups_for_extras: [
@@ -121,6 +123,10 @@ defmodule UmyaSpreadsheet.MixProject do
         ],
         Technical: [
           "docs/thread_safety.md"
+        ],
+        Reference: [
+          "docs/troubleshooting.md",
+          "docs/limitations.md"
         ],
         Development: [
           "DEVELOPMENT.md",

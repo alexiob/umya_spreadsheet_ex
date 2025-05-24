@@ -98,6 +98,30 @@ defmodule UmyaSpreadsheet.SheetFunctions do
   end
 
   @doc """
+  Renames an existing sheet.
+
+  ## Parameters
+
+  - `spreadsheet` - The spreadsheet struct
+  - `old_sheet_name` - The current name of the sheet
+  - `new_sheet_name` - The new name for the sheet
+
+  ## Returns
+
+  - `:ok` on success
+  - `{:error, reason}` on failure
+
+  ## Examples
+
+      {:ok, spreadsheet} = UmyaSpreadsheet.read_file("input.xlsx")
+      :ok = UmyaSpreadsheet.SheetFunctions.rename_sheet(spreadsheet, "Sheet1", "Updated Sheet")
+  """
+  def rename_sheet(%Spreadsheet{reference: ref}, old_sheet_name, new_sheet_name) do
+    UmyaNative.rename_sheet(ref, old_sheet_name, new_sheet_name)
+    |> ErrorHandling.standardize_result()
+  end
+
+  @doc """
   Sets the visibility state of a sheet.
 
   ## Parameters

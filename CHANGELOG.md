@@ -1,5 +1,78 @@
 # Changelog
 
+## 0.6.5 - 2025-05-25
+
+### Added
+
+- **Comprehensive Documentation Suite**:
+  - **Enhanced Main Module Documentation** - Updated `UmyaSpreadsheet` module with comprehensive architecture overview
+    - Added ASCII diagram showing core architecture and specialized function modules
+    - Documented data flow (NIF Layer → Spreadsheet Reference → Function Modules → Error Handling → Memory Management)
+    - Added thread safety and performance characteristics documentation
+    - Included compatibility matrix for Excel versions, Elixir/OTP versions, and platforms
+    - Added quick start guide with code examples and error handling patterns
+  - **Troubleshooting Guide** - Created comprehensive `TROUBLESHOOTING.md` covering:
+    - Installation issues (NIF compilation, precompiled binaries, platform-specific problems)
+    - Runtime errors (spreadsheet reference errors, sheet not found, invalid cell references)
+    - Performance issues (slow file operations, memory usage growth)
+    - File format issues (corrupted files, encoding problems)
+    - Memory issues (out of memory errors, optimization strategies)
+    - Concurrency issues (race conditions, coordination patterns)
+    - Platform-specific solutions for macOS, Linux, and Windows
+    - Best practices for error handling, resource management, and performance optimization
+  - **Limitations and Compatibility Guide** - Created comprehensive `LIMITATIONS.md` covering:
+    - File format support matrix (.xlsx ✅, .xlsm ✅, .xls ❌, etc.)
+    - Excel feature support levels (basic operations, formatting, advanced features)
+    - Platform compatibility matrix (Linux, macOS, Windows with architecture support)
+    - Version compatibility (Elixir/OTP, Excel versions, LibreOffice compatibility)
+    - Performance limitations with memory usage guidelines and benchmarks
+    - Known issues with workarounds and roadmap information
+
+- **Sheet Management Functions**:
+  - `rename_sheet` - Renames an existing worksheet with comprehensive validation
+    - Validates sheet existence and name conflicts
+    - Prevents renaming to empty or whitespace-only names
+    - Returns appropriate error messages for invalid operations
+    - Full test coverage with 6 test scenarios
+
+- **Advanced Conditional Formatting - Icon Sets**:
+  - `add_icon_set` - Adds icon set conditional formatting rules to cell ranges
+    - Supports multiple icon styles: "3_traffic_lights", "5_arrows", "4_red_to_black", etc.
+    - Flexible threshold configuration (2-5 thresholds per icon set)
+    - Multiple threshold types: "min", "max", "number", "percent", "percentile", "formula"
+    - Comprehensive validation for threshold count and types
+    - Enhanced error handling for invalid inputs and nonexistent sheets
+
+- **Advanced Conditional Formatting - Above/Below Average Rules**:
+  - `add_above_below_average_rule` - Adds statistical conditional formatting rules
+    - Rule types: "above", "below", "above_equal", "below_equal"
+    - Optional standard deviation parameter for advanced statistical rules
+    - Customizable format styles for conditional highlighting
+    - Support for colors, fonts, and other formatting options
+
+- **Enhanced Test Coverage**:
+  - Added 17 comprehensive tests for new conditional formatting features
+  - Integration tests demonstrating combined usage of new features
+  - Error case testing for invalid inputs and edge scenarios
+  - Test file generation for visual verification of formatting rules
+
+### Fixed
+
+- **Function Call Consistency**: Updated test files to use correct API function names
+  - Changed `UmyaSpreadsheet.new_file()` to `UmyaSpreadsheet.new()`
+  - Changed `UmyaSpreadsheet.write_file()` to `UmyaSpreadsheet.write()`
+- **Return Value Handling**: Fixed case clause errors in conditional formatting functions
+  - Properly handle `{:ok, :ok}` return patterns from native functions
+  - Added comprehensive pattern matching for all possible return values
+  - Consistent error handling across all conditional formatting functions
+
+### Improved
+
+- **Native Function Integration**: Enhanced NIF registration and error handling
+- **Documentation**: Added comprehensive documentation with examples for all new functions
+- **API Consistency**: New functions follow existing patterns and conventions
+- **Error Messages**: Improved error reporting with descriptive messages for debugging
+
 ## 0.6.4 - 2025-05-24
 
 ### Fixed

@@ -88,6 +88,9 @@ defmodule UmyaNative do
   @spec remove_sheet(reference(), String.t()) :: :ok | {:error, atom()}
   def remove_sheet(_spreadsheet, _sheet_name), do: error()
 
+  @spec rename_sheet(reference(), String.t(), String.t()) :: :ok | {:error, atom()}
+  def rename_sheet(_spreadsheet, _old_sheet_name, _new_sheet_name), do: error()
+
   @spec insert_new_row(reference(), String.t(), integer(), integer()) :: :ok | {:error, atom()}
   def insert_new_row(_spreadsheet, _sheet_name, _row_index, _amount), do: error()
 
@@ -445,6 +448,16 @@ defmodule UmyaNative do
   @spec add_text_rule(reference(), String.t(), String.t(), String.t(), String.t(), String.t()) ::
           :ok | {:error, atom()}
   def add_text_rule(_spreadsheet, _sheet_name, _range, _operator, _text, _format_style),
+    do: error()
+
+  @spec add_icon_set(reference(), String.t(), String.t(), String.t(), [{String.t(), String.t()}]) ::
+          :ok | {:error, atom()}
+  def add_icon_set(_spreadsheet, _sheet_name, _range, _icon_style, _thresholds),
+    do: error()
+
+  @spec add_above_below_average_rule(reference(), String.t(), String.t(), String.t(), integer() | nil, String.t()) ::
+          :ok | {:error, atom()}
+  def add_above_below_average_rule(_spreadsheet, _sheet_name, _range, _rule_type, _std_dev, _format_style),
     do: error()
 
   # Data validation operations

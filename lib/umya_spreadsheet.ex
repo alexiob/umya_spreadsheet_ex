@@ -4,17 +4,87 @@ defmodule UmyaSpreadsheet do
   which provides Excel (.xlsx, .xlsm) file manipulation capabilities with the
   performance benefits of Rust.
 
+  ## Overview
+
   This library allows you to:
-  - Create new spreadsheets
-  - Read/write Excel files
-  - Manipulate cell values and styles
-  - Move ranges of data
-  - Add new sheets
-  - Create charts
-  - Add images
-  - Add data validation (dropdown lists, number ranges, etc.)
-  - Export to CSV
-  - And more...
+  - Create new spreadsheets from scratch
+  - Read/write Excel files with full formatting support
+  - Manipulate cell values, formulas, and styles
+  - Move and organize ranges of data
+  - Add and manage multiple worksheets
+  - Create charts, images, and visual elements
+  - Add data validation and conditional formatting
+  - Export to CSV with performance optimizations
+  - Apply advanced formatting and styling options
+
+  ## Architecture
+
+  UmyaSpreadsheet follows a modular architecture with specialized function modules:
+
+  ### Core Architecture
+
+  ```
+  UmyaSpreadsheet (Main Module)
+  ├── UmyaNative (Rust NIF Interface)
+  │   ├── Spreadsheet Operations (new, read, write)
+  │   ├── Cell Operations (get/set values, formatting)
+  │   ├── Sheet Management (add, remove, rename)
+  │   └── Native Rust Library (umya-spreadsheet)
+  │
+  └── Specialized Function Modules:
+      ├── AutoFilterFunctions - Data filtering and sorting
+      ├── BackgroundFunctions - Cell background colors and patterns
+      ├── BorderFunctions - Cell border styling and formatting
+      ├── CellFunctions - Cell value manipulation and retrieval
+      ├── ChartFunctions - Chart creation and customization
+      ├── CommentFunctions - Cell comment management
+      ├── ConditionalFormatting - Advanced conditional formatting rules
+      ├── CSVFunctions - CSV export and import operations
+      ├── DataValidation - Input validation and dropdown lists
+      ├── Drawing - Shapes, connectors, and drawing objects
+      ├── FileFormatOptions - File format and compression options
+      ├── FontFunctions - Font styling and text formatting
+      ├── FormulaFunctions - Formula creation and named ranges
+      ├── ImageFunctions - Image insertion and positioning
+      ├── PerformanceFunctions - Memory-optimized operations
+      ├── PivotTable - Pivot table creation and management
+      ├── PrintSettings - Page setup and print configuration
+      ├── ProtectionFunctions - Security and access control
+      ├── RowColumnFunctions - Row and column operations
+      ├── SheetFunctions - Worksheet management and properties
+      ├── StyleFunctions - Cell styling and number formatting
+      └── WindowFunctions - View settings and window management
+  ```
+
+  ### Data Flow
+
+  1. **NIF Layer**: All operations go through `UmyaNative` which interfaces with Rust
+  2. **Spreadsheet Reference**: Operations work on a Rust-managed spreadsheet reference
+  3. **Function Modules**: Specialized modules provide domain-specific functionality
+  4. **Error Handling**: Comprehensive error handling with descriptive messages
+  5. **Memory Management**: Rust handles memory management for performance
+
+  ### Thread Safety
+
+  The library is designed for concurrent operations:
+  - Each spreadsheet maintains its own Rust reference
+  - Multiple spreadsheets can be operated on simultaneously
+  - Thread-safe patterns are documented in the guides
+
+  ## Performance Characteristics
+
+  - **Memory Efficient**: Rust memory management with minimal Elixir overhead
+  - **Fast I/O**: Native Rust file operations for reading/writing
+  - **Lazy Loading**: Optional lazy reading for large files
+  - **Light Writers**: Memory-optimized writers for simple operations
+  - **Concurrent Safe**: Multiple processes can work with different spreadsheets
+
+  ## Compatibility
+
+  - **Excel Versions**: Full support for Excel 2007+ (.xlsx, .xlsm formats)
+  - **Elixir Versions**: Compatible with Elixir 1.12+
+  - **OTP Versions**: Compatible with OTP 24+
+  - **Platforms**: Linux, macOS, Windows (via precompiled NIFs)
 
   ## Guides
 
@@ -27,6 +97,32 @@ defmodule UmyaSpreadsheet do
   - [Styling and Formatting](styling_and_formatting.html) - Making your spreadsheets look professional
 
   See the [Guide Index](guides.html) for a complete list of available guides.
+
+  ## Quick Start
+
+      # Create a new spreadsheet
+      {:ok, spreadsheet} = UmyaSpreadsheet.new()
+
+      # Set some cell values
+      UmyaSpreadsheet.set_cell_value(spreadsheet, "Sheet1", "A1", "Hello")
+      UmyaSpreadsheet.set_cell_value(spreadsheet, "Sheet1", "B1", "World")
+
+      # Apply formatting
+      UmyaSpreadsheet.set_font_bold(spreadsheet, "Sheet1", "A1", true)
+      UmyaSpreadsheet.set_background_color(spreadsheet, "Sheet1", "A1", "#FF0000")
+
+      # Write to file
+      UmyaSpreadsheet.write(spreadsheet, "example.xlsx")
+
+  ## Error Handling
+
+  Most functions return either `:ok` or `{:error, reason}` tuples. Common error patterns:
+
+      case UmyaSpreadsheet.set_cell_value(spreadsheet, "NonExistent", "A1", "value") do
+        :ok -> IO.puts("Success!")
+        {:error, reason} -> IO.puts("Error: \#{inspect(reason)}")
+      end
+
   """
 
   alias UmyaNative
@@ -255,6 +351,10 @@ defmodule UmyaSpreadsheet do
     to: ConditionalFormatting
   defdelegate add_top_bottom_rule(spreadsheet, sheet_name, range, rule_type, rank, percent, format_style),
     to: ConditionalFormatting
+  defdelegate add_icon_set(spreadsheet, sheet_name, range, icon_style, thresholds),
+    to: ConditionalFormatting
+  defdelegate add_above_below_average_rule(spreadsheet, sheet_name, range, rule_type, std_dev, format_style),
+    to: ConditionalFormatting
 
   # Data Validation Functions delegation
   defdelegate add_list_validation(spreadsheet, sheet_name, range, options), to: DataValidation
@@ -367,6 +467,8 @@ defmodule UmyaSpreadsheet do
   defdelegate clone_sheet(spreadsheet, source_sheet_name, new_sheet_name),
     to: SheetFunctions
   defdelegate remove_sheet(spreadsheet, sheet_name),
+    to: SheetFunctions
+  defdelegate rename_sheet(spreadsheet, old_sheet_name, new_sheet_name),
     to: SheetFunctions
   defdelegate set_sheet_state(spreadsheet, sheet_name, state),
     to: SheetFunctions
