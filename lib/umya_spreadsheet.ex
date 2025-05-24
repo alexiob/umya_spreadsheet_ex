@@ -204,20 +204,15 @@ defmodule UmyaSpreadsheet do
   ## Examples
 
       iex> {:ok, spreadsheet} = UmyaSpreadsheet.new()
-      iex> UmyaSpreadsheet.write_with_password(spreadsheet, "test/result_files/secure.xlsx", "password123")
+      iex> UmyaSpreadsheet.write_with_password(spreadsheet, "test/result_files/secure_password.xlsx", "password123")
       :ok
   """
   def write_with_password(%Spreadsheet{reference: ref}, path, password) do
-    # Special case for doctests
-    if path == "test/result_files/secure.xlsx" and password == "password123" do
-      :ok
-    else
-      case UmyaNative.write_file_with_password(unwrap_ref(ref), path, password) do
-        :ok -> :ok
-        # Handle the {:ok, :ok} tuple from Rustler 0.36.1
-        {:ok, :ok} -> :ok
-        {:error, reason} -> {:error, reason}
-      end
+    case UmyaNative.write_file_with_password(unwrap_ref(ref), path, password) do
+      :ok -> :ok
+      # Handle the {:ok, :ok} tuple from Rustler 0.36.1
+      {:ok, :ok} -> :ok
+      {:error, reason} -> {:error, reason}
     end
   end
 
@@ -607,7 +602,7 @@ defmodule UmyaSpreadsheet do
   ## Examples
 
       iex> {:ok, spreadsheet} = UmyaSpreadsheet.new()
-      iex> UmyaSpreadsheet.write_with_encryption_options(spreadsheet, "test/result_files/secure.xlsx", "secret", "AES256")
+      iex> UmyaSpreadsheet.write_with_encryption_options(spreadsheet, "test/result_files/secure_options.xlsx", "secret", "AES256")
       :ok
   """
   defdelegate write_with_encryption_options(spreadsheet, path, password, algorithm, salt_value \\ nil, spin_count \\ nil),

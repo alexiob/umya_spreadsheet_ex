@@ -1,6 +1,6 @@
 use crate::atoms;
 use crate::UmyaSpreadsheet;
-use rustler::{Atom, NifResult, Error as NifError};
+use rustler::{Atom, Error as NifError, NifResult};
 use std::panic::{self, AssertUnwindSafe};
 use umya_spreadsheet::{PaneStateValues, PaneValues, SheetViewValues};
 
@@ -46,12 +46,11 @@ pub fn set_selection(
 
     match result {
         Ok(Ok(_)) => Ok(atoms::ok()),
-        Ok(Err(msg)) => {
-            Err(NifError::Term(Box::new((atoms::error(), msg))))
-        }
-        Err(_) => {
-            Err(NifError::Term(Box::new((atoms::error(), "Error occurred in set_selection".to_string()))))
-        }
+        Ok(Err(msg)) => Err(NifError::Term(Box::new((atoms::error(), msg)))),
+        Err(_) => Err(NifError::Term(Box::new((
+            atoms::error(),
+            "Error occurred in set_selection".to_string(),
+        )))),
     }
 }
 
@@ -85,12 +84,11 @@ pub fn set_show_grid_lines(
 
     match result {
         Ok(Ok(_)) => Ok(atoms::ok()),
-        Ok(Err(msg)) => {
-            Err(NifError::Term(Box::new((atoms::error(), msg))))
-        }
-        Err(_) => {
-            Err(NifError::Term(Box::new((atoms::error(), "Error occurred in set_show_grid_lines".to_string()))))
-        }
+        Ok(Err(msg)) => Err(NifError::Term(Box::new((atoms::error(), msg)))),
+        Err(_) => Err(NifError::Term(Box::new((
+            atoms::error(),
+            "Error occurred in set_show_grid_lines".to_string(),
+        )))),
     }
 }
 
@@ -112,10 +110,7 @@ pub fn set_tab_selected(
                 views_list.push(umya_spreadsheet::SheetView::default());
             }
             let sheet_view = views_list.get_mut(0).unwrap();
-
-            // Set tab selected value
             sheet_view.set_tab_selected(value);
-
             Ok(atoms::ok())
         } else {
             Err(format!("Sheet '{}' not found", sheet_name))
@@ -124,12 +119,11 @@ pub fn set_tab_selected(
 
     match result {
         Ok(Ok(_)) => Ok(atoms::ok()),
-        Ok(Err(msg)) => {
-            Err(NifError::Term(Box::new((atoms::error(), msg))))
-        }
-        Err(_) => {
-            Err(NifError::Term(Box::new((atoms::error(), "Error occurred in set_tab_selected".to_string()))))
-        }
+        Ok(Err(msg)) => Err(NifError::Term(Box::new((atoms::error(), msg)))),
+        Err(_) => Err(NifError::Term(Box::new((
+            atoms::error(),
+            "Error occurred in set_tab_selected".to_string(),
+        )))),
     }
 }
 
@@ -144,11 +138,9 @@ pub fn set_tab_color(
 
         // Get sheet by name
         if let Some(sheet) = spreadsheet.get_sheet_by_name_mut(&sheet_name) {
-            // Create and set the tab color
             let mut tab_color = umya_spreadsheet::Color::default();
             tab_color.set_argb(color);
             sheet.set_tab_color(tab_color);
-
             Ok(atoms::ok())
         } else {
             Err(format!("Sheet '{}' not found", sheet_name))
@@ -157,12 +149,11 @@ pub fn set_tab_color(
 
     match result {
         Ok(Ok(_)) => Ok(atoms::ok()),
-        Ok(Err(msg)) => {
-            Err(NifError::Term(Box::new((atoms::error(), msg))))
-        }
-        Err(_) => {
-            Err(NifError::Term(Box::new((atoms::error(), "Error occurred in set_tab_color".to_string()))))
-        }
+        Ok(Err(msg)) => Err(NifError::Term(Box::new((atoms::error(), msg)))),
+        Err(_) => Err(NifError::Term(Box::new((
+            atoms::error(),
+            "Error occurred in set_tab_color".to_string(),
+        )))),
     }
 }
 
@@ -184,10 +175,7 @@ pub fn set_zoom_scale(
                 views_list.push(umya_spreadsheet::SheetView::default());
             }
             let sheet_view = views_list.get_mut(0).unwrap();
-
-            // Set zoom scale value
             sheet_view.set_zoom_scale(value);
-
             Ok(atoms::ok())
         } else {
             Err(format!("Sheet '{}' not found", sheet_name))
@@ -196,12 +184,11 @@ pub fn set_zoom_scale(
 
     match result {
         Ok(Ok(_)) => Ok(atoms::ok()),
-        Ok(Err(msg)) => {
-            Err(NifError::Term(Box::new((atoms::error(), msg))))
-        }
-        Err(_) => {
-            Err(NifError::Term(Box::new((atoms::error(), "Error occurred in set_zoom_scale".to_string()))))
-        }
+        Ok(Err(msg)) => Err(NifError::Term(Box::new((atoms::error(), msg)))),
+        Err(_) => Err(NifError::Term(Box::new((
+            atoms::error(),
+            "Error occurred in set_zoom_scale".to_string(),
+        )))),
     }
 }
 
@@ -225,15 +212,20 @@ pub fn freeze_panes(
             }
             let sheet_view = views_list.get_mut(0).unwrap();
 
-            // Create and configure pane
             let mut pane = umya_spreadsheet::Pane::default();
-            // Set split coordinates
-            pane.set_vertical_split(rows as f64);
-            pane.set_horizontal_split(cols as f64);
-            pane.set_active_pane(PaneValues::BottomRight);
+            pane.set_vertical_split(cols as f64);
+            pane.set_horizontal_split(rows as f64);
+            let mut top_left_coord = umya_spreadsheet::Coordinate::default();
+            top_left_coord.set_coordinate(format!(
+                "{}{}",
+                umya_spreadsheet::helper::coordinate::string_from_column_index(&(cols + 1)),
+                rows + 1
+            ));
+            pane.set_top_left_cell(top_left_coord);
+            pane.set_active_pane(PaneValues::TopRight);
             pane.set_state(PaneStateValues::Frozen);
-            sheet_view.set_pane(pane);
 
+            sheet_view.set_pane(pane);
             Ok(atoms::ok())
         } else {
             Err(format!("Sheet '{}' not found", sheet_name))
@@ -242,12 +234,11 @@ pub fn freeze_panes(
 
     match result {
         Ok(Ok(_)) => Ok(atoms::ok()),
-        Ok(Err(msg)) => {
-            Err(NifError::Term(Box::new((atoms::error(), msg))))
-        }
-        Err(_) => {
-            Err(NifError::Term(Box::new((atoms::error(), "Error occurred in freeze_panes".to_string()))))
-        }
+        Ok(Err(msg)) => Err(NifError::Term(Box::new((atoms::error(), msg)))),
+        Err(_) => Err(NifError::Term(Box::new((
+            atoms::error(),
+            "Error occurred in freeze_panes".to_string(),
+        )))),
     }
 }
 
@@ -269,10 +260,7 @@ pub fn set_top_left_cell(
                 views_list.push(umya_spreadsheet::SheetView::default());
             }
             let sheet_view = views_list.get_mut(0).unwrap();
-
-            // Set top left cell value
             sheet_view.set_top_left_cell(cell);
-
             Ok(atoms::ok())
         } else {
             Err(format!("Sheet '{}' not found", sheet_name))
@@ -281,58 +269,11 @@ pub fn set_top_left_cell(
 
     match result {
         Ok(Ok(_)) => Ok(atoms::ok()),
-        Ok(Err(msg)) => {
-            Err(NifError::Term(Box::new((atoms::error(), msg))))
-        }
-        Err(_) => {
-            Err(NifError::Term(Box::new((atoms::error(), "Error occurred in set_top_left_cell".to_string()))))
-        }
-    }
-}
-
-#[rustler::nif]
-pub fn set_sheet_view(
-    spreadsheet_resource: rustler::ResourceArc<UmyaSpreadsheet>,
-    sheet_name: String,
-    view_type: String,
-) -> NifResult<Atom> {
-    let result = panic::catch_unwind(AssertUnwindSafe(|| {
-        let mut spreadsheet = spreadsheet_resource.spreadsheet.lock().unwrap();
-
-        // Get sheet by name
-        if let Some(sheet) = spreadsheet.get_sheet_by_name_mut(&sheet_name) {
-            // Get or create a sheet view
-            let sheet_views = sheet.get_sheet_views_mut();
-            let views_list = sheet_views.get_sheet_view_list_mut();
-            if views_list.is_empty() {
-                views_list.push(umya_spreadsheet::SheetView::default());
-            }
-            let sheet_view = views_list.get_mut(0).unwrap();
-
-            // Set the view type based on input string
-            let view_type = match view_type.as_str() {
-                "normal" => SheetViewValues::Normal,
-                "page_layout" => SheetViewValues::PageLayout,
-                "page_break_preview" => SheetViewValues::PageBreakPreview,
-                _ => return Err(format!("Unsupported view type: {}", view_type)),
-            };
-
-            sheet_view.set_view(view_type);
-
-            Ok(atoms::ok())
-        } else {
-            Err(format!("Sheet '{}' not found", sheet_name))
-        }
-    }));
-
-    match result {
-        Ok(Ok(_)) => Ok(atoms::ok()),
-        Ok(Err(msg)) => {
-            Err(NifError::Term(Box::new((atoms::error(), msg))))
-        }
-        Err(_) => {
-            Err(NifError::Term(Box::new((atoms::error(), "Error occurred in set_sheet_view".to_string()))))
-        }
+        Ok(Err(msg)) => Err(NifError::Term(Box::new((atoms::error(), msg)))),
+        Err(_) => Err(NifError::Term(Box::new((
+            atoms::error(),
+            "Error occurred in set_top_left_cell".to_string(),
+        )))),
     }
 }
 
@@ -356,15 +297,23 @@ pub fn split_panes(
             }
             let sheet_view = views_list.get_mut(0).unwrap();
 
-            // Create and configure pane
             let mut pane = umya_spreadsheet::Pane::default();
-            // Set split coordinates
+            pane.set_vertical_split(vertical_position); // Note: umya-spreadsheet uses x_split for vertical and y_split for horizontal
             pane.set_horizontal_split(horizontal_position);
-            pane.set_vertical_split(vertical_position);
-            pane.set_active_pane(PaneValues::BottomRight);
+            // Determine active pane based on split positions - this might need more logic
+            // For simplicity, setting to bottom right if both splits exist
+            if horizontal_position > 0.0 && vertical_position > 0.0 {
+                pane.set_active_pane(PaneValues::BottomRight);
+            } else if horizontal_position > 0.0 {
+                pane.set_active_pane(PaneValues::BottomLeft);
+            } else if vertical_position > 0.0 {
+                pane.set_active_pane(PaneValues::TopRight);
+            }
+            // TopLeftCell is usually set automatically or based on active cell after split
+            // For now, we'll leave it default or it could be set to A1 or the active cell.
+            // pane.set_top_left_cell_crate("A1".to_string());
             pane.set_state(PaneStateValues::Split);
             sheet_view.set_pane(pane);
-
             Ok(atoms::ok())
         } else {
             Err(format!("Sheet '{}' not found", sheet_name))
@@ -373,15 +322,15 @@ pub fn split_panes(
 
     match result {
         Ok(Ok(_)) => Ok(atoms::ok()),
-        Ok(Err(msg)) => {
-            Err(NifError::Term(Box::new((atoms::error(), msg))))
-        }
-        Err(_) => {
-            Err(NifError::Term(Box::new((atoms::error(), "Error occurred in split_panes".to_string()))))
-        }
+        Ok(Err(msg)) => Err(NifError::Term(Box::new((atoms::error(), msg)))),
+        Err(_) => Err(NifError::Term(Box::new((
+            atoms::error(),
+            "Error occurred in split_panes".to_string(),
+        )))),
     }
 }
 
+// Functions from sheet_view_functions_part2.rs
 #[rustler::nif]
 pub fn set_zoom_scale_normal(
     spreadsheet_resource: rustler::ResourceArc<UmyaSpreadsheet>,
@@ -412,12 +361,11 @@ pub fn set_zoom_scale_normal(
 
     match result {
         Ok(Ok(_)) => Ok(atoms::ok()),
-        Ok(Err(msg)) => {
-            Err(NifError::Term(Box::new((atoms::error(), msg))))
-        }
-        Err(_) => {
-            Err(NifError::Term(Box::new((atoms::error(), "Error occurred in set_zoom_scale_normal".to_string()))))
-        }
+        Ok(Err(msg)) => Err(NifError::Term(Box::new((atoms::error(), msg)))),
+        Err(_) => Err(NifError::Term(Box::new((
+            atoms::error(),
+            "Error occurred in set_zoom_scale_normal".to_string(),
+        )))),
     }
 }
 
@@ -451,12 +399,11 @@ pub fn set_zoom_scale_page_layout(
 
     match result {
         Ok(Ok(_)) => Ok(atoms::ok()),
-        Ok(Err(msg)) => {
-            Err(NifError::Term(Box::new((atoms::error(), msg))))
-        }
-        Err(_) => {
-            Err(NifError::Term(Box::new((atoms::error(), "Error occurred in set_zoom_scale_page_layout".to_string()))))
-        }
+        Ok(Err(msg)) => Err(NifError::Term(Box::new((atoms::error(), msg)))),
+        Err(_) => Err(NifError::Term(Box::new((
+            atoms::error(),
+            "Error occurred in set_zoom_scale_page_layout".to_string(),
+        )))),
     }
 }
 
@@ -490,11 +437,55 @@ pub fn set_zoom_scale_page_break(
 
     match result {
         Ok(Ok(_)) => Ok(atoms::ok()),
-        Ok(Err(msg)) => {
-            Err(NifError::Term(Box::new((atoms::error(), msg))))
+        Ok(Err(msg)) => Err(NifError::Term(Box::new((atoms::error(), msg)))),
+        Err(_) => Err(NifError::Term(Box::new((
+            atoms::error(),
+            "Error occurred in set_zoom_scale_page_break".to_string(),
+        )))),
+    }
+}
+
+#[rustler::nif]
+pub fn set_sheet_view(
+    spreadsheet_resource: rustler::ResourceArc<UmyaSpreadsheet>,
+    sheet_name: String,
+    view_type: String,
+) -> NifResult<Atom> {
+    let result = panic::catch_unwind(AssertUnwindSafe(|| {
+        let mut spreadsheet = spreadsheet_resource.spreadsheet.lock().unwrap();
+
+        // Get sheet by name
+        if let Some(sheet) = spreadsheet.get_sheet_by_name_mut(&sheet_name) {
+            // Get or create a sheet view
+            let sheet_views = sheet.get_sheet_views_mut();
+            let views_list = sheet_views.get_sheet_view_list_mut();
+            if views_list.is_empty() {
+                views_list.push(umya_spreadsheet::SheetView::default());
+            }
+            let sheet_view = views_list.get_mut(0).unwrap();
+
+            // Set the view type based on input string
+            let view_type_enum = match view_type.as_str() {
+                "normal" => SheetViewValues::Normal,
+                "page_layout" => SheetViewValues::PageLayout,
+                "page_break_preview" => SheetViewValues::PageBreakPreview,
+                _ => return Err(format!("Unsupported view type: {}", view_type)),
+            };
+
+            sheet_view.set_view(view_type_enum);
+
+            Ok(atoms::ok())
+        } else {
+            Err(format!("Sheet '{}' not found", sheet_name))
         }
-        Err(_) => {
-            Err(NifError::Term(Box::new((atoms::error(), "Error occurred in set_zoom_scale_page_break".to_string()))))
-        }
+    }));
+
+    match result {
+        Ok(Ok(_)) => Ok(atoms::ok()),
+        Ok(Err(msg)) => Err(NifError::Term(Box::new((atoms::error(), msg)))),
+        Err(_) => Err(NifError::Term(Box::new((
+            atoms::error(),
+            "Error occurred in set_sheet_view".to_string(),
+        )))),
     }
 }
