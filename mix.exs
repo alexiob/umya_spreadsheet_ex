@@ -71,26 +71,56 @@ defmodule UmyaSpreadsheet.MixProject do
         "DEVELOPMENT.md",
         "LICENSE",
         "docs/guides.md",
+        "docs/advanced_cell_formatting.md",
+        "docs/advanced_sheet_features.md",
+        "docs/auto_filters.md",
         "docs/charts.md",
+        "docs/comments.md",
         "docs/conditional_formatting.md",
         "docs/csv_export_and_performance.md",
         "docs/data_validation.md",
+        "docs/file_format_options.md",
+        "docs/formula_functions.md",
         "docs/image_handling.md",
         "docs/pivot_tables.md",
+        "docs/print_settings.md",
+        "docs/shapes_and_drawing.md",
         "docs/sheet_operations.md",
-        "docs/styling_and_formatting.md"
+        "docs/styling_and_formatting.md",
+        "docs/thread_safety.md",
+        "docs/window_settings.md"
       ],
       groups_for_extras: [
         Guides: [
-          "docs/guides.md",
-          "docs/charts.md",
-          "docs/conditional_formatting.md",
-          "docs/csv_export_and_performance.md",
-          "docs/data_validation.md",
-          "docs/image_handling.md",
-          "docs/pivot_tables.md",
+          "docs/guides.md"
+        ],
+        "Basic Features": [
           "docs/sheet_operations.md",
-          "docs/styling_and_formatting.md"
+          "docs/styling_and_formatting.md",
+          "docs/csv_export_and_performance.md",
+          "docs/file_format_options.md"
+        ],
+        "Advanced Features": [
+          "docs/advanced_cell_formatting.md",
+          "docs/advanced_sheet_features.md",
+          "docs/conditional_formatting.md",
+          "docs/data_validation.md",
+          "docs/auto_filters.md",
+          "docs/formula_functions.md"
+        ],
+        "Visual Elements": [
+          "docs/charts.md",
+          "docs/image_handling.md",
+          "docs/shapes_and_drawing.md",
+          "docs/comments.md"
+        ],
+        "Layout & Printing": [
+          "docs/pivot_tables.md",
+          "docs/print_settings.md",
+          "docs/window_settings.md"
+        ],
+        "Technical": [
+          "docs/thread_safety.md"
         ],
         Development: [
           "DEVELOPMENT.md",
