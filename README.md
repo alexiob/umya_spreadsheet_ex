@@ -121,6 +121,7 @@ UmyaSpreadsheet has comprehensive guides for all major features:
 - [**Comments**](https://hexdocs.pm/umya_spreadsheet_ex/comments.html) - Adding and managing cell comments
 - [**Charts**](https://hexdocs.pm/umya_spreadsheet_ex/charts.html) - Creating and customizing charts
 - [**Data Validation**](https://hexdocs.pm/umya_spreadsheet_ex/data_validation.html) - Setting input rules for cells
+- [**File Format Options**](https://hexdocs.pm/umya_spreadsheet_ex/file_format_options.html) - Control compression, encryption, and binary format generation
 
 ## Installation
 
@@ -180,6 +181,7 @@ We provide detailed guides for specific features:
 - [**Charts**](https://hexdocs.pm/umya_spreadsheet_ex/charts.html) - Creating and customizing various chart types
 - [**CSV Export & Performance**](https://hexdocs.pm/umya_spreadsheet_ex/csv_export_and_performance.html) - CSV export and optimized writers
 - [**Data Validation**](https://hexdocs.pm/umya_spreadsheet_ex/data_validation.html) - Control and validate cell input values
+- [**File Format Options**](https://hexdocs.pm/umya_spreadsheet_ex/file_format_options.html) - Control compression, encryption, and binary Excel generation
 - [**Image Handling**](https://hexdocs.pm/umya_spreadsheet_ex/image_handling.html) - Working with images in spreadsheets
 - [**Pivot Tables**](https://hexdocs.pm/umya_spreadsheet_ex/pivot_tables.html) - Create and manage data analysis pivot tables
 - [**Print Settings**](https://hexdocs.pm/umya_spreadsheet_ex/print_settings.html) - Configure page setup and print options
@@ -561,6 +563,35 @@ mix test
 Test files are created in the `test/result_files` directory and are automatically ignored by git.
 
 For more details on development, check out the [DEVELOPMENT.md](DEVELOPMENT.md) file.
+
+## Advanced File Format Options
+
+```elixir
+{:ok, spreadsheet} = UmyaSpreadsheet.new()
+# Add data to the spreadsheet...
+
+# Control the compression level (0-9)
+:ok = UmyaSpreadsheet.write_with_compression(spreadsheet, "optimized.xlsx", 8)
+
+# Enhanced encryption with AES256
+:ok = UmyaSpreadsheet.write_with_encryption_options(
+  spreadsheet,
+  "secure.xlsx",
+  "myPassword",
+  "AES256",        # Algorithm
+  "customSaltValue", # Optional salt value
+  100000           # Optional spin count
+)
+
+# Generate binary XLSX for web responses
+xlsx_binary = UmyaSpreadsheet.to_binary_xlsx(spreadsheet)
+
+# In a Phoenix controller:
+conn
+|> put_resp_content_type("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
+|> put_resp_header("content-disposition", ~s[attachment; filename="report.xlsx"])
+|> send_resp(200, xlsx_binary)
+```
 
 ## Performance Considerations
 

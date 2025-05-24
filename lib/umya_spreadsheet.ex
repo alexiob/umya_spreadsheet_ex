@@ -39,6 +39,7 @@ defmodule UmyaSpreadsheet do
   alias UmyaSpreadsheet.ChartFunctions
   alias UmyaSpreadsheet.CommentFunctions
   alias UmyaSpreadsheet.ConditionalFormatting
+  alias UmyaSpreadsheet.FileFormatOptions
   alias UmyaSpreadsheet.CSVFunctions
   alias UmyaSpreadsheet.DataValidation
   alias UmyaSpreadsheet.Drawing
@@ -573,6 +574,54 @@ defmodule UmyaSpreadsheet do
   """
   defdelegate get_defined_names(spreadsheet),
     to: FormulaFunctions
+
+  # File Format Options
+
+  @doc """
+  Writes a spreadsheet to disk with a specified compression level.
+
+  Compression levels range from 0 (no compression) to 9 (maximum compression).
+  Higher compression levels result in smaller files but take longer to create.
+
+  ## Examples
+
+      iex> {:ok, spreadsheet} = UmyaSpreadsheet.new()
+      iex> UmyaSpreadsheet.write_with_compression(spreadsheet, "test/result_files/high_compression.xlsx", 9)
+      :ok
+  """
+  defdelegate write_with_compression(spreadsheet, path, compression_level),
+    to: FileFormatOptions
+
+  @doc """
+  Writes a spreadsheet to disk with enhanced encryption options.
+
+  This function provides more control over the encryption process than the standard
+  `write_with_password` function, allowing you to specify encryption algorithm,
+  salt values, and spin counts for enhanced security.
+
+  ## Examples
+
+      iex> {:ok, spreadsheet} = UmyaSpreadsheet.new()
+      iex> UmyaSpreadsheet.write_with_encryption_options(spreadsheet, "test/result_files/secure.xlsx", "secret", "AES256")
+      :ok
+  """
+  defdelegate write_with_encryption_options(spreadsheet, path, password, algorithm, salt_value \\ nil, spin_count \\ nil),
+    to: FileFormatOptions
+
+  @doc """
+  Converts a spreadsheet to binary XLSX format without writing to disk.
+
+  This is useful for serving Excel files directly in web applications.
+
+  ## Examples
+
+      iex> {:ok, spreadsheet} = UmyaSpreadsheet.new()
+      iex> binary = UmyaSpreadsheet.to_binary_xlsx(spreadsheet)
+      iex> is_binary(binary)
+      true
+  """
+  defdelegate to_binary_xlsx(spreadsheet),
+    to: FileFormatOptions
 
   @doc """
   Sets an auto filter for a range of cells in a worksheet.

@@ -15,11 +15,16 @@
   - `remove_auto_filter` - Removes an auto filter from a worksheet
   - `has_auto_filter` - Checks if a worksheet has an auto filter
   - `get_auto_filter_range` - Gets the range of an existing auto filter
-- Added test coverage for formula and auto filter functionality:
+- Enhanced file format options:
+  - `write_with_compression` - Controls the compression level (0-9) for XLSX files
+  - `write_with_encryption_options` - Enhanced encryption with algorithm selection and security parameters
+  - `to_binary_xlsx` - Converts a spreadsheet to binary for web responses or in-memory processing
+- Added test coverage for formula, auto filter, and file format functionality:
   - Tests for regular and array formulas
   - Tests for named ranges and defined names
   - Tests for creating, removing, and querying auto filters
   - Tests for auto filter persistence between save and load operations
+  - Tests for file compression and binary conversion
 
 ## 0.6.2 - 2025-05-23
 

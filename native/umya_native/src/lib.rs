@@ -49,6 +49,8 @@ mod comment_functions;
 pub mod conditional_formatting;
 pub mod conditional_formatting_additional;
 mod data_validation;
+// File format and export options
+mod file_format_options;
 mod formula_functions;
 // Drawing and shape functions
 mod drawing_functions;
@@ -1425,6 +1427,10 @@ rustler::init!(
         comment_functions::remove_comment,
         comment_functions::has_comments,
         comment_functions::get_comments_count,
+        // File format options functions
+        file_format_options::write_with_compression,
+        file_format_options::write_with_encryption_options,
+        file_format_options::to_binary_xlsx,
         // Formula functions
         formula_functions::set_formula,
         formula_functions::set_array_formula,

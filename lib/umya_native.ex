@@ -40,6 +40,16 @@ defmodule UmyaNative do
           :ok | {:error, atom()}
   def write_file_with_password_light(_spreadsheet, _path, _password), do: error()
 
+  # File format options
+  @spec write_with_compression(reference(), String.t(), non_neg_integer()) :: :ok | {:error, atom()}
+  def write_with_compression(_spreadsheet, _path, _compression_level), do: error()
+
+  @spec write_with_encryption_options(reference(), String.t(), String.t(), String.t(), String.t() | nil, non_neg_integer() | nil) :: :ok | {:error, atom()}
+  def write_with_encryption_options(_spreadsheet, _path, _password, _algorithm, _salt_value \\ nil, _spin_count \\ nil), do: error()
+
+  @spec to_binary_xlsx(reference()) :: binary() | {:error, atom()}
+  def to_binary_xlsx(_spreadsheet), do: error()
+
   # CSV export functions
   @spec write_csv(reference(), String.t(), String.t()) :: :ok | {:error, atom()}
   def write_csv(_spreadsheet, _sheet_name, _path), do: error()

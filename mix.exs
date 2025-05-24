@@ -27,7 +27,8 @@ defmodule UmyaSpreadsheet.MixProject do
     [
       {:rustler_precompiled, "~> 0.4"},
       {:rustler, "~> 0.36.1", runtime: false, optional: true},
-      {:ex_doc, "~> 0.29", only: :dev, runtime: false}
+      {:ex_doc, "~> 0.29", only: :dev, runtime: false},
+      {:igniter, "~> 0.6", optional: true}
     ]
   end
 
@@ -42,8 +43,8 @@ defmodule UmyaSpreadsheet.MixProject do
 
   defp description do
     """
-    Elixir wrapper for the umya-spreadsheet Rust library, providing Excel (.xlsx) file
-    manipulation capabilities with support for styling, formatting, and password protection.
+    Elixir NIF wrapper for the umya-spreadsheet Rust library, providing Excel (.xlsx) file
+    manipulation capabilities.
     """
   end
 

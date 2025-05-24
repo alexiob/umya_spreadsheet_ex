@@ -42,6 +42,13 @@ Welcome to the UmyaSpreadsheet documentation. This collection of guides provides
   - Defining named ranges and defined names
   - Listing and managing defined names
 
+- [**File Format Options**](file_format_options.html): Control compression, encryption, and delivery
+
+  - Adjusting compression levels for Excel files
+  - Advanced encryption and security options
+  - Generating binary Excel files for web applications
+  - Performance optimizations for different scenarios
+
 - [**Auto Filters**](auto_filters.html): Enable Excel's filtering capability
 
   - Adding filter dropdown buttons to data ranges
