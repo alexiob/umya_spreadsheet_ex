@@ -1,9 +1,7 @@
-use rustler::{Env, ResourceArc, Term, Encoder};
+use rustler::{Encoder, Env, ResourceArc, Term};
 use std::collections::HashMap;
-use umya_spreadsheet::{
-    Table, TableColumn, TableStyleInfo, Coordinate, TotalsRowFunctionValues
-};
 use umya_spreadsheet::helper::coordinate::CellCoordinates;
+use umya_spreadsheet::{Coordinate, Table, TableColumn, TableStyleInfo, TotalsRowFunctionValues};
 
 use crate::atoms;
 use crate::UmyaSpreadsheet;
@@ -26,15 +24,15 @@ pub fn add_table(
     has_totals_row: Option<bool>,
 ) -> Term {
     let mut guard = resource.spreadsheet.lock().unwrap();
-    
+
     match guard.get_sheet_by_name_mut(&sheet_name) {
         Some(sheet) => {
             let mut table = Table::default();
-            
+
             // Set basic table properties
             table.set_name(&table_name);
             table.set_display_name(&display_name);
-            
+
             // Set table area using coordinate parsing
             match parse_cell_coordinates(&start_cell, &end_cell) {
                 Ok((start_coord, end_coord)) => {
@@ -44,13 +42,13 @@ pub fn add_table(
                     return (atoms::error(), "Invalid cell coordinates".to_string()).encode(env);
                 }
             }
-            
+
             // Add columns to the table
             for column_name in columns {
                 let column = TableColumn::new(&column_name);
                 table.add_column(column);
             }
-            
+
             // Set totals row if specified
             if let Some(has_totals) = has_totals_row {
                 table.set_totals_row_shown(has_totals);
@@ -58,7 +56,7 @@ pub fn add_table(
                     table.set_totals_row_count(1);
                 }
             }
-            
+
             sheet.add_table(table);
             (atoms::ok(), atoms::ok()).encode(env)
         }
@@ -68,53 +66,68 @@ pub fn add_table(
 
 /// Get all tables from a worksheet
 #[rustler::nif]
-pub fn get_tables(
-    env: Env,
-    resource: ResourceArc<UmyaSpreadsheet>,
-    sheet_name: String,
-) -> Term {
+pub fn get_tables(env: Env, resource: ResourceArc<UmyaSpreadsheet>, sheet_name: String) -> Term {
     let guard = resource.spreadsheet.lock().unwrap();
-    
+
     match guard.get_sheet_by_name(&sheet_name) {
         Some(sheet) => {
             let mut tables_info = Vec::new();
-            
+
             for table in sheet.get_tables() {
                 let mut table_map = HashMap::new();
-                
+
                 table_map.insert("name".to_string(), table.get_name().encode(env));
-                table_map.insert("display_name".to_string(), table.get_display_name().encode(env));
-                
+                table_map.insert(
+                    "display_name".to_string(),
+                    table.get_display_name().encode(env),
+                );
+
                 // Convert area coordinates to cell references
                 let (start_coord, end_coord) = table.get_area();
                 let start_cell = coordinate_to_cell_reference(start_coord);
                 let end_cell = coordinate_to_cell_reference(end_coord);
                 table_map.insert("start_cell".to_string(), start_cell.encode(env));
                 table_map.insert("end_cell".to_string(), end_cell.encode(env));
-                
+
                 // Get column information
-                let columns: Vec<String> = table.get_columns()
+                let columns: Vec<String> = table
+                    .get_columns()
                     .iter()
                     .map(|col| col.get_name().to_string())
                     .collect();
                 table_map.insert("columns".to_string(), columns.encode(env));
-                
-                table_map.insert("has_totals_row".to_string(), table.get_totals_row_shown().encode(env));
-                
+
+                table_map.insert(
+                    "has_totals_row".to_string(),
+                    table.get_totals_row_shown().encode(env),
+                );
+
                 // Get style info if available
                 if let Some(style_info) = table.get_style_info() {
                     let mut style_map = HashMap::new();
                     style_map.insert("name".to_string(), style_info.get_name().encode(env));
-                    style_map.insert("show_first_col".to_string(), style_info.is_show_first_col().encode(env));
-                    style_map.insert("show_last_col".to_string(), style_info.is_show_last_col().encode(env));
-                    style_map.insert("show_row_stripes".to_string(), style_info.is_show_row_stripes().encode(env));
-                    style_map.insert("show_col_stripes".to_string(), style_info.is_show_col_stripes().encode(env));
+                    style_map.insert(
+                        "show_first_col".to_string(),
+                        style_info.is_show_first_col().encode(env),
+                    );
+                    style_map.insert(
+                        "show_last_col".to_string(),
+                        style_info.is_show_last_col().encode(env),
+                    );
+                    style_map.insert(
+                        "show_row_stripes".to_string(),
+                        style_info.is_show_row_stripes().encode(env),
+                    );
+                    style_map.insert(
+                        "show_col_stripes".to_string(),
+                        style_info.is_show_col_stripes().encode(env),
+                    );
                     table_map.insert("style_info".to_string(), style_map.encode(env));
                 }
-                
+
                 tables_info.push(table_map);
             }
-            
+
             (atoms::ok(), tables_info).encode(env)
         }
         None => (atoms::error(), "Sheet not found".to_string()).encode(env),
@@ -130,15 +143,15 @@ pub fn remove_table(
     table_name: String,
 ) -> Term {
     let mut guard = resource.spreadsheet.lock().unwrap();
-    
+
     match guard.get_sheet_by_name_mut(&sheet_name) {
         Some(sheet) => {
             let tables = sheet.get_tables_mut();
             let original_count = tables.len();
-            
+
             // Remove table with matching name
             tables.retain(|table| table.get_name() != table_name);
-            
+
             if tables.len() < original_count {
                 (atoms::ok(), atoms::ok()).encode(env)
             } else {
@@ -151,13 +164,9 @@ pub fn remove_table(
 
 /// Check if a sheet has any tables
 #[rustler::nif]
-pub fn has_tables(
-    env: Env,
-    resource: ResourceArc<UmyaSpreadsheet>,
-    sheet_name: String,
-) -> Term {
+pub fn has_tables(env: Env, resource: ResourceArc<UmyaSpreadsheet>, sheet_name: String) -> Term {
     let guard = resource.spreadsheet.lock().unwrap();
-    
+
     match guard.get_sheet_by_name(&sheet_name) {
         Some(sheet) => (atoms::ok(), !sheet.get_tables().is_empty()).encode(env),
         None => (atoms::error(), "Sheet not found".to_string()).encode(env),
@@ -166,13 +175,9 @@ pub fn has_tables(
 
 /// Count the number of tables in a worksheet
 #[rustler::nif]
-pub fn count_tables(
-    env: Env,
-    resource: ResourceArc<UmyaSpreadsheet>,
-    sheet_name: String,
-) -> Term {
+pub fn count_tables(env: Env, resource: ResourceArc<UmyaSpreadsheet>, sheet_name: String) -> Term {
     let guard = resource.spreadsheet.lock().unwrap();
-    
+
     match guard.get_sheet_by_name(&sheet_name) {
         Some(sheet) => (atoms::ok(), sheet.get_tables().len()).encode(env),
         None => (atoms::error(), "Sheet not found".to_string()).encode(env),
@@ -197,11 +202,11 @@ pub fn set_table_style(
     show_col_stripes: bool,
 ) -> Term {
     let mut guard = resource.spreadsheet.lock().unwrap();
-    
+
     match guard.get_sheet_by_name_mut(&sheet_name) {
         Some(sheet) => {
             let tables = sheet.get_tables_mut();
-            
+
             // Find the table to modify
             if let Some(table) = tables.iter_mut().find(|t| t.get_name() == table_name) {
                 let style_info = TableStyleInfo::new(
@@ -211,7 +216,7 @@ pub fn set_table_style(
                     show_row_stripes,
                     show_col_stripes,
                 );
-                
+
                 table.set_style_info(Some(style_info));
                 (atoms::ok(), atoms::ok()).encode(env)
             } else {
@@ -231,11 +236,11 @@ pub fn remove_table_style(
     table_name: String,
 ) -> Term {
     let mut guard = resource.spreadsheet.lock().unwrap();
-    
+
     match guard.get_sheet_by_name_mut(&sheet_name) {
         Some(sheet) => {
             let tables = sheet.get_tables_mut();
-            
+
             // Find the table to modify
             if let Some(table) = tables.iter_mut().find(|t| t.get_name() == table_name) {
                 table.set_style_info(None);
@@ -264,27 +269,27 @@ pub fn add_table_column(
     totals_row_label: Option<String>,
 ) -> Term {
     let mut guard = resource.spreadsheet.lock().unwrap();
-    
+
     match guard.get_sheet_by_name_mut(&sheet_name) {
         Some(sheet) => {
             let tables = sheet.get_tables_mut();
-            
+
             // Find the table to modify
             if let Some(table) = tables.iter_mut().find(|t| t.get_name() == table_name) {
                 let mut column = TableColumn::new(&column_name);
-                
+
                 // Set totals row function if provided
                 if let Some(function_str) = totals_row_function {
                     if let Ok(function) = parse_totals_row_function(&function_str) {
                         column.set_totals_row_function(function);
                     }
                 }
-                
+
                 // Set totals row label if provided
                 if let Some(label) = totals_row_label {
                     column.set_totals_row_label(&label);
                 }
-                
+
                 table.add_column(column);
                 (atoms::ok(), atoms::ok()).encode(env)
             } else {
@@ -308,52 +313,53 @@ pub fn modify_table_column(
     totals_row_label: Option<String>,
 ) -> Term {
     let mut guard = resource.spreadsheet.lock().unwrap();
-    
+
     match guard.get_sheet_by_name_mut(&sheet_name) {
         Some(sheet) => {
             let tables = sheet.get_tables_mut();
-            
+
             // Find the table to modify
             if let Some(table) = tables.iter_mut().find(|t| t.get_name() == table_name) {
                 // We need to access the columns directly but TableColumn doesn't seem to have
                 // a mutable iterator in the public API, so we'll need to work around this
                 // For now, let's create a new implementation that recreates the table with modified columns
-                
+
                 // Get current table data
                 let current_name = table.get_name().to_string();
                 let current_display_name = table.get_display_name().to_string();
                 let current_area = table.get_area().clone();
                 let current_totals_shown = *table.get_totals_row_shown();
                 let current_style = table.get_style_info().cloned();
-                
+
                 // Create new columns list with modifications
                 let mut new_columns = Vec::new();
                 let mut found_column = false;
-                
+
                 for existing_col in table.get_columns() {
                     if existing_col.get_name() == old_column_name {
                         found_column = true;
-                        let mut new_col = TableColumn::new(
-                            new_column_name.as_ref().unwrap_or(&old_column_name)
-                        );
-                        
+                        let mut new_col =
+                            TableColumn::new(new_column_name.as_ref().unwrap_or(&old_column_name));
+
                         // Copy existing settings
                         if let Some(existing_label) = existing_col.get_totals_row_label() {
                             new_col.set_totals_row_label(existing_label);
                         }
-                        new_col.set_totals_row_function(existing_col.get_totals_row_function().clone());
-                        
+                        new_col.set_totals_row_function(
+                            existing_col.get_totals_row_function().clone(),
+                        );
+
                         // Apply new settings if provided
                         if let Some(function_str) = &totals_row_function {
                             if let Ok(function) = parse_totals_row_function(function_str) {
                                 new_col.set_totals_row_function(function);
                             }
                         }
-                        
+
                         if let Some(label) = &totals_row_label {
                             new_col.set_totals_row_label(label);
                         }
-                        
+
                         new_columns.push(new_col);
                     } else {
                         // Create a copy of the existing column
@@ -361,38 +367,46 @@ pub fn modify_table_column(
                         if let Some(existing_label) = existing_col.get_totals_row_label() {
                             new_col.set_totals_row_label(existing_label);
                         }
-                        new_col.set_totals_row_function(existing_col.get_totals_row_function().clone());
+                        new_col.set_totals_row_function(
+                            existing_col.get_totals_row_function().clone(),
+                        );
                         new_columns.push(new_col);
                     }
                 }
-                
+
                 if !found_column {
                     return (atoms::error(), "Column not found".to_string()).encode(env);
                 }
-                
+
                 // Create a new table with updated columns
                 let mut new_table = Table::default();
                 new_table.set_name(&current_name);
                 new_table.set_display_name(&current_display_name);
-                
+
                 // Convert Coordinate to CellCoordinates for set_area
-                let start_cell_coord = CellCoordinates::from((*current_area.0.get_col_num(), *current_area.0.get_row_num()));
-                let end_cell_coord = CellCoordinates::from((*current_area.1.get_col_num(), *current_area.1.get_row_num()));
+                let start_cell_coord = CellCoordinates::from((
+                    *current_area.0.get_col_num(),
+                    *current_area.0.get_row_num(),
+                ));
+                let end_cell_coord = CellCoordinates::from((
+                    *current_area.1.get_col_num(),
+                    *current_area.1.get_row_num(),
+                ));
                 new_table.set_area((start_cell_coord, end_cell_coord));
-                
+
                 new_table.set_totals_row_shown(current_totals_shown);
-                
+
                 for col in new_columns {
                     new_table.add_column(col);
                 }
-                
+
                 if let Some(style) = current_style {
                     new_table.set_style_info(Some(style));
                 }
-                
+
                 // Replace the old table
                 *table = new_table;
-                
+
                 (atoms::ok(), atoms::ok()).encode(env)
             } else {
                 (atoms::error(), "Table not found".to_string()).encode(env)
@@ -412,11 +426,11 @@ pub fn set_table_totals_row(
     show_totals_row: bool,
 ) -> Term {
     let mut guard = resource.spreadsheet.lock().unwrap();
-    
+
     match guard.get_sheet_by_name_mut(&sheet_name) {
         Some(sheet) => {
             let tables = sheet.get_tables_mut();
-            
+
             // Find the table to modify
             if let Some(table) = tables.iter_mut().find(|t| t.get_name() == table_name) {
                 table.set_totals_row_shown(show_totals_row);
@@ -438,25 +452,33 @@ pub fn set_table_totals_row(
 // HELPER FUNCTIONS
 // ============================================================================
 
-fn parse_cell_coordinates(start_cell: &str, end_cell: &str) -> Result<(CellCoordinates, CellCoordinates), String> {
+fn parse_cell_coordinates(
+    start_cell: &str,
+    end_cell: &str,
+) -> Result<(CellCoordinates, CellCoordinates), String> {
     // Parse cell references like "A1" into coordinates
-    let (start_col, start_row, _, _) = umya_spreadsheet::helper::coordinate::index_from_coordinate(start_cell);
-    let (end_col, end_row, _, _) = umya_spreadsheet::helper::coordinate::index_from_coordinate(end_cell);
-    
+    let (start_col, start_row, _, _) =
+        umya_spreadsheet::helper::coordinate::index_from_coordinate(start_cell);
+    let (end_col, end_row, _, _) =
+        umya_spreadsheet::helper::coordinate::index_from_coordinate(end_cell);
+
     let start_coord = CellCoordinates::from((
         start_col.ok_or("Invalid start cell column")?,
-        start_row.ok_or("Invalid start cell row")?
+        start_row.ok_or("Invalid start cell row")?,
     ));
     let end_coord = CellCoordinates::from((
         end_col.ok_or("Invalid end cell column")?,
-        end_row.ok_or("Invalid end cell row")?
+        end_row.ok_or("Invalid end cell row")?,
     ));
-    
+
     Ok((start_coord, end_coord))
 }
 
 fn coordinate_to_cell_reference(coord: &Coordinate) -> String {
-    umya_spreadsheet::helper::coordinate::coordinate_from_index(coord.get_col_num(), coord.get_row_num())
+    umya_spreadsheet::helper::coordinate::coordinate_from_index(
+        coord.get_col_num(),
+        coord.get_row_num(),
+    )
 }
 
 fn parse_totals_row_function(function_str: &str) -> Result<TotalsRowFunctionValues, String> {

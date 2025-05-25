@@ -40,11 +40,11 @@ defmodule UmyaSpreadsheet.TableComprehensiveTest do
 
       # Get tables and verify the return format
       result = Table.get_tables(spreadsheet, "Sheet1")
-      
+
       assert {:ok, tables} = result
       assert is_list(tables)
       assert length(tables) == 1
-      
+
       [table | _] = tables
       assert Map.has_key?(table, "name")
       assert Map.has_key?(table, "display_name")

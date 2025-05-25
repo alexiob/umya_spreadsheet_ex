@@ -73,7 +73,7 @@ defmodule UmyaSpreadsheetTest.TableTest do
     # Get all tables
     {:ok, tables} = Table.get_tables(spreadsheet, "Sheet1")
     assert length(tables) == 1
-    
+
     # Check table properties - tables are now maps with string keys
     table = hd(tables)
     assert table["name"] == "EmployeeTable"

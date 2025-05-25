@@ -26,6 +26,7 @@ Excel tables offer several advantages over regular cell ranges:
 - **Professional Appearance**: Clean, organized presentation of data
 
 All table functions in UmyaSpreadsheet return tuples for consistent error handling:
+
 - `{:ok, result}` for successful operations
 - `{:error, reason}` for failures
 
@@ -483,7 +484,7 @@ Always handle potential errors when working with tables:
 case UmyaSpreadsheet.add_table(spreadsheet, "Sheet1", "DataTable", ...) do
   {:ok, :ok} ->
     IO.puts("Table created successfully")
-    
+
   {:error, reason} ->
     IO.puts("Failed to create table: #{reason}")
     # Handle error appropriately
@@ -522,17 +523,17 @@ defmodule TableManager do
     case UmyaSpreadsheet.add_table(spreadsheet, sheet, name, display_name, range_start, range_end, columns, false) do
       {:ok, :ok} ->
         {:ok, :table_created}
-        
+
       {:error, "Table with this name already exists"} ->
         # Try with a modified name
         new_name = "#{name}_#{System.system_time(:second)}"
         UmyaSpreadsheet.add_table(spreadsheet, sheet, new_name, display_name, range_start, range_end, columns, false)
-        
+
       {:error, reason} ->
         {:error, reason}
     end
   end
-  
+
   def ensure_table_exists(spreadsheet, sheet, table_name) do
     case UmyaSpreadsheet.has_tables?(spreadsheet, sheet) do
       {:ok, true} ->
@@ -542,13 +543,13 @@ defmodule TableManager do
               nil -> {:error, :table_not_found}
               table -> {:ok, table}
             end
-            
+
           error -> error
         end
-        
+
       {:ok, false} ->
         {:error, :no_tables}
-        
+
       error ->
         error
     end
