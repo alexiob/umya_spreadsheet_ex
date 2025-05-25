@@ -35,6 +35,14 @@ Welcome to the UmyaSpreadsheet documentation. This collection of guides provides
   - Custom formula-based validation rules
   - Input messages and error alerts
 
+- [**Excel Tables**](excel_tables.html): Create, style, and manage structured Excel tables
+
+  - Creating tables with headers and data ranges
+  - Applying built-in table styles and customization options
+  - Adding, modifying, and removing table columns dynamically
+  - Configuring totals rows with calculation functions
+  - Managing table metadata and column properties
+
 - [**Formula Functions**](formula_functions.html): Work with formulas and named references
 
   - Setting regular cell formulas

@@ -62,6 +62,7 @@ mod print_settings;
 mod set_background_color;
 mod set_cell_alignment;
 mod sheet_view_functions;
+mod table;
 mod workbook_view_functions;
 mod write_csv_with_options;
 
@@ -1678,6 +1679,17 @@ rustler::init!(
         auto_filter_functions::remove_auto_filter,
         auto_filter_functions::has_auto_filter,
         auto_filter_functions::get_auto_filter_range,
+        // Table functions
+        table::add_table,
+        table::get_tables,
+        table::remove_table,
+        table::has_tables,
+        table::count_tables,
+        table::set_table_style,
+        table::remove_table_style,
+        table::add_table_column,
+        table::modify_table_column,
+        table::set_table_totals_row,
         // Comment functions
         comment_functions::add_comment,
         comment_functions::get_comment,

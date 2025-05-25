@@ -5,7 +5,6 @@
 [![Hex Docs](https://img.shields.io/badge/hex-docs-blue.svg)](https://hexdocs.pm/umya_spreadsheet_ex/)
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 
-
 ![UmyaSpreadsheetEx Logo](/docs/logo.png)
 
 An Elixir NIF wrapper for the [umya-spreadsheet](https://github.com/MathNya/umya-spreadsheet) Rust library, providing comprehensive Excel file (.xlsx, .xlsm) manipulation capabilities with the performance benefits of Rust.
@@ -103,6 +102,14 @@ An Elixir NIF wrapper for the [umya-spreadsheet](https://github.com/MathNya/umya
   - Refresh pivot table data
   - Position pivot tables on worksheets
 
+- **Excel Tables**
+  - Create structured tables with headers and data ranges
+  - Apply built-in table styles with customization options
+  - Add, modify, and remove table columns dynamically
+  - Configure totals rows with various calculation functions
+  - Manage table filtering and sorting capabilities
+  - Support for table metadata and column properties
+
 ## Version Information
 
 This package is built on:
@@ -137,7 +144,7 @@ Add `umya_spreadsheet_ex` to your list of dependencies in `mix.exs`:
 ```elixir
 def deps do
   [
-    {:umya_spreadsheet_ex, "~> 0.6.4"}
+    {:umya_spreadsheet_ex, "~> 0.6.6"}
   ]
 end
 ```
@@ -188,6 +195,7 @@ We provide detailed guides for specific features:
 - [**Charts**](https://hexdocs.pm/umya_spreadsheet_ex/charts.html) - Creating and customizing various chart types
 - [**CSV Export & Performance**](https://hexdocs.pm/umya_spreadsheet_ex/csv_export_and_performance.html) - CSV export and optimized writers
 - [**Data Validation**](https://hexdocs.pm/umya_spreadsheet_ex/data_validation.html) - Control and validate cell input values
+- [**Excel Tables**](https://hexdocs.pm/umya_spreadsheet_ex/excel_tables.html) - Create, style, and manage structured Excel tables
 - [**File Format Options**](https://hexdocs.pm/umya_spreadsheet_ex/file_format_options.html) - Control compression, encryption, and binary Excel generation
 - [**Image Handling**](https://hexdocs.pm/umya_spreadsheet_ex/image_handling.html) - Working with images in spreadsheets
 - [**Pivot Tables**](https://hexdocs.pm/umya_spreadsheet_ex/pivot_tables.html) - Create and manage data analysis pivot tables
@@ -428,6 +436,74 @@ count = UmyaSpreadsheet.count_pivot_tables(spreadsheet, "Pivot")
 
 # Remove a pivot table
 :ok = UmyaSpreadsheet.remove_pivot_table(spreadsheet, "Pivot", "Sales Analysis")
+```
+
+### Working with Excel Tables
+
+```elixir
+{:ok, spreadsheet} = UmyaSpreadsheet.new()
+
+# Add some sample data for the table
+UmyaSpreadsheet.set_cell_value(spreadsheet, "Sheet1", "A1", "Product")
+UmyaSpreadsheet.set_cell_value(spreadsheet, "Sheet1", "B1", "Category")
+UmyaSpreadsheet.set_cell_value(spreadsheet, "Sheet1", "C1", "Price")
+UmyaSpreadsheet.set_cell_value(spreadsheet, "Sheet1", "D1", "Stock")
+
+UmyaSpreadsheet.set_cell_value(spreadsheet, "Sheet1", "A2", "Laptop")
+UmyaSpreadsheet.set_cell_value(spreadsheet, "Sheet1", "B2", "Electronics")
+UmyaSpreadsheet.set_cell_value(spreadsheet, "Sheet1", "C2", 999.99)
+UmyaSpreadsheet.set_cell_value(spreadsheet, "Sheet1", "D2", 50)
+
+UmyaSpreadsheet.set_cell_value(spreadsheet, "Sheet1", "A3", "Mouse")
+UmyaSpreadsheet.set_cell_value(spreadsheet, "Sheet1", "B3", "Electronics")
+UmyaSpreadsheet.set_cell_value(spreadsheet, "Sheet1", "C3", 29.99)
+UmyaSpreadsheet.set_cell_value(spreadsheet, "Sheet1", "D3", 100)
+
+# Create a table with the data
+{:ok, :ok} = UmyaSpreadsheet.add_table(
+  spreadsheet,
+  "Sheet1",
+  "ProductTable",
+  "Product Inventory",
+  "A1",
+  "D3",
+  ["Product", "Category", "Price", "Stock"],
+  true  # Show totals row
+)
+
+# Apply a table style
+{:ok, :ok} = UmyaSpreadsheet.set_table_style(
+  spreadsheet,
+  "Sheet1",
+  "ProductTable",
+  "TableStyleMedium9",
+  true,   # Show first column
+  false,  # Show last column
+  true,   # Show banded rows
+  false   # Show banded columns
+)
+
+# Add a new column to the table
+{:ok, :ok} = UmyaSpreadsheet.add_table_column(
+  spreadsheet,
+  "Sheet1",
+  "ProductTable",
+  "Total Value",
+  "sum",
+  "Grand Total"
+)
+
+# Check if sheet has tables
+{:ok, true} = UmyaSpreadsheet.has_tables?(spreadsheet, "Sheet1")
+
+# Get all tables from the sheet
+{:ok, tables} = UmyaSpreadsheet.get_tables(spreadsheet, "Sheet1")
+[table | _] = tables
+# table["name"] => "ProductTable"
+# table["display_name"] => "Product Inventory"
+
+# Remove the table
+{:ok, :ok} = UmyaSpreadsheet.remove_table(spreadsheet, "Sheet1", "ProductTable")
 ```
 
 ## Advanced Features

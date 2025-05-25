@@ -1,5 +1,83 @@
 # Changelog
 
+## 0.6.6 - 2025-05-26
+
+### Added
+
+- **Complete Excel Tables Functionality**:
+  - **Core Table Management** - Comprehensive table creation and management system
+    - `add_table/8` - Create structured tables with headers, ranges, and totals row options
+    - `get_tables/2` - Retrieve all tables from worksheets with complete metadata
+    - `remove_table/3` - Delete tables by name with proper cleanup
+    - `has_tables?/2` - Check if worksheets contain tables
+    - `count_tables/2` - Count tables in worksheets for management operations
+  - **Advanced Table Styling** - Professional table appearance with built-in Excel styles
+    - `set_table_style/8` - Apply Excel's built-in table styles (Light, Medium, Dark themes)
+    - Style customization options: first/last column emphasis, banded rows/columns
+    - Support for 60+ built-in table styles (TableStyleLight1-21, TableStyleMedium1-28, TableStyleDark1-11)
+    - `remove_table_style/3` - Remove styling while preserving table structure
+  - **Dynamic Column Management** - Add and modify table columns programmatically
+    - `add_table_column/6` - Add new columns with totals row functions
+    - `modify_table_column/7` - Update existing column properties (name, totals function, labels)
+    - Support for all Excel totals functions: sum, average, count, countNums, max, min, stdDev, var
+  - **Totals Row Control** - Flexible totals row management
+    - `set_table_totals_row/4` - Enable/disable totals rows with automatic calculations
+    - Automatic function application based on column configurations
+    - Dynamic updates when columns are added or modified
+
+- **Comprehensive Documentation Suite for Tables**:
+  - **Excel Tables Guide** - Complete 400+ line guide covering all table functionality
+    - Step-by-step table creation and management examples
+    - Complete styling guide with all available table styles and options
+    - Column management patterns and best practices
+    - Real-world examples: Employee Management System, Sales Reports with multiple tables
+    - Error handling patterns and recovery strategies
+    - Performance considerations and optimization tips
+  - **Updated Main Documentation** - Enhanced README.md with table examples
+    - Added table functionality to feature list with detailed capabilities
+    - Complete table workflow example with styling and column management
+    - Updated documentation links to include Excel Tables guide
+  - **API Documentation** - Comprehensive function documentation with examples
+    - Type specifications for all table functions with tuple return patterns
+    - Complete parameter documentation with validation rules
+    - Error scenarios and return value documentation
+
+- **Robust Error Handling & Validation**:
+  - **Consistent Return Format** - All table functions return `{:ok, value}` or `{:error, reason}` tuples
+  - **Comprehensive Validation** - Sheet existence, table name uniqueness, range validation
+  - **Descriptive Error Messages** - Clear error reasons for debugging and user feedback
+  - **Edge Case Handling** - Non-existent sheets, duplicate table names, invalid ranges
+
+- **Complete Test Coverage**:
+  - **Unit Tests** - 15 comprehensive tests covering all table functionality
+  - **Integration Tests** - Complete workflow tests from creation to deletion
+  - **Error Case Testing** - Validation of all error scenarios and edge cases
+  - **Tuple Return Validation** - Ensures consistent API patterns across all functions
+
+### Technical Implementation
+
+- **Native Rust Integration** - High-performance table operations via NIF
+  - Created comprehensive table.rs module with proper error handling
+  - Memory-safe operations with proper Rust borrowing patterns
+  - Type-safe conversions between Rust and Elixir data structures
+  - Integration with existing umya-spreadsheet table infrastructure
+- **Elixir Wrapper Module** - Clean, idiomatic Elixir API
+  - Complete UmyaSpreadsheet.Table module with full documentation
+  - Proper delegation patterns and error handling
+  - Type specifications for all public functions
+  - Integration with main UmyaSpreadsheet module
+- **Module Registration** - Proper NIF function exports and library integration
+  - Updated lib.rs with table module inclusion and function exports
+  - Added table function declarations to UmyaNative module
+  - Main module integration with aliases and delegations
+
+### Quality Assurance
+
+- **Zero Compilation Warnings** - Clean codebase with no warnings or errors
+- **100% Test Pass Rate** - All 15 table tests passing successfully
+- **Memory Safety** - Proper resource management and cleanup
+- **API Consistency** - Follows established patterns from other modules
+
 ## 0.6.5 - 2025-05-25
 
 ### Added

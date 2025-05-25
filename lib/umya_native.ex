@@ -714,6 +714,108 @@ defmodule UmyaNative do
   @spec remove_pivot_table(reference(), String.t(), String.t()) :: :ok | {:error, atom()}
   def remove_pivot_table(_spreadsheet, _sheet_name, _pivot_table_name), do: error()
 
+  # Table operations
+  @spec add_table(
+          reference(),
+          String.t(),
+          String.t(),
+          String.t(),
+          String.t(),
+          String.t(),
+          [String.t()],
+          boolean() | nil
+        ) :: :ok | {:error, atom()}
+  def add_table(
+        _spreadsheet,
+        _sheet_name,
+        _table_name,
+        _display_name,
+        _start_cell,
+        _end_cell,
+        _columns,
+        _has_totals_row
+      ),
+      do: error()
+
+  @spec get_tables(reference(), String.t()) :: [map()] | {:error, atom()}
+  def get_tables(_spreadsheet, _sheet_name), do: error()
+
+  @spec remove_table(reference(), String.t(), String.t()) :: :ok | {:error, atom()}
+  def remove_table(_spreadsheet, _sheet_name, _table_name), do: error()
+
+  @spec has_tables(reference(), String.t()) :: boolean() | {:error, atom()}
+  def has_tables(_spreadsheet, _sheet_name), do: error()
+
+  @spec count_tables(reference(), String.t()) :: non_neg_integer() | {:error, atom()}
+  def count_tables(_spreadsheet, _sheet_name), do: error()
+
+  @spec set_table_style(
+          reference(),
+          String.t(),
+          String.t(),
+          String.t(),
+          boolean(),
+          boolean(),
+          boolean(),
+          boolean()
+        ) :: :ok | {:error, atom()}
+  def set_table_style(
+        _spreadsheet,
+        _sheet_name,
+        _table_name,
+        _style_name,
+        _show_first_col,
+        _show_last_col,
+        _show_row_stripes,
+        _show_col_stripes
+      ),
+      do: error()
+
+  @spec remove_table_style(reference(), String.t(), String.t()) :: :ok | {:error, atom()}
+  def remove_table_style(_spreadsheet, _sheet_name, _table_name), do: error()
+
+  @spec add_table_column(
+          reference(),
+          String.t(),
+          String.t(),
+          String.t(),
+          String.t() | nil,
+          String.t() | nil
+        ) :: :ok | {:error, atom()}
+  def add_table_column(
+        _spreadsheet,
+        _sheet_name,
+        _table_name,
+        _column_name,
+        _totals_row_function,
+        _totals_row_label
+      ),
+      do: error()
+
+  @spec modify_table_column(
+          reference(),
+          String.t(),
+          String.t(),
+          String.t(),
+          String.t() | nil,
+          String.t() | nil,
+          String.t() | nil
+        ) :: :ok | {:error, atom()}
+  def modify_table_column(
+        _spreadsheet,
+        _sheet_name,
+        _table_name,
+        _old_column_name,
+        _new_column_name,
+        _totals_row_function,
+        _totals_row_label
+      ),
+      do: error()
+
+  @spec set_table_totals_row(reference(), String.t(), String.t(), boolean()) ::
+          :ok | {:error, atom()}
+  def set_table_totals_row(_spreadsheet, _sheet_name, _table_name, _show_totals_row), do: error()
+
   # Drawing operations
   @spec add_shape(
           reference(),

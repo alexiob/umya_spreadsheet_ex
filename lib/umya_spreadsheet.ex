@@ -48,6 +48,7 @@ defmodule UmyaSpreadsheet do
       ├── ImageFunctions - Image insertion and positioning
       ├── PerformanceFunctions - Memory-optimized operations
       ├── PivotTable - Pivot table creation and management
+      ├── Table - Excel table creation and management
       ├── PrintSettings - Page setup and print configuration
       ├── ProtectionFunctions - Security and access control
       ├── RowColumnFunctions - Row and column operations
@@ -149,6 +150,7 @@ defmodule UmyaSpreadsheet do
   alias UmyaSpreadsheet.SheetFunctions
   alias UmyaSpreadsheet.SheetViewFunctions
   alias UmyaSpreadsheet.StylingFunctions
+  alias UmyaSpreadsheet.Table
   alias UmyaSpreadsheet.WorkbookFunctions
   alias UmyaSpreadsheet.WorkbookViewFunctions
 
@@ -568,6 +570,23 @@ defmodule UmyaSpreadsheet do
   # PivotTable Functions delegation
   defdelegate add_pivot_table(spreadsheet, sheet_name, name, source_sheet, source_range, target_cell, row_fields, column_fields, data_fields),
     to: PivotTable
+
+  # Table Functions delegation
+  defdelegate add_table(spreadsheet, sheet_name, table_name, display_name, start_cell, end_cell, columns, has_totals_row \\ nil),
+    to: Table
+
+  defdelegate get_tables(spreadsheet, sheet_name), to: Table
+  defdelegate remove_table(spreadsheet, sheet_name, table_name), to: Table
+  defdelegate has_tables(spreadsheet, sheet_name), to: Table
+  defdelegate count_tables(spreadsheet, sheet_name), to: Table
+  defdelegate set_table_style(spreadsheet, sheet_name, table_name, style_name, show_first_col, show_last_col, show_row_stripes, show_col_stripes),
+    to: Table
+  defdelegate remove_table_style(spreadsheet, sheet_name, table_name), to: Table
+  defdelegate add_table_column(spreadsheet, sheet_name, table_name, column_name, totals_row_function \\ nil, totals_row_label \\ nil),
+    to: Table
+  defdelegate modify_table_column(spreadsheet, sheet_name, table_name, old_column_name, new_column_name \\ nil, totals_row_function \\ nil, totals_row_label \\ nil),
+    to: Table
+  defdelegate set_table_totals_row(spreadsheet, sheet_name, table_name, show_totals_row), to: Table
 
   # Background Functions delegation
   defdelegate set_background_color(spreadsheet, sheet_name, cell_address, color),
