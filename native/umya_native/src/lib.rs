@@ -58,6 +58,7 @@ mod drawing_functions;
 mod file_format_options;
 mod formula_functions;
 mod helpers;
+mod hyperlink;
 mod print_settings;
 mod set_background_color;
 mod set_cell_alignment;
@@ -1697,5 +1698,13 @@ rustler::init!(
         comment_functions::remove_comment,
         comment_functions::has_comments,
         comment_functions::get_comments_count,
+        // Hyperlink functions
+        hyperlink::add_hyperlink,
+        hyperlink::get_hyperlink,
+        hyperlink::remove_hyperlink,
+        hyperlink::has_hyperlink,
+        hyperlink::has_hyperlinks,
+        hyperlink::get_hyperlinks,
+        hyperlink::update_hyperlink,
     ]
 );

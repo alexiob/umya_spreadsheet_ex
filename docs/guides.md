@@ -50,6 +50,13 @@ Welcome to the UmyaSpreadsheet documentation. This collection of guides provides
   - Defining named ranges and defined names
   - Listing and managing defined names
 
+- [**Hyperlinks**](hyperlinks.html): Manage hyperlinks in Excel spreadsheets
+
+  - Adding web URLs, email addresses, file paths, and internal references
+  - Getting, updating, and removing hyperlinks from cells
+  - Bulk hyperlink operations and worksheet-level management
+  - Integration with cell values and advanced error handling
+
 - [**File Format Options**](file_format_options.html): Control compression, encryption, and delivery
 
   - Adjusting compression levels for Excel files

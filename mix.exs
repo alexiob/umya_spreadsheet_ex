@@ -81,6 +81,7 @@ defmodule UmyaSpreadsheet.MixProject do
         "docs/data_validation.md",
         "docs/file_format_options.md",
         "docs/formula_functions.md",
+        "docs/hyperlinks.md",
         "docs/image_handling.md",
         "docs/pivot_tables.md",
         "docs/print_settings.md",
@@ -108,7 +109,8 @@ defmodule UmyaSpreadsheet.MixProject do
           "docs/conditional_formatting.md",
           "docs/data_validation.md",
           "docs/auto_filters.md",
-          "docs/formula_functions.md"
+          "docs/formula_functions.md",
+          "docs/hyperlinks.md"
         ],
         "Visual Elements": [
           "docs/charts.md",

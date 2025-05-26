@@ -39,11 +39,27 @@ defmodule UmyaNative do
   def write_file_with_password_light(_spreadsheet, _path, _password), do: error()
 
   # File format options
-  @spec write_with_compression(reference(), String.t(), non_neg_integer()) :: :ok | {:error, atom()}
+  @spec write_with_compression(reference(), String.t(), non_neg_integer()) ::
+          :ok | {:error, atom()}
   def write_with_compression(_spreadsheet, _path, _compression_level), do: error()
 
-  @spec write_with_encryption_options(reference(), String.t(), String.t(), String.t(), String.t() | nil, non_neg_integer() | nil) :: :ok | {:error, atom()}
-  def write_with_encryption_options(_spreadsheet, _path, _password, _algorithm, _salt_value \\ nil, _spin_count \\ nil), do: error()
+  @spec write_with_encryption_options(
+          reference(),
+          String.t(),
+          String.t(),
+          String.t(),
+          String.t() | nil,
+          non_neg_integer() | nil
+        ) :: :ok | {:error, atom()}
+  def write_with_encryption_options(
+        _spreadsheet,
+        _path,
+        _password,
+        _algorithm,
+        _salt_value \\ nil,
+        _spin_count \\ nil
+      ),
+      do: error()
 
   @spec to_binary_xlsx(reference()) :: binary() | {:error, atom()}
   def to_binary_xlsx(_spreadsheet), do: error()
@@ -52,15 +68,33 @@ defmodule UmyaNative do
   @spec write_csv(reference(), String.t(), String.t()) :: :ok | {:error, atom()}
   def write_csv(_spreadsheet, _sheet_name, _path), do: error()
 
-  @spec write_csv_with_options(reference(), String.t(), String.t(), String.t(), String.t(), boolean(), String.t()) :: :ok | {:error, atom()}
-  def write_csv_with_options(_spreadsheet, _sheet_name, _path, _encoding, _delimiter, _do_trim, _wrap_with_char), do: error()
+  @spec write_csv_with_options(
+          reference(),
+          String.t(),
+          String.t(),
+          String.t(),
+          String.t(),
+          boolean(),
+          String.t()
+        ) :: :ok | {:error, atom()}
+  def write_csv_with_options(
+        _spreadsheet,
+        _sheet_name,
+        _path,
+        _encoding,
+        _delimiter,
+        _do_trim,
+        _wrap_with_char
+      ),
+      do: error()
 
   # Aliased functions for compatibility between Rust and Elixir naming
   @spec write_light(reference(), String.t()) :: :ok | {:error, atom()}
   def write_light(spreadsheet, path), do: write_file_light(spreadsheet, path)
 
   @spec write_with_password_light(reference(), String.t(), String.t()) :: :ok | {:error, atom()}
-  def write_with_password_light(spreadsheet, path, password), do: write_file_with_password_light(spreadsheet, path, password)
+  def write_with_password_light(spreadsheet, path, password),
+    do: write_file_with_password_light(spreadsheet, path, password)
 
   # Cell operations
   @spec get_cell_value(reference(), String.t(), String.t()) :: String.t() | {:error, atom()}
@@ -149,23 +183,31 @@ defmodule UmyaNative do
   @spec set_font_italic(reference(), String.t(), String.t(), boolean()) :: :ok | {:error, atom()}
   def set_font_italic(_spreadsheet, _sheet_name, _cell_address, _is_italic), do: error()
 
-  @spec set_font_underline(reference(), String.t(), String.t(), String.t()) :: :ok | {:error, atom()}
+  @spec set_font_underline(reference(), String.t(), String.t(), String.t()) ::
+          :ok | {:error, atom()}
   def set_font_underline(_spreadsheet, _sheet_name, _cell_address, _underline_style), do: error()
 
-  @spec set_font_strikethrough(reference(), String.t(), String.t(), boolean()) :: :ok | {:error, atom()}
-  def set_font_strikethrough(_spreadsheet, _sheet_name, _cell_address, _is_strikethrough), do: error()
+  @spec set_font_strikethrough(reference(), String.t(), String.t(), boolean()) ::
+          :ok | {:error, atom()}
+  def set_font_strikethrough(_spreadsheet, _sheet_name, _cell_address, _is_strikethrough),
+    do: error()
 
-  @spec set_border_style(reference(), String.t(), String.t(), String.t(), String.t()) :: :ok | {:error, atom()}
-  def set_border_style(_spreadsheet, _sheet_name, _cell_address, _border_position, _border_style), do: error()
+  @spec set_border_style(reference(), String.t(), String.t(), String.t(), String.t()) ::
+          :ok | {:error, atom()}
+  def set_border_style(_spreadsheet, _sheet_name, _cell_address, _border_position, _border_style),
+    do: error()
 
-  @spec set_cell_rotation(reference(), String.t(), String.t(), integer()) :: :ok | {:error, atom()}
+  @spec set_cell_rotation(reference(), String.t(), String.t(), integer()) ::
+          :ok | {:error, atom()}
   def set_cell_rotation(_spreadsheet, _sheet_name, _cell_address, _angle), do: error()
 
   @spec set_cell_indent(reference(), String.t(), String.t(), integer()) :: :ok | {:error, atom()}
   def set_cell_indent(_spreadsheet, _sheet_name, _cell_address, _indent), do: error()
 
-  @spec set_cell_alignment(reference(), String.t(), String.t(), String.t(), String.t()) :: :ok | {:error, atom()}
-  def set_cell_alignment(_spreadsheet, _sheet_name, _cell_address, _horizontal, _vertical), do: error()
+  @spec set_cell_alignment(reference(), String.t(), String.t(), String.t(), String.t()) ::
+          :ok | {:error, atom()}
+  def set_cell_alignment(_spreadsheet, _sheet_name, _cell_address, _horizontal, _vertical),
+    do: error()
 
   # Image operations
   @spec add_image(reference(), String.t(), String.t(), String.t()) :: :ok | {:error, atom()}
@@ -401,19 +443,19 @@ defmodule UmyaNative do
           map() | nil
         ) :: :ok | {:error, atom()} | boolean()
   def add_color_scale(
-    _spreadsheet,
-    _sheet_name,
-    _range,
-    _min_type,
-    _min_value,
-    _min_color,
-    _mid_type,
-    _mid_value,
-    _mid_color,
-    _max_type,
-    _max_value,
-    _max_color
-),
+        _spreadsheet,
+        _sheet_name,
+        _range,
+        _min_type,
+        _min_value,
+        _min_color,
+        _mid_type,
+        _mid_value,
+        _mid_color,
+        _max_type,
+        _max_value,
+        _max_color
+      ),
       do: error()
 
   @spec add_data_bar(
@@ -427,7 +469,15 @@ defmodule UmyaNative do
   def add_data_bar(_spreadsheet, _sheet_name, _cell_range, _min_value, _max_value, _color),
     do: error()
 
-  @spec add_top_bottom_rule(reference(), String.t(), String.t(), String.t(), integer(), boolean(), String.t()) ::
+  @spec add_top_bottom_rule(
+          reference(),
+          String.t(),
+          String.t(),
+          String.t(),
+          integer(),
+          boolean(),
+          String.t()
+        ) ::
           :ok | {:error, atom()}
   def add_top_bottom_rule(
         _spreadsheet,
@@ -440,10 +490,26 @@ defmodule UmyaNative do
       ),
       do: error()
 
-  @spec add_cell_is_rule(reference(), String.t(), String.t(), String.t(), String.t(), String.t(), String.t()) ::
+  @spec add_cell_is_rule(
+          reference(),
+          String.t(),
+          String.t(),
+          String.t(),
+          String.t(),
+          String.t(),
+          String.t()
+        ) ::
           :ok | {:error, atom()}
-  def add_cell_is_rule(_spreadsheet, _sheet_name, _range, _operator, _value1, _value2, _format_style),
-    do: error()
+  def add_cell_is_rule(
+        _spreadsheet,
+        _sheet_name,
+        _range,
+        _operator,
+        _value1,
+        _value2,
+        _format_style
+      ),
+      do: error()
 
   @spec add_text_rule(reference(), String.t(), String.t(), String.t(), String.t(), String.t()) ::
           :ok | {:error, atom()}
@@ -455,10 +521,24 @@ defmodule UmyaNative do
   def add_icon_set(_spreadsheet, _sheet_name, _range, _icon_style, _thresholds),
     do: error()
 
-  @spec add_above_below_average_rule(reference(), String.t(), String.t(), String.t(), integer() | nil, String.t()) ::
+  @spec add_above_below_average_rule(
+          reference(),
+          String.t(),
+          String.t(),
+          String.t(),
+          integer() | nil,
+          String.t()
+        ) ::
           :ok | {:error, atom()}
-  def add_above_below_average_rule(_spreadsheet, _sheet_name, _range, _rule_type, _std_dev, _format_style),
-    do: error()
+  def add_above_below_average_rule(
+        _spreadsheet,
+        _sheet_name,
+        _range,
+        _rule_type,
+        _std_dev,
+        _format_style
+      ),
+      do: error()
 
   # Data validation operations
   @spec add_list_validation(
@@ -884,10 +964,12 @@ defmodule UmyaNative do
   @spec set_fit_to_page(reference(), String.t(), integer(), integer()) :: :ok | {:error, atom()}
   def set_fit_to_page(_spreadsheet, _sheet_name, _width, _height), do: error()
 
-  @spec set_page_margins(reference(), String.t(), float(), float(), float(), float()) :: :ok | {:error, atom()}
+  @spec set_page_margins(reference(), String.t(), float(), float(), float(), float()) ::
+          :ok | {:error, atom()}
   def set_page_margins(_spreadsheet, _sheet_name, _top, _right, _bottom, _left), do: error()
 
-  @spec set_header_footer_margins(reference(), String.t(), float(), float()) :: :ok | {:error, atom()}
+  @spec set_header_footer_margins(reference(), String.t(), float(), float()) ::
+          :ok | {:error, atom()}
   def set_header_footer_margins(_spreadsheet, _sheet_name, _header, _footer), do: error()
 
   @spec set_header(reference(), String.t(), String.t()) :: :ok | {:error, atom()}
@@ -896,13 +978,15 @@ defmodule UmyaNative do
   @spec set_footer(reference(), String.t(), String.t()) :: :ok | {:error, atom()}
   def set_footer(_spreadsheet, _sheet_name, _footer), do: error()
 
-  @spec set_print_centered(reference(), String.t(), boolean(), boolean()) :: :ok | {:error, atom()}
+  @spec set_print_centered(reference(), String.t(), boolean(), boolean()) ::
+          :ok | {:error, atom()}
   def set_print_centered(_spreadsheet, _sheet_name, _horizontal, _vertical), do: error()
 
   @spec set_print_area(reference(), String.t(), String.t()) :: :ok | {:error, atom()}
   def set_print_area(_spreadsheet, _sheet_name, _print_area), do: error()
 
-  @spec set_print_titles(reference(), String.t(), String.t(), String.t()) :: :ok | {:error, atom()}
+  @spec set_print_titles(reference(), String.t(), String.t(), String.t()) ::
+          :ok | {:error, atom()}
   def set_print_titles(_spreadsheet, _sheet_name, _rows, _columns), do: error()
 
   # Sheet view functions
@@ -946,7 +1030,8 @@ defmodule UmyaNative do
   Split panes at the specified position.
   """
   @spec split_panes(reference(), String.t(), float(), float()) :: :ok | {:error, atom()}
-  def split_panes(_spreadsheet, _sheet_name, _horizontal_position, _vertical_position), do: error()
+  def split_panes(_spreadsheet, _sheet_name, _horizontal_position, _vertical_position),
+    do: error()
 
   @doc """
   Freeze panes at the specified rows and columns.
@@ -976,26 +1061,37 @@ defmodule UmyaNative do
   @doc """
   Sets the window position and size for the workbook.
   """
-  @spec set_workbook_window_position(reference(), integer(), integer(), integer(), integer()) :: :ok | {:error, atom()}
-  def set_workbook_window_position(_spreadsheet, _x_position, _y_position, _window_width, _window_height), do: error()
+  @spec set_workbook_window_position(reference(), integer(), integer(), integer(), integer()) ::
+          :ok | {:error, atom()}
+  def set_workbook_window_position(
+        _spreadsheet,
+        _x_position,
+        _y_position,
+        _window_width,
+        _window_height
+      ),
+      do: error()
 
   # Comment functions
   @doc """
   Adds a comment to a cell.
   """
-  @spec add_comment(reference(), String.t(), String.t(), String.t(), String.t()) :: :ok | {:error, atom()}
+  @spec add_comment(reference(), String.t(), String.t(), String.t(), String.t()) ::
+          :ok | {:error, atom()}
   def add_comment(_spreadsheet, _sheet_name, _cell_address, _text, _author), do: error()
 
   @doc """
   Gets the comment from a cell.
   """
-  @spec get_comment(reference(), String.t(), String.t()) :: {:ok, String.t(), String.t()} | {:error, atom()}
+  @spec get_comment(reference(), String.t(), String.t()) ::
+          {:ok, String.t(), String.t()} | {:error, atom()}
   def get_comment(_spreadsheet, _sheet_name, _cell_address), do: error()
 
   @doc """
   Updates an existing comment in a cell.
   """
-  @spec update_comment(reference(), String.t(), String.t(), String.t(), String.t() | nil) :: :ok | {:error, atom()}
+  @spec update_comment(reference(), String.t(), String.t(), String.t(), String.t() | nil) ::
+          :ok | {:error, atom()}
   def update_comment(_spreadsheet, _sheet_name, _cell_address, _text, _author \\ nil), do: error()
 
   @doc """
@@ -1016,6 +1112,80 @@ defmodule UmyaNative do
   @spec get_comments_count(reference(), String.t()) :: integer() | {:error, atom()}
   def get_comments_count(_spreadsheet, _sheet_name), do: error()
 
+  # Hyperlink functions
+
+  @doc """
+  Adds a hyperlink to a cell.
+  """
+  @spec add_hyperlink(
+          reference(),
+          String.t(),
+          String.t(),
+          String.t(),
+          String.t() | nil,
+          boolean()
+        ) :: :ok | {:error, atom()}
+  def add_hyperlink(
+        _spreadsheet,
+        _sheet_name,
+        _cell_address,
+        _url,
+        _tooltip \\ nil,
+        _is_internal \\ false
+      ),
+      do: error()
+
+  @doc """
+  Gets hyperlink information from a cell.
+  """
+  @spec get_hyperlink(reference(), String.t(), String.t()) :: {:ok, map()} | {:error, atom()}
+  def get_hyperlink(_spreadsheet, _sheet_name, _cell_address), do: error()
+
+  @doc """
+  Removes a hyperlink from a cell.
+  """
+  @spec remove_hyperlink(reference(), String.t(), String.t()) :: :ok | {:error, atom()}
+  def remove_hyperlink(_spreadsheet, _sheet_name, _cell_address), do: error()
+
+  @doc """
+  Checks if a specific cell has a hyperlink.
+  """
+  @spec has_hyperlink(reference(), String.t(), String.t()) :: boolean() | {:error, atom()}
+  def has_hyperlink(_spreadsheet, _sheet_name, _cell_address), do: error()
+
+  @doc """
+  Checks if a worksheet contains any hyperlinks.
+  """
+  @spec has_hyperlinks(reference(), String.t()) :: boolean() | {:error, atom()}
+  def has_hyperlinks(_spreadsheet, _sheet_name), do: error()
+
+  @doc """
+  Gets all hyperlinks from a worksheet.
+  """
+  @spec get_hyperlinks(reference(), String.t()) :: {:ok, list(map())} | {:error, atom()}
+  def get_hyperlinks(_spreadsheet, _sheet_name), do: error()
+
+  @doc """
+  Updates an existing hyperlink in a cell.
+  """
+  @spec update_hyperlink(
+          reference(),
+          String.t(),
+          String.t(),
+          String.t(),
+          String.t() | nil,
+          boolean()
+        ) :: :ok | {:error, atom()}
+  def update_hyperlink(
+        _spreadsheet,
+        _sheet_name,
+        _cell_address,
+        _url,
+        _tooltip \\ nil,
+        _is_internal \\ false
+      ),
+      do: error()
+
   # Formula functions
 
   @doc """
@@ -1027,19 +1197,22 @@ defmodule UmyaNative do
   @doc """
   Sets an array formula for a range of cells.
   """
-  @spec set_array_formula(reference(), String.t(), String.t(), String.t()) :: :ok | {:error, atom()}
+  @spec set_array_formula(reference(), String.t(), String.t(), String.t()) ::
+          :ok | {:error, atom()}
   def set_array_formula(_spreadsheet, _sheet_name, _range, _formula), do: error()
 
   @doc """
   Creates a named range in the spreadsheet.
   """
-  @spec create_named_range(reference(), String.t(), String.t(), String.t()) :: :ok | {:error, atom()}
+  @spec create_named_range(reference(), String.t(), String.t(), String.t()) ::
+          :ok | {:error, atom()}
   def create_named_range(_spreadsheet, _name, _sheet_name, _range), do: error()
 
   @doc """
   Creates a defined name in the spreadsheet.
   """
-  @spec create_defined_name(reference(), String.t(), String.t(), String.t() | nil) :: :ok | {:error, atom()}
+  @spec create_defined_name(reference(), String.t(), String.t(), String.t() | nil) ::
+          :ok | {:error, atom()}
   def create_defined_name(_spreadsheet, _name, _formula, _sheet_name \\ nil), do: error()
 
   @doc """

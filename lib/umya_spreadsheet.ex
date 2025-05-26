@@ -45,6 +45,7 @@ defmodule UmyaSpreadsheet do
       ├── FileFormatOptions - File format and compression options
       ├── FontFunctions - Font styling and text formatting
       ├── FormulaFunctions - Formula creation and named ranges
+      ├── Hyperlink - Hyperlink management and navigation
       ├── ImageFunctions - Image insertion and positioning
       ├── PerformanceFunctions - Memory-optimized operations
       ├── PivotTable - Pivot table creation and management
@@ -142,6 +143,7 @@ defmodule UmyaSpreadsheet do
   alias UmyaSpreadsheet.Drawing
   alias UmyaSpreadsheet.FontFunctions
   alias UmyaSpreadsheet.FormulaFunctions
+  alias UmyaSpreadsheet.Hyperlink
   alias UmyaSpreadsheet.ImageFunctions
   alias UmyaSpreadsheet.PerformanceFunctions
   alias UmyaSpreadsheet.PivotTable
@@ -164,8 +166,8 @@ defmodule UmyaSpreadsheet do
     A spreadsheet object containing a reference to the underlying Rust data structure.
     """
     @type t :: %__MODULE__{
-      reference: reference()
-    }
+            reference: reference()
+          }
   end
 
   @doc """
@@ -331,262 +333,681 @@ defmodule UmyaSpreadsheet do
   defdelegate write_csv_with_options(spreadsheet, sheet_name, path, options), to: CSVFunctions
 
   # Styling Functions delegation
-  defdelegate copy_column_styling(spreadsheet, sheet_name, source_column, target_column), to: StylingFunctions
-  defdelegate copy_column_styling(spreadsheet, sheet_name, source_column, target_column, start_row, end_row), to: StylingFunctions
+  defdelegate copy_column_styling(spreadsheet, sheet_name, source_column, target_column),
+    to: StylingFunctions
+
+  defdelegate copy_column_styling(
+                spreadsheet,
+                sheet_name,
+                source_column,
+                target_column,
+                start_row,
+                end_row
+              ),
+              to: StylingFunctions
 
   # Performance Functions delegation
   defdelegate write_light(spreadsheet, path), to: PerformanceFunctions
   defdelegate write_with_password_light(spreadsheet, path, password), to: PerformanceFunctions
 
   # Conditional Formatting Functions delegation
-  defdelegate add_color_scale(spreadsheet, sheet_name, range, min_type, min_value, min_color, max_type, max_value, max_color),
-    to: ConditionalFormatting
-  defdelegate add_color_scale(spreadsheet, sheet_name, range, min_type, min_value, min_color, mid_type, mid_value, mid_color, max_type, max_value, max_color),
-    to: ConditionalFormatting
-  defdelegate add_cell_value_rule(spreadsheet, sheet_name, range, operator, value1, value2, format_style),
-    to: ConditionalFormatting
-  defdelegate add_cell_is_rule(spreadsheet, sheet_name, range, operator, value1, value2, format_style),
-    to: ConditionalFormatting
+  defdelegate add_color_scale(
+                spreadsheet,
+                sheet_name,
+                range,
+                min_type,
+                min_value,
+                min_color,
+                max_type,
+                max_value,
+                max_color
+              ),
+              to: ConditionalFormatting
+
+  defdelegate add_color_scale(
+                spreadsheet,
+                sheet_name,
+                range,
+                min_type,
+                min_value,
+                min_color,
+                mid_type,
+                mid_value,
+                mid_color,
+                max_type,
+                max_value,
+                max_color
+              ),
+              to: ConditionalFormatting
+
+  defdelegate add_cell_value_rule(
+                spreadsheet,
+                sheet_name,
+                range,
+                operator,
+                value1,
+                value2,
+                format_style
+              ),
+              to: ConditionalFormatting
+
+  defdelegate add_cell_is_rule(
+                spreadsheet,
+                sheet_name,
+                range,
+                operator,
+                value1,
+                value2,
+                format_style
+              ),
+              to: ConditionalFormatting
+
   defdelegate add_text_rule(spreadsheet, sheet_name, range, operator, text, format_style),
     to: ConditionalFormatting
+
   defdelegate add_data_bar(spreadsheet, sheet_name, range, min_value, max_value, color),
     to: ConditionalFormatting
-  defdelegate add_top_bottom_rule(spreadsheet, sheet_name, range, rule_type, rank, percent, format_style),
-    to: ConditionalFormatting
+
+  defdelegate add_top_bottom_rule(
+                spreadsheet,
+                sheet_name,
+                range,
+                rule_type,
+                rank,
+                percent,
+                format_style
+              ),
+              to: ConditionalFormatting
+
   defdelegate add_icon_set(spreadsheet, sheet_name, range, icon_style, thresholds),
     to: ConditionalFormatting
-  defdelegate add_above_below_average_rule(spreadsheet, sheet_name, range, rule_type, std_dev, format_style),
-    to: ConditionalFormatting
+
+  defdelegate add_above_below_average_rule(
+                spreadsheet,
+                sheet_name,
+                range,
+                rule_type,
+                std_dev,
+                format_style
+              ),
+              to: ConditionalFormatting
 
   # Data Validation Functions delegation
   defdelegate add_list_validation(spreadsheet, sheet_name, range, options), to: DataValidation
-  defdelegate add_list_validation(spreadsheet, sheet_name, range, options, show_dropdown), to: DataValidation
-  defdelegate add_list_validation(spreadsheet, sheet_name, range, options, show_dropdown, error_message), to: DataValidation
-  defdelegate add_list_validation(spreadsheet, sheet_name, range, options, show_dropdown, error_message, error_title, prompt_message, prompt_title), to: DataValidation
 
-  defdelegate add_number_validation(spreadsheet, sheet_name, range, operator, value1), to: DataValidation
-  defdelegate add_number_validation(spreadsheet, sheet_name, range, operator, value1, value2), to: DataValidation
-  defdelegate add_number_validation(spreadsheet, sheet_name, range, operator, value1, value2, error_message), to: DataValidation
-  defdelegate add_number_validation(spreadsheet, sheet_name, range, operator, value1, value2, show_dropdown, error_message, error_title, prompt_message, prompt_title), to: DataValidation
+  defdelegate add_list_validation(spreadsheet, sheet_name, range, options, show_dropdown),
+    to: DataValidation
 
-  defdelegate add_date_validation(spreadsheet, sheet_name, range, operator, value1), to: DataValidation
-  defdelegate add_date_validation(spreadsheet, sheet_name, range, operator, value1, value2), to: DataValidation
-  defdelegate add_date_validation(spreadsheet, sheet_name, range, operator, value1, value2, error_message), to: DataValidation
-  defdelegate add_date_validation(spreadsheet, sheet_name, range, operator, value1, value2, show_dropdown, error_message, error_title, prompt_message, prompt_title), to: DataValidation
+  defdelegate add_list_validation(
+                spreadsheet,
+                sheet_name,
+                range,
+                options,
+                show_dropdown,
+                error_message
+              ),
+              to: DataValidation
 
-  defdelegate add_text_length_validation(spreadsheet, sheet_name, range, operator, value1), to: DataValidation
-  defdelegate add_text_length_validation(spreadsheet, sheet_name, range, operator, value1, value2), to: DataValidation
-  defdelegate add_text_length_validation(spreadsheet, sheet_name, range, operator, value1, value2, error_message), to: DataValidation
-  defdelegate add_text_length_validation(spreadsheet, sheet_name, range, operator, value1, value2, show_dropdown, error_message, error_title, prompt_message, prompt_title), to: DataValidation
+  defdelegate add_list_validation(
+                spreadsheet,
+                sheet_name,
+                range,
+                options,
+                show_dropdown,
+                error_message,
+                error_title,
+                prompt_message,
+                prompt_title
+              ),
+              to: DataValidation
+
+  defdelegate add_number_validation(spreadsheet, sheet_name, range, operator, value1),
+    to: DataValidation
+
+  defdelegate add_number_validation(spreadsheet, sheet_name, range, operator, value1, value2),
+    to: DataValidation
+
+  defdelegate add_number_validation(
+                spreadsheet,
+                sheet_name,
+                range,
+                operator,
+                value1,
+                value2,
+                error_message
+              ),
+              to: DataValidation
+
+  defdelegate add_number_validation(
+                spreadsheet,
+                sheet_name,
+                range,
+                operator,
+                value1,
+                value2,
+                show_dropdown,
+                error_message,
+                error_title,
+                prompt_message,
+                prompt_title
+              ),
+              to: DataValidation
+
+  defdelegate add_date_validation(spreadsheet, sheet_name, range, operator, value1),
+    to: DataValidation
+
+  defdelegate add_date_validation(spreadsheet, sheet_name, range, operator, value1, value2),
+    to: DataValidation
+
+  defdelegate add_date_validation(
+                spreadsheet,
+                sheet_name,
+                range,
+                operator,
+                value1,
+                value2,
+                error_message
+              ),
+              to: DataValidation
+
+  defdelegate add_date_validation(
+                spreadsheet,
+                sheet_name,
+                range,
+                operator,
+                value1,
+                value2,
+                show_dropdown,
+                error_message,
+                error_title,
+                prompt_message,
+                prompt_title
+              ),
+              to: DataValidation
+
+  defdelegate add_text_length_validation(spreadsheet, sheet_name, range, operator, value1),
+    to: DataValidation
+
+  defdelegate add_text_length_validation(
+                spreadsheet,
+                sheet_name,
+                range,
+                operator,
+                value1,
+                value2
+              ),
+              to: DataValidation
+
+  defdelegate add_text_length_validation(
+                spreadsheet,
+                sheet_name,
+                range,
+                operator,
+                value1,
+                value2,
+                error_message
+              ),
+              to: DataValidation
+
+  defdelegate add_text_length_validation(
+                spreadsheet,
+                sheet_name,
+                range,
+                operator,
+                value1,
+                value2,
+                show_dropdown,
+                error_message,
+                error_title,
+                prompt_message,
+                prompt_title
+              ),
+              to: DataValidation
 
   defdelegate add_custom_validation(spreadsheet, sheet_name, range, formula), to: DataValidation
-  defdelegate add_custom_validation(spreadsheet, sheet_name, range, formula, error_message), to: DataValidation
-  defdelegate add_custom_validation(spreadsheet, sheet_name, range, formula, show_dropdown, error_message, error_title, prompt_message, prompt_title), to: DataValidation
+
+  defdelegate add_custom_validation(spreadsheet, sheet_name, range, formula, error_message),
+    to: DataValidation
+
+  defdelegate add_custom_validation(
+                spreadsheet,
+                sheet_name,
+                range,
+                formula,
+                show_dropdown,
+                error_message,
+                error_title,
+                prompt_message,
+                prompt_title
+              ),
+              to: DataValidation
 
   defdelegate remove_data_validation(spreadsheet, sheet_name, range), to: DataValidation
 
   # Print Settings Functions delegation
   defdelegate set_page_orientation(spreadsheet, sheet_name, orientation),
     to: PrintSettings
+
   defdelegate set_paper_size(spreadsheet, sheet_name, paper_size),
     to: PrintSettings
+
   defdelegate set_page_scale(spreadsheet, sheet_name, scale),
     to: PrintSettings
+
   defdelegate set_fit_to_page(spreadsheet, sheet_name, width, height),
     to: PrintSettings
+
   defdelegate set_page_margins(spreadsheet, sheet_name, top, right, bottom, left),
     to: PrintSettings
+
   defdelegate set_header_footer_margins(spreadsheet, sheet_name, header, footer),
     to: PrintSettings
+
   defdelegate set_header(spreadsheet, sheet_name, header_text),
     to: PrintSettings
+
   defdelegate set_footer(spreadsheet, sheet_name, footer_text),
     to: PrintSettings
+
   defdelegate set_print_centered(spreadsheet, sheet_name, horizontal_centered, vertical_centered),
     to: PrintSettings
+
   defdelegate set_print_area(spreadsheet, sheet_name, range),
     to: PrintSettings
+
   defdelegate set_print_titles(spreadsheet, sheet_name, rows, columns),
     to: PrintSettings
 
   # Sheet View Functions delegation
   defdelegate set_show_grid_lines(spreadsheet, sheet_name, show_gridlines),
     to: SheetViewFunctions
+
   defdelegate set_tab_selected(spreadsheet, sheet_name, selected),
     to: SheetViewFunctions
+
   defdelegate set_top_left_cell(spreadsheet, sheet_name, cell_address),
     to: SheetViewFunctions
+
   defdelegate set_zoom_scale(spreadsheet, sheet_name, scale),
     to: SheetViewFunctions
+
   defdelegate set_sheet_view(spreadsheet, sheet_name, view_type),
     to: SheetViewFunctions
+
   defdelegate set_zoom_scale_normal(spreadsheet, sheet_name, scale),
     to: SheetViewFunctions
+
   defdelegate set_zoom_scale_page_layout(spreadsheet, sheet_name, scale),
     to: SheetViewFunctions
+
   defdelegate set_zoom_scale_page_break(spreadsheet, sheet_name, scale),
     to: SheetViewFunctions
+
   defdelegate freeze_panes(spreadsheet, sheet_name, rows, cols),
     to: SheetViewFunctions
+
   defdelegate split_panes(spreadsheet, sheet_name, height, width),
     to: SheetViewFunctions
+
   defdelegate set_tab_color(spreadsheet, sheet_name, color),
     to: SheetViewFunctions
+
   defdelegate set_selection(spreadsheet, sheet_name, active_cell, sqref),
     to: SheetViewFunctions
 
   # Workbook View Functions delegation
   defdelegate set_active_tab(spreadsheet, tab_index),
     to: WorkbookViewFunctions
-  defdelegate set_workbook_window_position(spreadsheet, x_position, y_position, window_width, window_height),
-    to: WorkbookViewFunctions
+
+  defdelegate set_workbook_window_position(
+                spreadsheet,
+                x_position,
+                y_position,
+                window_width,
+                window_height
+              ),
+              to: WorkbookViewFunctions
 
   # Cell Functions delegation
   defdelegate get_cell_value(spreadsheet, sheet_name, cell_address),
     to: CellFunctions
+
   defdelegate get_formatted_value(spreadsheet, sheet_name, cell_address),
     to: CellFunctions
+
   defdelegate set_cell_value(spreadsheet, sheet_name, cell_address, value),
     to: CellFunctions
+
   defdelegate remove_cell(spreadsheet, sheet_name, cell_address),
     to: CellFunctions
+
   defdelegate set_number_format(spreadsheet, sheet_name, cell_address, format_code),
     to: CellFunctions
+
   defdelegate set_wrap_text(spreadsheet, sheet_name, cell_address, wrap),
     to: CellFunctions
+
   defdelegate set_cell_alignment(spreadsheet, sheet_name, cell_address, horizontal, vertical),
     to: CellFunctions
+
   defdelegate set_cell_rotation(spreadsheet, sheet_name, cell_address, angle),
     to: CellFunctions
+
   defdelegate set_cell_indent(spreadsheet, sheet_name, cell_address, level),
     to: CellFunctions
 
   # Sheet Functions delegation
   defdelegate get_sheet_names(spreadsheet),
     to: SheetFunctions
+
   defdelegate add_sheet(spreadsheet, sheet_name),
     to: SheetFunctions
+
   defdelegate clone_sheet(spreadsheet, source_sheet_name, new_sheet_name),
     to: SheetFunctions
+
   defdelegate remove_sheet(spreadsheet, sheet_name),
     to: SheetFunctions
+
   defdelegate rename_sheet(spreadsheet, old_sheet_name, new_sheet_name),
     to: SheetFunctions
+
   defdelegate set_sheet_state(spreadsheet, sheet_name, state),
     to: SheetFunctions
+
   defdelegate set_sheet_protection(spreadsheet, sheet_name, password, is_protected),
     to: SheetFunctions
+
   defdelegate move_range(spreadsheet, sheet_name, range, rows, columns),
     to: SheetFunctions
+
   defdelegate add_merge_cells(spreadsheet, sheet_name, range),
     to: SheetFunctions
+
   defdelegate insert_new_row(spreadsheet, sheet_name, row_index, amount),
     to: SheetFunctions
+
   defdelegate insert_new_column(spreadsheet, sheet_name, column, amount),
     to: SheetFunctions
+
   defdelegate insert_new_column_by_index(spreadsheet, sheet_name, column_index, amount),
     to: SheetFunctions
+
   defdelegate remove_row(spreadsheet, sheet_name, row_index, amount),
     to: SheetFunctions
+
   defdelegate remove_column(spreadsheet, sheet_name, column, amount),
     to: SheetFunctions
+
   defdelegate remove_column_by_index(spreadsheet, sheet_name, column_index, amount),
     to: SheetFunctions
 
   # Font Functions delegation
   defdelegate set_font_color(spreadsheet, sheet_name, cell_address, color),
     to: FontFunctions
+
   defdelegate set_font_size(spreadsheet, sheet_name, cell_address, size),
     to: FontFunctions
+
   defdelegate set_font_bold(spreadsheet, sheet_name, cell_address, is_bold),
     to: FontFunctions
+
   defdelegate set_font_name(spreadsheet, sheet_name, cell_address, font_name),
     to: FontFunctions
+
   defdelegate set_font_italic(spreadsheet, sheet_name, cell_address, is_italic),
     to: FontFunctions
+
   defdelegate set_font_underline(spreadsheet, sheet_name, cell_address, underline_style),
     to: FontFunctions
+
   defdelegate set_font_strikethrough(spreadsheet, sheet_name, cell_address, is_strikethrough),
     to: FontFunctions
 
   # Row/Column Functions delegation
   defdelegate set_row_height(spreadsheet, sheet_name, row_number, height),
     to: RowColumnFunctions
+
   defdelegate set_row_style(spreadsheet, sheet_name, row_number, bg_color, font_color),
     to: RowColumnFunctions
+
   defdelegate set_column_width(spreadsheet, sheet_name, column, width),
     to: RowColumnFunctions
+
   defdelegate set_column_auto_width(spreadsheet, sheet_name, column, auto_width),
     to: RowColumnFunctions
+
   defdelegate copy_row_styling(spreadsheet, sheet_name, source_row, target_row),
     to: RowColumnFunctions
-  defdelegate copy_row_styling(spreadsheet, sheet_name, source_row, target_row, start_column, end_column),
-    to: RowColumnFunctions
+
+  defdelegate copy_row_styling(
+                spreadsheet,
+                sheet_name,
+                source_row,
+                target_row,
+                start_column,
+                end_column
+              ),
+              to: RowColumnFunctions
 
   # Border Functions delegation
-  defdelegate set_border_style(spreadsheet, sheet_name, cell_address, border_position, border_style),
-    to: BorderFunctions
+  defdelegate set_border_style(
+                spreadsheet,
+                sheet_name,
+                cell_address,
+                border_position,
+                border_style
+              ),
+              to: BorderFunctions
 
   # Workbook Functions delegation
   defdelegate set_workbook_protection(spreadsheet, password),
     to: WorkbookFunctions
+
   defdelegate set_password(input_path, output_path, password),
     to: WorkbookFunctions
 
   # Image Functions delegation
   defdelegate add_image(spreadsheet, sheet_name, cell_address, image_path),
     to: ImageFunctions
+
   defdelegate download_image(spreadsheet, sheet_name, cell_address, output_path),
     to: ImageFunctions
+
   defdelegate change_image(spreadsheet, sheet_name, cell_address, new_image_path),
     to: ImageFunctions
 
   # Chart Functions delegation
-  defdelegate add_chart(spreadsheet, sheet_name, chart_type, from_cell, to_cell, title, data_series, series_titles, point_titles),
-    to: ChartFunctions
-  defdelegate add_chart_with_options(spreadsheet, sheet_name, chart_type, from_cell, to_cell, title, data_series, series_titles, point_titles, style, vary_colors, view_3d, legend, axes, data_labels),
-    to: ChartFunctions
-  defdelegate add_chart_with_options(spreadsheet, sheet_name, chart_type, from_cell, to_cell, title, data_series, series_titles, point_titles, style, vary_colors, view_3d, legend, axes, data_labels, chart_specific),
-    to: ChartFunctions
+  defdelegate add_chart(
+                spreadsheet,
+                sheet_name,
+                chart_type,
+                from_cell,
+                to_cell,
+                title,
+                data_series,
+                series_titles,
+                point_titles
+              ),
+              to: ChartFunctions
+
+  defdelegate add_chart_with_options(
+                spreadsheet,
+                sheet_name,
+                chart_type,
+                from_cell,
+                to_cell,
+                title,
+                data_series,
+                series_titles,
+                point_titles,
+                style,
+                vary_colors,
+                view_3d,
+                legend,
+                axes,
+                data_labels
+              ),
+              to: ChartFunctions
+
+  defdelegate add_chart_with_options(
+                spreadsheet,
+                sheet_name,
+                chart_type,
+                from_cell,
+                to_cell,
+                title,
+                data_series,
+                series_titles,
+                point_titles,
+                style,
+                vary_colors,
+                view_3d,
+                legend,
+                axes,
+                data_labels,
+                chart_specific
+              ),
+              to: ChartFunctions
+
   defdelegate set_chart_style(spreadsheet, sheet_name, chart_index, style),
     to: ChartFunctions
-  defdelegate set_chart_data_labels(spreadsheet, sheet_name, chart_index, show_values, show_percent, show_category_name, show_series_name, position),
-    to: ChartFunctions
+
+  defdelegate set_chart_data_labels(
+                spreadsheet,
+                sheet_name,
+                chart_index,
+                show_values,
+                show_percent,
+                show_category_name,
+                show_series_name,
+                position
+              ),
+              to: ChartFunctions
+
   defdelegate set_chart_legend_position(spreadsheet, sheet_name, chart_index, position, overlay),
     to: ChartFunctions
-  defdelegate set_chart_3d_view(spreadsheet, sheet_name, chart_index, rot_x, rot_y, perspective, height_percent),
-    to: ChartFunctions
-  defdelegate set_chart_axis_titles(spreadsheet, sheet_name, chart_index, category_axis_title, value_axis_title),
-    to: ChartFunctions
+
+  defdelegate set_chart_3d_view(
+                spreadsheet,
+                sheet_name,
+                chart_index,
+                rot_x,
+                rot_y,
+                perspective,
+                height_percent
+              ),
+              to: ChartFunctions
+
+  defdelegate set_chart_axis_titles(
+                spreadsheet,
+                sheet_name,
+                chart_index,
+                category_axis_title,
+                value_axis_title
+              ),
+              to: ChartFunctions
 
   # Drawing Functions delegation
-  defdelegate add_shape(spreadsheet, sheet_name, cell_address, shape_type, width, height, fill_color, outline_color, outline_width),
-    to: Drawing
-  defdelegate add_text_box(spreadsheet, sheet_name, cell_address, text, width, height, fill_color, text_color, outline_color, outline_width),
-    to: Drawing
+  defdelegate add_shape(
+                spreadsheet,
+                sheet_name,
+                cell_address,
+                shape_type,
+                width,
+                height,
+                fill_color,
+                outline_color,
+                outline_width
+              ),
+              to: Drawing
+
+  defdelegate add_text_box(
+                spreadsheet,
+                sheet_name,
+                cell_address,
+                text,
+                width,
+                height,
+                fill_color,
+                text_color,
+                outline_color,
+                outline_width
+              ),
+              to: Drawing
+
   defdelegate add_connector(spreadsheet, sheet_name, from_cell, to_cell, line_color, line_width),
     to: Drawing
 
   # PivotTable Functions delegation
-  defdelegate add_pivot_table(spreadsheet, sheet_name, name, source_sheet, source_range, target_cell, row_fields, column_fields, data_fields),
-    to: PivotTable
+  defdelegate add_pivot_table(
+                spreadsheet,
+                sheet_name,
+                name,
+                source_sheet,
+                source_range,
+                target_cell,
+                row_fields,
+                column_fields,
+                data_fields
+              ),
+              to: PivotTable
 
   # Table Functions delegation
-  defdelegate add_table(spreadsheet, sheet_name, table_name, display_name, start_cell, end_cell, columns, has_totals_row \\ nil),
-    to: Table
+  defdelegate add_table(
+                spreadsheet,
+                sheet_name,
+                table_name,
+                display_name,
+                start_cell,
+                end_cell,
+                columns,
+                has_totals_row \\ nil
+              ),
+              to: Table
 
   defdelegate get_tables(spreadsheet, sheet_name), to: Table
   defdelegate remove_table(spreadsheet, sheet_name, table_name), to: Table
   defdelegate has_tables(spreadsheet, sheet_name), to: Table
   defdelegate count_tables(spreadsheet, sheet_name), to: Table
-  defdelegate set_table_style(spreadsheet, sheet_name, table_name, style_name, show_first_col, show_last_col, show_row_stripes, show_col_stripes),
-    to: Table
+
+  defdelegate set_table_style(
+                spreadsheet,
+                sheet_name,
+                table_name,
+                style_name,
+                show_first_col,
+                show_last_col,
+                show_row_stripes,
+                show_col_stripes
+              ),
+              to: Table
+
   defdelegate remove_table_style(spreadsheet, sheet_name, table_name), to: Table
-  defdelegate add_table_column(spreadsheet, sheet_name, table_name, column_name, totals_row_function \\ nil, totals_row_label \\ nil),
+
+  defdelegate add_table_column(
+                spreadsheet,
+                sheet_name,
+                table_name,
+                column_name,
+                totals_row_function \\ nil,
+                totals_row_label \\ nil
+              ),
+              to: Table
+
+  defdelegate modify_table_column(
+                spreadsheet,
+                sheet_name,
+                table_name,
+                old_column_name,
+                new_column_name \\ nil,
+                totals_row_function \\ nil,
+                totals_row_label \\ nil
+              ),
+              to: Table
+
+  defdelegate set_table_totals_row(spreadsheet, sheet_name, table_name, show_totals_row),
     to: Table
-  defdelegate modify_table_column(spreadsheet, sheet_name, table_name, old_column_name, new_column_name \\ nil, totals_row_function \\ nil, totals_row_label \\ nil),
-    to: Table
-  defdelegate set_table_totals_row(spreadsheet, sheet_name, table_name, show_totals_row), to: Table
 
   # Background Functions delegation
   defdelegate set_background_color(spreadsheet, sheet_name, cell_address, color),
@@ -629,7 +1050,80 @@ defmodule UmyaSpreadsheet do
   defdelegate get_comments_count(spreadsheet, sheet_name),
     to: CommentFunctions
 
-  # Formula functions
+  # Hyperlink functions
+
+  @doc """
+  Adds a hyperlink to a cell.
+  """
+  defdelegate add_hyperlink(
+                spreadsheet,
+                sheet_name,
+                cell_address,
+                url,
+                tooltip \\ nil,
+                is_internal \\ false
+              ),
+              to: Hyperlink
+
+  @doc """
+  Gets hyperlink information from a cell.
+  """
+  defdelegate get_hyperlink(spreadsheet, sheet_name, cell_address),
+    to: Hyperlink
+
+  @doc """
+  Removes a hyperlink from a cell.
+  """
+  defdelegate remove_hyperlink(spreadsheet, sheet_name, cell_address),
+    to: Hyperlink
+
+  @doc """
+  Checks if a specific cell has a hyperlink.
+  """
+  defdelegate has_hyperlink?(spreadsheet, sheet_name, cell_address),
+    to: Hyperlink
+
+  @doc """
+  Checks if a specific cell has a hyperlink (alias for has_hyperlink?).
+  """
+  defdelegate has_hyperlink(spreadsheet, sheet_name, cell_address),
+    to: Hyperlink,
+    as: :has_hyperlink?
+
+  @doc """
+  Checks if a worksheet contains any hyperlinks.
+  """
+  defdelegate has_hyperlinks?(spreadsheet, sheet_name),
+    to: Hyperlink
+
+  @doc """
+  Checks if a worksheet contains any hyperlinks (alias for has_hyperlinks?).
+  """
+  defdelegate has_hyperlinks(spreadsheet, sheet_name), to: Hyperlink, as: :has_hyperlinks?
+
+  @doc """
+  Gets all hyperlinks from a worksheet.
+  """
+  defdelegate get_all_hyperlinks(spreadsheet, sheet_name),
+    to: Hyperlink
+
+  @doc """
+  Gets all hyperlinks from a worksheet (alias for get_all_hyperlinks).
+  """
+  defdelegate get_hyperlinks(spreadsheet, sheet_name), to: Hyperlink, as: :get_all_hyperlinks
+
+  @doc """
+  Updates an existing hyperlink in a cell.
+  """
+  defdelegate update_hyperlink(
+                spreadsheet,
+                sheet_name,
+                cell_address,
+                url,
+                tooltip \\ nil,
+                is_internal \\ false
+              ),
+              to: Hyperlink
 
   @doc """
   Sets a regular formula in a cell.
@@ -729,8 +1223,15 @@ defmodule UmyaSpreadsheet do
       iex> UmyaSpreadsheet.write_with_encryption_options(spreadsheet, "test/result_files/secure_options.xlsx", "secret", "AES256")
       :ok
   """
-  defdelegate write_with_encryption_options(spreadsheet, path, password, algorithm, salt_value \\ nil, spin_count \\ nil),
-    to: FileFormatOptions
+  defdelegate write_with_encryption_options(
+                spreadsheet,
+                path,
+                password,
+                algorithm,
+                salt_value \\ nil,
+                spin_count \\ nil
+              ),
+              to: FileFormatOptions
 
   @doc """
   Converts a spreadsheet to binary XLSX format without writing to disk.

@@ -1,5 +1,56 @@
 # Changelog
 
+## 0.6.7 - 2025-05-26
+
+### Added
+
+- **Complete Excel Hyperlinks Functionality**:
+  - **Core Hyperlink Management** - Comprehensive hyperlink creation and management system
+    - `add_hyperlink/4-6` - Create hyperlinks with web URLs, email addresses, file paths, and internal references
+    - `get_hyperlink/3` - Retrieve hyperlink information from specific cells with complete metadata
+    - `get_hyperlinks/2` - Get all hyperlinks from worksheets for bulk operations
+    - `update_hyperlink/4-6` - Modify existing hyperlinks with new URLs, tooltips, and properties
+    - `remove_hyperlink/3` - Delete individual hyperlinks while preserving cell values
+    - `remove_all_hyperlinks/2` - Clear all hyperlinks from worksheets efficiently
+  - **Advanced Hyperlink Features** - Rich functionality for complex hyperlink scenarios
+    - `add_bulk_hyperlinks/3` - Add multiple hyperlinks efficiently with tuple or map formats
+    - `has_hyperlink/3` - Check if specific cells contain hyperlinks
+    - `has_hyperlinks/2` - Verify if worksheets contain any hyperlinks
+    - `count_hyperlinks/2` - Count total hyperlinks in worksheets for management
+    - Support for custom tooltips and descriptions for enhanced user experience
+    - Integration with cell values for seamless data presentation
+  - **Multiple Hyperlink Types** - Complete support for all Excel hyperlink formats
+    - **Web URLs** - HTTP/HTTPS links to external websites and web services
+    - **Email Addresses** - Mailto links with optional subject and body parameters
+    - **File Paths** - Local and network file references (Windows, macOS, Linux)
+    - **Internal References** - Links to other worksheets, cell ranges, and named ranges
+
+- **Comprehensive Hyperlinks Documentation**:
+  - **Excel Hyperlinks Guide** - Complete 900+ line guide covering all hyperlink functionality
+    - Quick start examples and step-by-step tutorials for common use cases
+    - Complete API documentation with function signatures and return values
+    - Hyperlink types documentation with practical examples for each format
+    - Advanced features guide including bulk operations and worksheet-level management
+    - Best practices for URL validation, tooltips, organization, and error recovery
+    - Error handling patterns with comprehensive recovery strategies
+    - Performance considerations for bulk operations and memory management
+    - Three detailed real-world examples: Employee Directory, Financial Report Navigation, Project Documentation Hub
+  - **Updated Main Documentation** - Enhanced README.md and documentation structure
+    - Added hyperlinks to main features list with detailed capabilities
+    - Updated documentation index in guides.md with hyperlinks guide reference
+    - Enhanced mix.exs documentation structure for proper HexDocs integration
+  - **API Documentation** - Complete function documentation with examples and error handling
+    - Type specifications for all hyperlink functions with return value patterns
+    - Comprehensive parameter documentation with validation requirements
+    - Error scenarios documentation with descriptive error messages
+
+### Improved
+
+- **Documentation Structure** - Enhanced organization for better discoverability
+  - Added hyperlinks guide to "Advanced Features" section in documentation groups
+  - Updated guides index with comprehensive hyperlinks feature description
+  - Enhanced cross-references between hyperlinks and related functionality
+
 ## 0.6.6 - 2025-05-26
 
 ### Added

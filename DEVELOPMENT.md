@@ -6,21 +6,6 @@ Based on comprehensive analysis of the Rust structs vs. implemented NIF function
 
 ### High Priority Features
 
-#### 1. Excel Tables
-
-- **Table Management**: Complete Excel table functionality
-  - `Table` struct: Create, modify, and delete Excel tables
-  - `TableColumn` struct: Define table columns with specific formatting
-  - `TableStyleInfo` struct: Apply table styles and formatting
-  - Table filtering and sorting capabilities
-
-#### 2. Hyperlinks
-
-- **Hyperlink Management**: Cell hyperlink functionality
-  - `Hyperlink` struct: Add hyperlinks to cells
-  - Support for web URLs, file paths, and internal worksheet references
-  - Hyperlink styling and tooltip text
-
 #### 3. Rich Text Support
 
 - **Formatted Text**: Rich text within cells

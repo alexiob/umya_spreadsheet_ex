@@ -96,6 +96,12 @@ An Elixir NIF wrapper for the [umya-spreadsheet](https://github.com/MathNya/umya
   - Guidelines for concurrent spreadsheet manipulation
   - Examples of thread-safe patterns
 
+- **Hyperlinks**
+  - Add web URLs, email addresses, file paths, and internal references
+  - Get, update, and remove hyperlinks from cells
+  - Bulk hyperlink operations for efficient management
+  - Integration with cell values and custom tooltips
+
 - **Data Analysis**
   - Create and manage pivot tables
   - Configure row, column, and data fields

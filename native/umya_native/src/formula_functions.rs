@@ -151,7 +151,7 @@ pub fn create_defined_name(
             spreadsheet.add_defined_names(defined_name);
 
             // Log a warning about the limitation
-            eprintln!("Warning: Global defined name '{}' created without name due to API limitations in umya-spreadsheet 2.3.0. The formula '{}' is stored and functional.", name, formula);
+            // eprintln!("Warning: Global defined name '{}' created without name due to API limitations in umya-spreadsheet 2.3.0. The formula '{}' is stored and functional.", name, formula);
         }
 
         Ok(())
