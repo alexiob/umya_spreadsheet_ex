@@ -115,6 +115,13 @@ Welcome to the UmyaSpreadsheet documentation. This collection of guides provides
   - Number formats and cell alignment
   - Borders and other visual elements
 
+- [**Rich Text Formatting**](rich_text.html): Create cells with multiple formatting styles
+
+  - Multiple font styles within a single cell (bold, italic, underline, strikethrough)
+  - Custom colors and font sizes for different text segments
+  - HTML import and export for complex formatting
+  - Comprehensive font property management with idiomatic Elixir API
+
 - [**Advanced Cell Formatting**](advanced_cell_formatting.html): Enhanced visual styling options
   - Rich text styling (italic, strikethrough, multiple underline styles)
   - Advanced border customization (dashed, dotted, double borders)

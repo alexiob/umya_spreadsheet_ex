@@ -432,15 +432,15 @@ defmodule UmyaNative do
           reference(),
           String.t(),
           String.t(),
-          String.t(),
           String.t() | nil,
           map() | nil,
           String.t() | nil,
           String.t() | nil,
           map() | nil,
-          String.t(),
           String.t() | nil,
-          map() | nil
+          String.t() | nil,
+          map() | nil,
+          String.t() | nil
         ) :: :ok | {:error, atom()} | boolean()
   def add_color_scale(
         _spreadsheet,
@@ -1244,6 +1244,81 @@ defmodule UmyaNative do
   """
   @spec get_auto_filter_range(reference(), String.t()) :: String.t() | nil | {:error, atom()}
   def get_auto_filter_range(_spreadsheet, _sheet_name), do: error()
+
+  # Rich Text functions
+
+  @doc """
+  Creates a new RichText object.
+  """
+  @spec create_rich_text() :: reference() | {:error, atom()}
+  def create_rich_text(), do: error()
+
+  @doc """
+  Creates a RichText object from HTML string.
+  """
+  @spec create_rich_text_from_html(String.t()) :: reference() | {:error, atom()}
+  def create_rich_text_from_html(_html), do: error()
+
+  @doc """
+  Creates a TextElement with text and optional font properties.
+  """
+  @spec create_text_element(String.t(), map()) :: reference() | {:error, atom()}
+  def create_text_element(_text, _font_props), do: error()
+
+  @doc """
+  Gets text from a TextElement.
+  """
+  @spec get_text_element_text(reference()) :: String.t() | {:error, atom()}
+  def get_text_element_text(_text_element), do: error()
+
+  @doc """
+  Gets font properties from a TextElement.
+  """
+  @spec get_text_element_font_properties(reference()) :: map() | {:error, atom()}
+  def get_text_element_font_properties(_text_element), do: error()
+
+  @doc """
+  Adds a TextElement to a RichText object.
+  """
+  @spec add_text_element_to_rich_text(reference(), reference()) :: :ok | {:error, atom()}
+  def add_text_element_to_rich_text(_rich_text, _text_element), do: error()
+
+  @doc """
+  Adds formatted text directly to a RichText object.
+  """
+  @spec add_formatted_text_to_rich_text(reference(), String.t(), map()) :: :ok | {:error, atom()}
+  def add_formatted_text_to_rich_text(_rich_text, _text, _font_props), do: error()
+
+  @doc """
+  Sets rich text to a cell.
+  """
+  @spec set_cell_rich_text(reference(), String.t(), String.t(), reference()) ::
+          :ok | {:error, atom()}
+  def set_cell_rich_text(_spreadsheet, _sheet_name, _coordinate, _rich_text), do: error()
+
+  @doc """
+  Gets rich text from a cell.
+  """
+  @spec get_cell_rich_text(reference(), String.t(), String.t()) :: reference() | {:error, atom()}
+  def get_cell_rich_text(_spreadsheet, _sheet_name, _coordinate), do: error()
+
+  @doc """
+  Gets plain text from RichText.
+  """
+  @spec get_rich_text_plain_text(reference()) :: String.t() | {:error, atom()}
+  def get_rich_text_plain_text(_rich_text), do: error()
+
+  @doc """
+  Converts RichText to HTML.
+  """
+  @spec rich_text_to_html(reference()) :: String.t() | {:error, atom()}
+  def rich_text_to_html(_rich_text), do: error()
+
+  @doc """
+  Gets text elements from RichText.
+  """
+  @spec get_rich_text_elements(reference()) :: [reference()] | {:error, atom()}
+  def get_rich_text_elements(_rich_text), do: error()
 
   defp error(), do: :erlang.nif_error(:nif_not_loaded)
 end

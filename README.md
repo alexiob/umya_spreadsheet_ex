@@ -37,6 +37,9 @@ An Elixir NIF wrapper for the [umya-spreadsheet](https://github.com/MathNya/umya
   - Apply number formats (currency, percentage, dates, etc.)
   - Enable text wrapping
   - Define column widths and row heights
+  - Rich text support with mixed formatting within cells
+  - Create and manipulate formatted text elements
+  - Convert rich text to/from HTML
   - Conditional formatting (cell value rules, color scales, data bars, top/bottom rules, text rules)
   - Data validation (dropdown lists, number ranges, date constraints, text length limits, custom formulas)
 
@@ -150,7 +153,7 @@ Add `umya_spreadsheet_ex` to your list of dependencies in `mix.exs`:
 ```elixir
 def deps do
   [
-    {:umya_spreadsheet_ex, "~> 0.6.7"}
+    {:umya_spreadsheet_ex, "~> 0.6.8"}
   ]
 end
 ```
@@ -242,6 +245,50 @@ You can find all guides in our [Guide Index](https://hexdocs.pm/umya_spreadsheet
 
 # Save the spreadsheet
 :ok = UmyaSpreadsheet.write(spreadsheet, "formatted_spreadsheet.xlsx")
+```
+
+### Rich Text Formatting
+
+```elixir
+{:ok, spreadsheet} = UmyaSpreadsheet.new()
+
+# Create a rich text object
+rich_text = UmyaSpreadsheet.RichText.create()
+
+# Add formatted text with different styles
+:ok = UmyaSpreadsheet.RichText.add_formatted_text(rich_text, "Bold text", %{bold: true})
+:ok = UmyaSpreadsheet.RichText.add_formatted_text(rich_text, " and ", %{})
+:ok = UmyaSpreadsheet.RichText.add_formatted_text(rich_text, "italic text", %{italic: true})
+:ok = UmyaSpreadsheet.RichText.add_formatted_text(rich_text, " with ", %{})
+:ok = UmyaSpreadsheet.RichText.add_formatted_text(rich_text, "colored text", %{color: "#FF0000"})
+
+# Set the rich text to a cell
+:ok = UmyaSpreadsheet.RichText.set_cell_rich_text(spreadsheet, "Sheet1", "A1", rich_text)
+
+# Alternative: Create rich text from HTML
+html_rich_text = UmyaSpreadsheet.RichText.create_from_html("<b>Bold</b> and <i>italic</i> text")
+:ok = UmyaSpreadsheet.RichText.set_cell_rich_text(spreadsheet, "Sheet1", "A2", html_rich_text)
+
+# Create individual text elements for more control
+element1 = UmyaSpreadsheet.RichText.create_text_element("Large text", %{size: 18, bold: true})
+element2 = UmyaSpreadsheet.RichText.create_text_element(" and small text", %{size: 10})
+
+# Add elements to rich text
+rich_text2 = UmyaSpreadsheet.RichText.create()
+:ok = UmyaSpreadsheet.RichText.add_text_element(rich_text2, element1)
+:ok = UmyaSpreadsheet.RichText.add_text_element(rich_text2, element2)
+:ok = UmyaSpreadsheet.RichText.set_cell_rich_text(spreadsheet, "Sheet1", "A3", rich_text2)
+
+# Generate HTML from rich text
+html_output = UmyaSpreadsheet.RichText.to_html(rich_text)
+# => "<b>Bold text</b> and <i>italic text</i> with <span style=\"color:#FF0000\">colored text</span>"
+
+# Get font properties from text elements
+{:ok, props} = UmyaSpreadsheet.RichText.get_element_font_properties(element1)
+# props[:bold] => "true"
+# props[:size] => "18"
+
+:ok = UmyaSpreadsheet.write(spreadsheet, "rich_text_example.xlsx")
 ```
 
 ### Sheet Operations

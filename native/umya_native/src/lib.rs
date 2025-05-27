@@ -60,6 +60,7 @@ mod formula_functions;
 mod helpers;
 mod hyperlink;
 mod print_settings;
+mod rich_text_functions;
 mod set_background_color;
 mod set_cell_alignment;
 mod sheet_view_functions;
@@ -1562,6 +1563,9 @@ pub fn remove_pivot_table(
 // Load function for Rustler
 fn load(env: rustler::Env, _info: rustler::Term) -> bool {
     let _ = rustler::resource!(UmyaSpreadsheet, env);
+    // Re-enabling Rich Text resources
+    let _ = rustler::resource!(rich_text_functions::RichTextResource, env);
+    let _ = rustler::resource!(rich_text_functions::TextElementResource, env);
     true
 }
 
@@ -1706,5 +1710,18 @@ rustler::init!(
         hyperlink::has_hyperlinks,
         hyperlink::get_hyperlinks,
         hyperlink::update_hyperlink,
+        // Rich Text functions - Adding more functions
+        rich_text_functions::create_rich_text,
+        rich_text_functions::create_rich_text_from_html,
+        rich_text_functions::create_text_element,
+        rich_text_functions::get_text_element_text,
+        rich_text_functions::get_text_element_font_properties,
+        rich_text_functions::add_text_element_to_rich_text,
+        rich_text_functions::add_formatted_text_to_rich_text,
+        rich_text_functions::set_cell_rich_text,
+        rich_text_functions::get_cell_rich_text,
+        rich_text_functions::get_rich_text_plain_text,
+        rich_text_functions::rich_text_to_html,
+        rich_text_functions::get_rich_text_elements,
     ]
 );

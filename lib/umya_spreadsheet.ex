@@ -49,6 +49,7 @@ defmodule UmyaSpreadsheet do
       ├── ImageFunctions - Image insertion and positioning
       ├── PerformanceFunctions - Memory-optimized operations
       ├── PivotTable - Pivot table creation and management
+      ├── RichText - Formatted text within cells with styling
       ├── Table - Excel table creation and management
       ├── PrintSettings - Page setup and print configuration
       ├── ProtectionFunctions - Security and access control
@@ -148,6 +149,7 @@ defmodule UmyaSpreadsheet do
   alias UmyaSpreadsheet.PerformanceFunctions
   alias UmyaSpreadsheet.PivotTable
   alias UmyaSpreadsheet.PrintSettings
+  alias UmyaSpreadsheet.RichText
   alias UmyaSpreadsheet.RowColumnFunctions
   alias UmyaSpreadsheet.SheetFunctions
   alias UmyaSpreadsheet.SheetViewFunctions
@@ -1124,6 +1126,156 @@ defmodule UmyaSpreadsheet do
                 is_internal \\ false
               ),
               to: Hyperlink
+
+  # Rich Text functions
+
+  @doc """
+  Creates a new empty RichText object for building formatted text.
+
+  ## Examples
+
+      iex> rich_text = UmyaSpreadsheet.create_rich_text()
+      iex> is_reference(rich_text)
+      true
+  """
+  defdelegate create_rich_text(), to: RichText, as: :create
+
+  @doc """
+  Creates a RichText object from an HTML string with formatting.
+
+  ## Examples
+
+      iex> html = "<b>Bold</b> and <i>italic</i> text"
+      iex> rich_text = UmyaSpreadsheet.create_rich_text_from_html(html)
+      iex> is_reference(rich_text)
+      true
+  """
+  defdelegate create_rich_text_from_html(html), to: RichText, as: :create_from_html
+
+  @doc """
+  Creates a TextElement with text and optional font properties.
+
+  ## Examples
+
+      iex> element = UmyaSpreadsheet.create_text_element("Bold text", %{bold: true, color: "#FF0000"})
+      iex> is_reference(element)
+      true
+  """
+  defdelegate create_text_element(text, font_props \\ %{}), to: RichText
+
+  @doc """
+  Adds a TextElement to a RichText object.
+
+  ## Examples
+
+      iex> rich_text = UmyaSpreadsheet.create_rich_text()
+      iex> element = UmyaSpreadsheet.create_text_element("Test", %{bold: true})
+      iex> UmyaSpreadsheet.add_text_element_to_rich_text(rich_text, element)
+      :ok
+  """
+  defdelegate add_text_element_to_rich_text(rich_text, text_element),
+    to: RichText,
+    as: :add_text_element
+
+  @doc """
+  Adds formatted text directly to a RichText object.
+
+  ## Examples
+
+      iex> rich_text = UmyaSpreadsheet.create_rich_text()
+      iex> UmyaSpreadsheet.add_formatted_text_to_rich_text(rich_text, "Bold text", %{bold: true})
+      :ok
+  """
+  defdelegate add_formatted_text_to_rich_text(rich_text, text, font_props \\ %{}),
+    to: RichText,
+    as: :add_formatted_text
+
+  @doc """
+  Sets rich text to a specific cell.
+
+  ## Examples
+
+      iex> {:ok, spreadsheet} = UmyaSpreadsheet.new()
+      iex> rich_text = UmyaSpreadsheet.create_rich_text()
+      iex> UmyaSpreadsheet.add_formatted_text_to_rich_text(rich_text, "Test", %{bold: true})
+      iex> UmyaSpreadsheet.set_cell_rich_text(spreadsheet, "Sheet1", "A1", rich_text)
+      :ok
+  """
+  defdelegate set_cell_rich_text(spreadsheet, sheet_name, coordinate, rich_text), to: RichText
+
+  @doc """
+  Gets rich text from a specific cell.
+
+  ## Examples
+
+      iex> {:ok, spreadsheet} = UmyaSpreadsheet.new()
+      iex> rich_text = UmyaSpreadsheet.get_cell_rich_text(spreadsheet, "Sheet1", "A1")
+      iex> is_reference(rich_text)
+      true
+  """
+  defdelegate get_cell_rich_text(spreadsheet, sheet_name, coordinate), to: RichText
+
+  @doc """
+  Gets plain text from a RichText object without formatting.
+
+  ## Examples
+
+      iex> rich_text = UmyaSpreadsheet.create_rich_text()
+      iex> UmyaSpreadsheet.add_formatted_text_to_rich_text(rich_text, "Test", %{bold: true})
+      iex> UmyaSpreadsheet.get_rich_text_plain_text(rich_text)
+      "Test"
+  """
+  defdelegate get_rich_text_plain_text(rich_text), to: RichText, as: :get_plain_text
+
+  @doc """
+  Converts RichText to HTML representation.
+
+  ## Examples
+
+      iex> rich_text = UmyaSpreadsheet.create_rich_text()
+      iex> UmyaSpreadsheet.add_formatted_text_to_rich_text(rich_text, "Bold", %{bold: true})
+      iex> UmyaSpreadsheet.rich_text_to_html(rich_text)
+      "<b>Bold</b>"
+  """
+  defdelegate rich_text_to_html(rich_text), to: RichText, as: :to_html
+
+  @doc """
+  Gets all text elements from a RichText object.
+
+  ## Examples
+
+      iex> rich_text = UmyaSpreadsheet.create_rich_text()
+      iex> UmyaSpreadsheet.add_formatted_text_to_rich_text(rich_text, "Test", %{bold: true})
+      iex> elements = UmyaSpreadsheet.get_rich_text_elements(rich_text)
+      iex> is_list(elements)
+      true
+  """
+  defdelegate get_rich_text_elements(rich_text), to: RichText, as: :get_elements
+
+  @doc """
+  Gets text content from a TextElement.
+
+  ## Examples
+
+      iex> element = UmyaSpreadsheet.create_text_element("Test", %{})
+      iex> UmyaSpreadsheet.get_text_element_text(element)
+      "Test"
+  """
+  defdelegate get_text_element_text(text_element), to: RichText, as: :get_element_text
+
+  @doc """
+  Gets font properties from a TextElement as a map.
+
+  ## Examples
+
+      iex> element = UmyaSpreadsheet.create_text_element("Test", %{bold: true})
+      iex> {:ok, props} = UmyaSpreadsheet.get_text_element_font_properties(element)
+      iex> props[:bold]
+      "true"
+  """
+  defdelegate get_text_element_font_properties(text_element),
+    to: RichText,
+    as: :get_element_font_properties
 
   @doc """
   Sets a regular formula in a cell.

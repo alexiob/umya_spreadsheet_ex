@@ -1,5 +1,75 @@
 # Changelog
 
+## 0.6.8 - 2025-05-27
+
+### Added
+
+- **Complete Rich Text Support**:
+  - **Core Rich Text Functionality** - Create and manipulate formatted text within Excel cells
+    - `UmyaSpreadsheet.RichText.create/0` - Create new empty rich text objects
+    - `UmyaSpreadsheet.RichText.create_from_html/1` - Parse HTML strings into rich text with formatting
+    - `UmyaSpreadsheet.RichText.to_html/1` - Generate HTML output from rich text objects
+    - `UmyaSpreadsheet.RichText.set_cell_rich_text/4` - Apply rich text formatting to specific cells
+    - `UmyaSpreadsheet.RichText.get_cell_rich_text/3` - Retrieve rich text objects from cells
+  - **Text Element Management** - Fine-grained control over formatted text segments
+    - `UmyaSpreadsheet.RichText.create_text_element/2` - Create individual text elements with custom formatting
+    - `UmyaSpreadsheet.RichText.add_text_element/2` - Add text elements to rich text objects
+    - `UmyaSpreadsheet.RichText.add_formatted_text/3` - Convenient method to add formatted text directly
+    - `UmyaSpreadsheet.RichText.get_elements/1` - Retrieve all text elements from rich text objects
+    - `UmyaSpreadsheet.RichText.get_element_text/1` - Extract text content from individual elements
+    - `UmyaSpreadsheet.RichText.get_element_font_properties/1` - Get font properties from text elements
+  - **Comprehensive Font Formatting** - Support for all Excel text formatting options
+    - **Bold, Italic, Underline, Strikethrough** - Standard text styling options
+    - **Font Size and Font Name** - Custom typography control
+    - **Text Color** - Support for hex colors and named colors
+    - **Mixed Formatting** - Multiple formatting styles within a single cell
+    - **Idiomatic Elixir API** - Uses atom keys (`:bold`, `:italic`) with automatic conversion to Rust string keys
+
+- **Robust Implementation**:
+  - **Resource Management** - Proper Rust resource handling with automatic cleanup
+    - `RichTextResource` and `TextElementResource` for memory-safe operations
+    - Thread-safe resource management with Mutex protection
+    - Automatic resource cleanup when resources go out of scope
+  - **Error Handling** - Comprehensive error management throughout the rich text system
+    - Graceful handling of invalid HTML input with fallback to plain text
+    - Validation of font properties with appropriate error messages
+    - Safe resource access with proper error propagation
+  - **Performance Optimized** - Efficient implementation for large documents
+    - Zero-copy string handling where possible
+    - Efficient HTML parsing and generation
+    - Optimized font property serialization/deserialization
+
+### Improved
+
+- **Elixir Interface** - Enhanced user experience with idiomatic Elixir patterns
+  - **Atom Key Support** - Use idiomatic Elixir atom keys (`:bold`, `:italic`) instead of string keys
+  - **Automatic Key Conversion** - Seamless conversion between Elixir atoms and Rust strings
+  - **Consistent API** - Rich text functions follow established UmyaSpreadsheet patterns
+  - **Type Specifications** - Complete type specs for all rich text functions
+- **Documentation** - Comprehensive documentation for rich text functionality
+  - **Rich Text Guide** - Created comprehensive 600+ line guide covering all rich text functionality
+    - Complete API documentation with function signatures and return values
+    - Quick start examples and step-by-step tutorials for common use cases
+    - Font properties documentation with practical examples for all formatting options
+    - Best practices for performance, color consistency, font selection, and HTML import
+    - Error handling patterns and comprehensive troubleshooting guide
+    - Four detailed real-world examples: Formatted Headers, Status Indicators, Multi-line Instructions, HTML Import
+  - **Rich Text Examples** - Added complete rich text examples to README.md
+    - Basic rich text creation and HTML import examples
+    - Mixed formatting demonstrations with multiple colors and styles
+    - Integration examples showing rich text with other UmyaSpreadsheet features
+  - **Function Documentation** - Detailed docstrings with examples for all rich text functions
+  - **Type Documentation** - Clear parameter and return value documentation
+  - **Updated Documentation Structure** - Enhanced guides.md with rich text guide reference
+    - Added rich text to "Styling and Formatting" section in documentation index
+    - Complete feature description with capabilities overview
+
+### Fixed
+
+- **Configuration Warning** - Resolved `Application.get_env/3` deprecation warning in module compilation
+  - Updated to use compile-time configuration where appropriate
+  - Maintained compatibility with standalone scripts and Mix.install scenarios
+
 ## 0.6.7 - 2025-05-26
 
 ### Added
