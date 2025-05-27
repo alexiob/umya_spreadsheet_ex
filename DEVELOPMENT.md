@@ -11,13 +11,6 @@ Based on comprehensive analysis of the Rust structs vs. implemented NIF function
   - Complex drawing object management
   - Legacy drawing compatibility
 
-#### 6. Page Breaks
-
-- **Manual Breaks**: Page break insertion
-  - `RowBreaks` struct: Manual row page breaks
-  - `ColumnBreaks` struct: Manual column page breaks
-  - Print layout control
-
 #### 7. Document Properties
 
 - **Custom Metadata**: Document property management

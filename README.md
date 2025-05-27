@@ -148,7 +148,16 @@ UmyaSpreadsheet has comprehensive guides for all major features:
 
 ## Installation
 
-Add `umya_spreadsheet_ex` to your list of dependencies in `mix.exs`:
+You can install using [igniter](https://hexdocs.pm/igniter) for the most comfortable experience:
+
+```sh
+# install igniter if you haven't already
+mix archive.install hex igniter_new
+# then install umya_spreadsheet_ex
+mix igniter.install umya_spreadsheet_ex
+```
+
+Or add `umya_spreadsheet_ex` to your list of dependencies in `mix.exs`:
 
 ```elixir
 def deps do

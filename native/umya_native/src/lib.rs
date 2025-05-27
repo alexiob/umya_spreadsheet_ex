@@ -263,13 +263,20 @@ fn write_file_with_password(
 
     let guard = resource.spreadsheet.lock().unwrap();
 
-    match umya_spreadsheet::writer::xlsx::write_with_password(&guard, path_obj, &password) {
-        Ok(_) => Ok(atoms::ok()),
-        Err(_) => Err(NifError::Term(Box::new((
-            atoms::error(),
-            "Failed to write file with password".to_string(),
-        )))),
-    }
+    let result =
+        match umya_spreadsheet::writer::xlsx::write_with_password(&guard, path_obj, &password) {
+            Ok(_) => Ok(atoms::ok()),
+            Err(_) => Err(NifError::Term(Box::new((
+                atoms::error(),
+                "Failed to write file with password".to_string(),
+            )))),
+        };
+
+    // Explicitly drop the guard to ensure mutex is released before returning
+    drop(guard);
+
+    // Return the result
+    result
 }
 
 #[rustler::nif]
@@ -296,13 +303,21 @@ fn write_file_with_password_light(
 
     let guard = resource.spreadsheet.lock().unwrap();
 
-    match umya_spreadsheet::writer::xlsx::write_with_password_light(&guard, path_obj, &password) {
+    let result = match umya_spreadsheet::writer::xlsx::write_with_password_light(
+        &guard, path_obj, &password,
+    ) {
         Ok(_) => Ok(atoms::ok()),
         Err(_) => Err(NifError::Term(Box::new((
             atoms::error(),
             "Failed to write file with password".to_string(),
         )))),
-    }
+    };
+
+    // Explicitly drop the guard to ensure mutex is released before returning
+    drop(guard);
+
+    // Return the result
+    result
 }
 
 // Cell Reading/Writing operations

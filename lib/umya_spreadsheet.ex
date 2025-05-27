@@ -309,9 +309,15 @@ defmodule UmyaSpreadsheet do
   ## Examples
 
       iex> {:ok, spreadsheet} = UmyaSpreadsheet.new()
-      iex> file_path = "test/result_files/secure_password.xlsx"
-      iex> if File.exists?(file_path), do: File.rm(file_path)
+      iex> unique_id = :crypto.strong_rand_bytes(4) |> Base.encode16() |> String.downcase()
+      iex> file_path = "test/result_files/secure_password_" <> unique_id <> ".xlsx"
+      iex> File.mkdir_p!(Path.dirname(file_path))
+      iex> if File.exists?(file_path), do: File.rm!(file_path)
       iex> UmyaSpreadsheet.write_with_password(spreadsheet, file_path, "password123")
+      :ok
+      iex> File.exists?(file_path)
+      true
+      iex> File.rm!(file_path)
       :ok
   """
   def write_with_password(%Spreadsheet{reference: ref}, path, password) do
@@ -1361,7 +1367,15 @@ defmodule UmyaSpreadsheet do
   ## Examples
 
       iex> {:ok, spreadsheet} = UmyaSpreadsheet.new()
-      iex> UmyaSpreadsheet.write_with_compression(spreadsheet, "test/result_files/high_compression.xlsx", 9)
+      iex> unique_id = :crypto.strong_rand_bytes(4) |> Base.encode16() |> String.downcase()
+      iex> file_path = "test/result_files/high_compression_" <> unique_id <> ".xlsx"
+      iex> File.mkdir_p!(Path.dirname(file_path))
+      iex> if File.exists?(file_path), do: File.rm!(file_path)
+      iex> UmyaSpreadsheet.write_with_compression(spreadsheet, file_path, 9)
+      :ok
+      iex> File.exists?(file_path)
+      true
+      iex> File.rm!(file_path)
       :ok
   """
   defdelegate write_with_compression(spreadsheet, path, compression_level),
@@ -1377,7 +1391,15 @@ defmodule UmyaSpreadsheet do
   ## Examples
 
       iex> {:ok, spreadsheet} = UmyaSpreadsheet.new()
-      iex> UmyaSpreadsheet.write_with_encryption_options(spreadsheet, "test/result_files/secure_options.xlsx", "secret", "AES256")
+      iex> unique_id = :crypto.strong_rand_bytes(4) |> Base.encode16() |> String.downcase()
+      iex> file_path = "test/result_files/secure_options_" <> unique_id <> ".xlsx"
+      iex> File.mkdir_p!(Path.dirname(file_path))
+      iex> if File.exists?(file_path), do: File.rm!(file_path)
+      iex> UmyaSpreadsheet.write_with_encryption_options(spreadsheet, file_path, "secret", "AES256")
+      :ok
+      iex> File.exists?(file_path)
+      true
+      iex> File.rm!(file_path)
       :ok
   """
   defdelegate write_with_encryption_options(

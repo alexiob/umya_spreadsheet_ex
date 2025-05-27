@@ -27,10 +27,11 @@ pub fn write_with_compression(
         }
     }
 
+    // Acquire mutex guard to access the spreadsheet data
     let guard = resource.spreadsheet.lock().unwrap();
 
     // Validate compression level (0-9)
-    let level = if compression_level > 9 {
+    let _level = if compression_level > 9 {
         9
     } else if compression_level < 0 {
         0
@@ -38,33 +39,22 @@ pub fn write_with_compression(
         compression_level
     };
 
-    // For standard compression (6), use the direct approach
-    if level == 6 {
-        // Just use the standard write function as it uses default compression
-        match xlsx::write(&guard, path_obj) {
-            Ok(_) => return Ok(atoms::ok()),
-            Err(_) => {
-                return Err(NifError::Term(Box::new((
-                    atoms::error(),
-                    "Failed to write file with compression".to_string(),
-                ))))
-            }
-        }
-    }
-
-    // For now, just use the standard write function since controlling compression
-    // in XLSX files requires low-level ZIP manipulation that's not exposed by umya-spreadsheet
-    // We'll document this limitation and potentially use different write methods
-
-    // All compression levels use the standard write for now
-    // Future enhancement: could use direct ZIP library manipulation
-    match xlsx::write(&guard, path_obj) {
+    // Note: Currently all compression levels use the standard write method
+    // Future enhancement: implement actual compression level control
+    let result = match xlsx::write(&guard, path_obj) {
         Ok(_) => Ok(atoms::ok()),
         Err(_) => Err(NifError::Term(Box::new((
             atoms::error(),
             "Failed to write file with compression".to_string(),
         )))),
-    }
+    };
+
+    // Explicitly drop the guard to release the mutex before returning
+    // This ensures the mutex is always released, even in error cases
+    drop(guard);
+
+    // Return the result
+    result
 }
 
 /// Write a spreadsheet with enhanced encryption options
@@ -123,6 +113,8 @@ pub fn write_with_encryption_options(
 
         // Write the file with protection settings
         if xlsx::write(&spreadsheet_mut, temp_path).is_err() {
+            // Explicitly drop the guard to ensure mutex is released
+            drop(guard);
             return Err(NifError::Term(Box::new((
                 atoms::error(),
                 "Failed to write temporary file".to_string(),
@@ -130,7 +122,7 @@ pub fn write_with_encryption_options(
         }
 
         // Now encrypt the file with password
-        match xlsx::set_password(temp_path, path_obj, &password) {
+        let result = match xlsx::set_password(temp_path, path_obj, &password) {
             Ok(_) => {
                 // Clean up temporary file
                 let _ = std::fs::remove_file(temp_path);
@@ -143,7 +135,13 @@ pub fn write_with_encryption_options(
                     "Failed to write file with encryption".to_string(),
                 ))))
             }
-        }
+        };
+
+        // Explicitly drop the guard to ensure mutex is released
+        drop(guard);
+
+        // Return the result
+        result
     }
 }
 
@@ -159,7 +157,7 @@ pub fn to_binary_xlsx<'a>(
     let mut buffer = std::io::Cursor::new(Vec::new());
 
     // Write to the memory buffer
-    match xlsx::write_writer(&guard, &mut buffer) {
+    let result = match xlsx::write_writer(&guard, &mut buffer) {
         Ok(_) => {
             let data = buffer.into_inner();
             let mut owned = OwnedBinary::new(data.len()).unwrap();
@@ -167,5 +165,11 @@ pub fn to_binary_xlsx<'a>(
             Ok(Binary::from_owned(owned, env))
         }
         Err(_) => Err(atoms::error()),
-    }
+    };
+
+    // Explicitly drop the guard before returning
+    drop(guard);
+
+    // Return the result
+    result
 }
