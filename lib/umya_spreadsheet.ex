@@ -13,6 +13,7 @@ defmodule UmyaSpreadsheet do
   - Move and organize ranges of data
   - Add and manage multiple worksheets
   - Create charts, images, and visual elements
+  - Embed OLE objects (Word documents, PowerPoint presentations, etc.)
   - Add data validation and conditional formatting
   - Export to CSV with performance optimizations
   - Apply advanced formatting and styling options
@@ -47,6 +48,7 @@ defmodule UmyaSpreadsheet do
       ├── FormulaFunctions - Formula creation and named ranges
       ├── Hyperlink - Hyperlink management and navigation
       ├── ImageFunctions - Image insertion and positioning
+      ├── OleObjects - Object Linking and Embedding (OLE) objects
       ├── PerformanceFunctions - Memory-optimized operations
       ├── PivotTable - Pivot table creation and management
       ├── RichText - Formatted text within cells with styling
@@ -61,7 +63,7 @@ defmodule UmyaSpreadsheet do
 
   ### Data Flow
 
-  1. **NIF Layer**: All operations go through `UmyaNative` which interfaces with Rust
+  1. **NIF Layer**: All operations go through the native interface which interfaces with Rust
   2. **Spreadsheet Reference**: Operations work on a Rust-managed spreadsheet reference
   3. **Function Modules**: Specialized modules provide domain-specific functionality
   4. **Error Handling**: Comprehensive error handling with descriptive messages
@@ -146,6 +148,7 @@ defmodule UmyaSpreadsheet do
   alias UmyaSpreadsheet.FormulaFunctions
   alias UmyaSpreadsheet.Hyperlink
   alias UmyaSpreadsheet.ImageFunctions
+  alias UmyaSpreadsheet.OleObjects
   alias UmyaSpreadsheet.PerformanceFunctions
   alias UmyaSpreadsheet.PivotTable
   alias UmyaSpreadsheet.PrintSettings
@@ -306,7 +309,9 @@ defmodule UmyaSpreadsheet do
   ## Examples
 
       iex> {:ok, spreadsheet} = UmyaSpreadsheet.new()
-      iex> UmyaSpreadsheet.write_with_password(spreadsheet, "test/result_files/secure_password.xlsx", "password123")
+      iex> file_path = "test/result_files/secure_password.xlsx"
+      iex> if File.exists?(file_path), do: File.rm(file_path)
+      iex> UmyaSpreadsheet.write_with_password(spreadsheet, file_path, "password123")
       :ok
   """
   def write_with_password(%Spreadsheet{reference: ref}, path, password) do
@@ -1452,4 +1457,310 @@ defmodule UmyaSpreadsheet do
   """
   defdelegate get_auto_filter_range(spreadsheet, sheet_name),
     to: AutoFilterFunctions
+
+  # OLE Objects Functions delegation
+  @doc """
+  Creates a new OLE objects collection.
+
+  ## Examples
+
+      iex> {:ok, _ole_objects} = UmyaSpreadsheet.new_ole_objects()
+  """
+  defdelegate new_ole_objects(), to: OleObjects
+
+  @doc """
+  Gets the OLE objects collection from a worksheet.
+
+  ## Examples
+
+      iex> {:ok, spreadsheet} = UmyaSpreadsheet.new()
+      iex> {:ok, _ole_objects} = UmyaSpreadsheet.get_ole_objects_from_worksheet(spreadsheet, "Sheet1")
+  """
+  defdelegate get_ole_objects_from_worksheet(spreadsheet, sheet_name), to: OleObjects
+
+  @doc """
+  Sets the OLE objects collection for a worksheet.
+
+  ## Examples
+
+      iex> {:ok, spreadsheet} = UmyaSpreadsheet.new()
+      iex> {:ok, ole_objects} = UmyaSpreadsheet.new_ole_objects()
+      iex> UmyaSpreadsheet.set_ole_objects_to_worksheet(spreadsheet, "Sheet1", ole_objects)
+      :ok
+  """
+  defdelegate set_ole_objects_to_worksheet(spreadsheet, sheet_name, ole_objects), to: OleObjects
+
+  @doc """
+  Creates a new OLE object.
+
+  ## Examples
+
+      iex> {:ok, _ole_object} = UmyaSpreadsheet.new_ole_object()
+  """
+  defdelegate new_ole_object(), to: OleObjects
+
+  @doc """
+  Creates a new OLE object and loads data from a file.
+
+  ## Examples
+
+      iex> {:ok, _ole_object} = UmyaSpreadsheet.new_ole_object()
+  """
+  defdelegate new_ole_object_from_file(file_path), to: OleObjects
+
+  @doc """
+  Creates a new OLE object with binary data.
+
+  ## Examples
+
+      iex> _data = "test data"
+      iex> {:ok, _ole_object} = UmyaSpreadsheet.new_ole_object()
+  """
+  defdelegate new_ole_object_with_data(data, file_extension), to: OleObjects
+
+  @doc """
+  Adds an OLE object to a collection.
+
+  ## Examples
+
+      iex> {:ok, ole_objects} = UmyaSpreadsheet.new_ole_objects()
+      iex> {:ok, ole_object} = UmyaSpreadsheet.new_ole_object()
+      iex> UmyaSpreadsheet.add_ole_object(ole_objects, ole_object)
+      :ok
+  """
+  defdelegate add_ole_object(ole_objects, ole_object), to: OleObjects
+
+  @doc """
+  Lists all OLE objects in a collection.
+
+  ## Examples
+
+      iex> {:ok, spreadsheet} = UmyaSpreadsheet.new()
+      iex> {:ok, ole_objects} = UmyaSpreadsheet.get_ole_objects_from_worksheet(spreadsheet, "Sheet1")
+      iex> {:ok, _objects_list} = UmyaSpreadsheet.list_ole_objects(ole_objects)
+  """
+  defdelegate list_ole_objects(ole_objects), to: OleObjects
+
+  @doc """
+  Gets the count of OLE objects in a collection.
+
+  ## Examples
+
+      iex> {:ok, spreadsheet} = UmyaSpreadsheet.new()
+      iex> {:ok, ole_objects} = UmyaSpreadsheet.get_ole_objects_from_worksheet(spreadsheet, "Sheet1")
+      iex> {:ok, _count} = UmyaSpreadsheet.get_ole_objects_count(ole_objects)
+  """
+  defdelegate get_ole_objects_count(ole_objects), to: OleObjects
+
+  @doc """
+  Checks if an OLE objects collection has any objects.
+
+  ## Examples
+
+      iex> {:ok, spreadsheet} = UmyaSpreadsheet.new()
+      iex> {:ok, ole_objects} = UmyaSpreadsheet.get_ole_objects_from_worksheet(spreadsheet, "Sheet1")
+      iex> {:ok, _has_objects} = UmyaSpreadsheet.has_ole_objects(ole_objects)
+  """
+  defdelegate has_ole_objects(ole_objects), to: OleObjects
+
+  @doc """
+  Creates new embedded object properties.
+
+  ## Examples
+
+      iex> {:ok, _properties} = UmyaSpreadsheet.new_embedded_object_properties()
+  """
+  defdelegate new_embedded_object_properties(), to: OleObjects
+
+  @doc """
+  Gets the properties of an OLE object.
+
+  ## Examples
+
+      iex> {:ok, ole_object} = UmyaSpreadsheet.new_ole_object()
+      iex> {:ok, _properties} = UmyaSpreadsheet.get_ole_object_properties(ole_object)
+  """
+  defdelegate get_ole_object_properties(ole_object), to: OleObjects
+
+  @doc """
+  Sets the properties for an OLE object.
+
+  ## Examples
+
+      iex> {:ok, ole_object} = UmyaSpreadsheet.new_ole_object()
+      iex> {:ok, properties} = UmyaSpreadsheet.new_embedded_object_properties()
+      iex> UmyaSpreadsheet.set_ole_object_properties(ole_object, properties)
+      :ok
+  """
+  defdelegate set_ole_object_properties(ole_object, properties), to: OleObjects
+
+  @doc """
+  Loads an OLE object from a file.
+
+  ## Examples
+
+      iex> {:ok, ole_object} = UmyaSpreadsheet.new_ole_object()
+      iex> {:error, "File not found"} = UmyaSpreadsheet.load_ole_object_from_file(ole_object, "nonexistent.docx")
+  """
+  defdelegate load_ole_object_from_file(ole_object, file_path), to: OleObjects
+
+  @doc """
+  Saves an OLE object to a file.
+
+  ## Examples
+
+      iex> {:ok, ole_object} = UmyaSpreadsheet.new_ole_object()
+      iex> {:error, "No object data to save"} = UmyaSpreadsheet.save_ole_object_to_file(ole_object, "output.docx")
+  """
+  defdelegate save_ole_object_to_file(ole_object, file_path), to: OleObjects
+
+  @doc """
+  Checks if an OLE object is in binary format.
+
+  ## Examples
+
+      iex> {:ok, ole_object} = UmyaSpreadsheet.new_ole_object()
+      iex> {:ok, _is_binary} = UmyaSpreadsheet.is_ole_object_binary_format(ole_object)
+  """
+  defdelegate is_ole_object_binary_format(ole_object), to: OleObjects
+
+  @doc """
+  Checks if an OLE object is in Excel format.
+
+  ## Examples
+
+      iex> {:ok, ole_object} = UmyaSpreadsheet.new_ole_object()
+      iex> {:ok, _is_excel} = UmyaSpreadsheet.is_ole_object_excel_format(ole_object)
+  """
+  defdelegate is_ole_object_excel_format(ole_object), to: OleObjects
+
+  @doc """
+  Gets the 'requires' attribute from an OLE object.
+
+  ## Examples
+
+      iex> {:ok, ole_object} = UmyaSpreadsheet.new_ole_object()
+      iex> :ok = UmyaSpreadsheet.set_ole_object_requires(ole_object, "xl")
+      iex> {:ok, "xl"} = UmyaSpreadsheet.get_ole_object_requires(ole_object)
+  """
+  defdelegate get_ole_object_requires(ole_object), to: OleObjects
+
+  @doc """
+  Sets the 'requires' attribute for an OLE object.
+
+  ## Examples
+
+      iex> {:ok, ole_object} = UmyaSpreadsheet.new_ole_object()
+      iex> UmyaSpreadsheet.set_ole_object_requires(ole_object, "xl")
+      :ok
+  """
+  defdelegate set_ole_object_requires(ole_object, requires), to: OleObjects
+
+  @doc """
+  Gets the ProgID from an OLE object.
+
+  ## Examples
+
+      iex> {:ok, ole_object} = UmyaSpreadsheet.new_ole_object()
+      iex> :ok = UmyaSpreadsheet.set_ole_object_prog_id(ole_object, "Excel.Sheet.12")
+      iex> {:ok, "Excel.Sheet.12"} = UmyaSpreadsheet.get_ole_object_prog_id(ole_object)
+  """
+  defdelegate get_ole_object_prog_id(ole_object), to: OleObjects
+
+  @doc """
+  Sets the ProgID for an OLE object.
+
+  ## Examples
+
+      iex> {:ok, ole_object} = UmyaSpreadsheet.new_ole_object()
+      iex> UmyaSpreadsheet.set_ole_object_prog_id(ole_object, "Excel.Sheet.12")
+      :ok
+  """
+  defdelegate set_ole_object_prog_id(ole_object, prog_id), to: OleObjects
+
+  @doc """
+  Gets the file extension from an OLE object.
+
+  ## Examples
+
+      iex> {:ok, ole_object} = UmyaSpreadsheet.new_ole_object()
+      iex> :ok = UmyaSpreadsheet.set_ole_object_extension(ole_object, "xlsx")
+      iex> {:ok, "xlsx"} = UmyaSpreadsheet.get_ole_object_extension(ole_object)
+  """
+  defdelegate get_ole_object_extension(ole_object), to: OleObjects
+
+  @doc """
+  Sets the file extension for an OLE object.
+
+  ## Examples
+
+      iex> {:ok, ole_object} = UmyaSpreadsheet.new_ole_object()
+      iex> UmyaSpreadsheet.set_ole_object_extension(ole_object, "xlsx")
+      :ok
+  """
+  defdelegate set_ole_object_extension(ole_object, extension), to: OleObjects
+
+  @doc """
+  Gets the ProgID from embedded object properties.
+
+  ## Examples
+
+      iex> {:ok, properties} = UmyaSpreadsheet.new_embedded_object_properties()
+      iex> :ok = UmyaSpreadsheet.set_embedded_object_prog_id(properties, "Word.Document.12")
+      iex> {:ok, "Word.Document.12"} = UmyaSpreadsheet.get_embedded_object_prog_id(properties)
+  """
+  defdelegate get_embedded_object_prog_id(properties), to: OleObjects
+
+  @doc """
+  Sets the ProgID for embedded object properties.
+
+  ## Examples
+
+      iex> {:ok, properties} = UmyaSpreadsheet.new_embedded_object_properties()
+      iex> UmyaSpreadsheet.set_embedded_object_prog_id(properties, "Word.Document.12")
+      :ok
+  """
+  defdelegate set_embedded_object_prog_id(properties, prog_id), to: OleObjects
+
+  @doc """
+  Gets the shape ID from embedded object properties.
+
+  ## Examples
+
+      iex> {:ok, properties} = UmyaSpreadsheet.new_embedded_object_properties()
+      iex> :ok = UmyaSpreadsheet.set_embedded_object_shape_id(properties, 123)
+      iex> {:ok, 123} = UmyaSpreadsheet.get_embedded_object_shape_id(properties)
+  """
+  defdelegate get_embedded_object_shape_id(properties), to: OleObjects
+
+  @doc """
+  Sets the shape ID for embedded object properties.
+
+  ## Examples
+
+      iex> {:ok, properties} = UmyaSpreadsheet.new_embedded_object_properties()
+      iex> UmyaSpreadsheet.set_embedded_object_shape_id(properties, 123)
+      :ok
+  """
+  defdelegate set_embedded_object_shape_id(properties, shape_id), to: OleObjects
+
+  @doc """
+  Gets the binary data from an OLE object.
+
+  ## Examples
+
+      iex> {:ok, ole_object} = UmyaSpreadsheet.new_ole_object()
+      iex> {:ok, _data} = UmyaSpreadsheet.get_ole_object_data(ole_object)
+  """
+  defdelegate get_ole_object_data(ole_object), to: OleObjects
+
+  @doc """
+  Sets the binary data for an OLE object.
+
+  ## Examples
+
+      iex> {:ok, ole_object} = UmyaSpreadsheet.new_ole_object()
+      iex> {:error, "Function not implemented"} = UmyaSpreadsheet.set_ole_object_data(ole_object, "test data")
+  """
+  defdelegate set_ole_object_data(ole_object, data), to: OleObjects
 end

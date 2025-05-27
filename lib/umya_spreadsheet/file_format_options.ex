@@ -37,12 +37,15 @@ defmodule UmyaSpreadsheet.FileFormatOptions do
       :ok
 
   """
-  @spec write_with_compression(Spreadsheet.t(), String.t(), non_neg_integer()) :: :ok | {:error, atom()}
-  def write_with_compression(%Spreadsheet{reference: ref}, path, compression_level) when compression_level in 0..9 do
+  @spec write_with_compression(Spreadsheet.t(), String.t(), non_neg_integer()) ::
+          :ok | {:error, atom()}
+  def write_with_compression(%Spreadsheet{reference: ref}, path, compression_level)
+      when compression_level in 0..9 do
     case UmyaNative.write_with_compression(ref, path, compression_level) do
       {:ok, :ok} -> :ok
       :ok -> :ok
       # Handle nested error tuples from Rust NIFs
+      {:error, {:error, message}} -> {:error, message}
       {:error, :error} -> {:error, "Failed to write file with compression"}
       {:error, message} -> {:error, message}
       result -> result
@@ -88,9 +91,30 @@ defmodule UmyaSpreadsheet.FileFormatOptions do
       :ok
 
   """
-  @spec write_with_encryption_options(Spreadsheet.t(), String.t(), String.t(), String.t(), String.t() | nil, non_neg_integer() | nil) :: :ok | {:error, atom()}
-  def write_with_encryption_options(%Spreadsheet{reference: ref}, path, password, algorithm, salt_value \\ nil, spin_count \\ nil) do
-    case UmyaNative.write_with_encryption_options(ref, path, password, algorithm, salt_value, spin_count) do
+  @spec write_with_encryption_options(
+          Spreadsheet.t(),
+          String.t(),
+          String.t(),
+          String.t(),
+          String.t() | nil,
+          non_neg_integer() | nil
+        ) :: :ok | {:error, atom()}
+  def write_with_encryption_options(
+        %Spreadsheet{reference: ref},
+        path,
+        password,
+        algorithm,
+        salt_value \\ nil,
+        spin_count \\ nil
+      ) do
+    case UmyaNative.write_with_encryption_options(
+           ref,
+           path,
+           password,
+           algorithm,
+           salt_value,
+           spin_count
+         ) do
       {:ok, :ok} -> :ok
       :ok -> :ok
       # Handle nested error tuples from Rust NIFs

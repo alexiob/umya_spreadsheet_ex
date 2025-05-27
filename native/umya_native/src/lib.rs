@@ -59,6 +59,7 @@ mod file_format_options;
 mod formula_functions;
 mod helpers;
 mod hyperlink;
+mod ole_object_functions;
 mod print_settings;
 mod rich_text_functions;
 mod set_background_color;
@@ -1566,6 +1567,10 @@ fn load(env: rustler::Env, _info: rustler::Term) -> bool {
     // Re-enabling Rich Text resources
     let _ = rustler::resource!(rich_text_functions::RichTextResource, env);
     let _ = rustler::resource!(rich_text_functions::TextElementResource, env);
+    // OLE Objects resources
+    let _ = rustler::resource!(ole_object_functions::OleObjectsResource, env);
+    let _ = rustler::resource!(ole_object_functions::OleObjectResource, env);
+    let _ = rustler::resource!(ole_object_functions::EmbeddedObjectPropertiesResource, env);
     true
 }
 
@@ -1723,5 +1728,34 @@ rustler::init!(
         rich_text_functions::get_rich_text_plain_text,
         rich_text_functions::rich_text_to_html,
         rich_text_functions::get_rich_text_elements,
+        // OLE Objects functions
+        ole_object_functions::create_ole_objects,
+        ole_object_functions::create_ole_object,
+        ole_object_functions::create_embedded_object_properties,
+        ole_object_functions::get_ole_objects,
+        ole_object_functions::set_ole_objects,
+        ole_object_functions::add_ole_object,
+        ole_object_functions::get_ole_object_list,
+        ole_object_functions::count_ole_objects,
+        ole_object_functions::has_ole_objects,
+        ole_object_functions::get_ole_object_requires,
+        ole_object_functions::set_ole_object_requires,
+        ole_object_functions::get_ole_object_prog_id,
+        ole_object_functions::set_ole_object_prog_id,
+        ole_object_functions::get_ole_object_extension,
+        ole_object_functions::set_ole_object_extension,
+        ole_object_functions::get_ole_object_data,
+        ole_object_functions::set_ole_object_data,
+        ole_object_functions::get_ole_object_properties,
+        ole_object_functions::set_ole_object_properties,
+        ole_object_functions::get_embedded_object_prog_id,
+        ole_object_functions::set_embedded_object_prog_id,
+        ole_object_functions::get_embedded_object_shape_id,
+        ole_object_functions::set_embedded_object_shape_id,
+        ole_object_functions::load_ole_object_from_file,
+        ole_object_functions::save_ole_object_to_file,
+        ole_object_functions::create_ole_object_with_data,
+        ole_object_functions::is_ole_object_binary,
+        ole_object_functions::is_ole_object_excel,
     ]
 );

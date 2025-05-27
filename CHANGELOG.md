@@ -4,6 +4,19 @@
 
 ### Added
 
+- **Complete OLE Objects Documentation**:
+  - **Comprehensive OLE Objects Guide** - Complete documentation for working with embedded objects in Excel
+    - Guide covers embedding Word documents (.docx), PowerPoint presentations (.pptx), PDF files (.pdf), and text files (.txt)
+    - Detailed examples for creating OLE object collections and managing embedded objects
+    - Documentation for all supported ProgIDs and file format detection
+    - Complete API reference with error handling patterns and best practices
+    - Advanced operations including property management and object extraction
+  - **Enhanced Documentation Structure** - Added OLE Objects guide to HexDocs navigation
+    - Integrated OLE Objects guide into the main documentation index and mix.exs configuration
+    - Fixed documentation reference warnings (UmyaNative, missing file links)
+    - Consistent formatting and style matching existing documentation guides
+    - Cross-references to related guides (limitations, troubleshooting)
+
 - **Complete Rich Text Support**:
   - **Core Rich Text Functionality** - Create and manipulate formatted text within Excel cells
     - `UmyaSpreadsheet.RichText.create/0` - Create new empty rich text objects

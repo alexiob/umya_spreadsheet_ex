@@ -4,24 +4,6 @@
 
 Based on comprehensive analysis of the Rust structs vs. implemented NIF functions, the following features are not yet implemented in the Elixir wrapper:
 
-### High Priority Features
-
-#### 3. Rich Text Support
-
-- **Formatted Text**: Rich text within cells
-  - `RichText` struct: Multi-format text in single cells
-  - `TextElement` struct: Individual text formatting elements
-  - Font styling, colors, and formatting within cell text
-
-### Medium Priority Features
-
-#### 4. OLE Objects
-
-- **Embedded Objects**: Object Linking and Embedding support
-  - `OleObjects` struct: Collection of embedded objects
-  - `OleObject` struct: Individual OLE object management
-  - `EmbeddedObjectProperties` struct: Object properties and settings
-
 #### 5. Advanced Drawing
 
 - **VML Support**: Vector Markup Language objects

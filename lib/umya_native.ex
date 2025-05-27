@@ -1320,5 +1320,176 @@ defmodule UmyaNative do
   @spec get_rich_text_elements(reference()) :: [reference()] | {:error, atom()}
   def get_rich_text_elements(_rich_text), do: error()
 
+  # OLE Objects functions
+
+  @doc """
+  Creates a new OLE objects collection.
+  """
+  @spec create_ole_objects() :: reference() | {:error, atom()}
+  def create_ole_objects(), do: error()
+
+  @doc """
+  Creates a new OLE object.
+  """
+  @spec create_ole_object() :: reference() | {:error, atom()}
+  def create_ole_object(), do: error()
+
+  @doc """
+  Creates new embedded object properties.
+  """
+  @spec create_embedded_object_properties() :: reference() | {:error, atom()}
+  def create_embedded_object_properties(), do: error()
+
+  @doc """
+  Gets OLE objects from a worksheet.
+  """
+  @spec get_ole_objects(reference(), String.t()) :: reference() | {:error, atom()}
+  def get_ole_objects(_spreadsheet, _sheet_name), do: error()
+
+  @doc """
+  Sets OLE objects to a worksheet.
+  """
+  @spec set_ole_objects(reference(), String.t(), reference()) :: :ok | {:error, atom()}
+  def set_ole_objects(_spreadsheet, _sheet_name, _ole_objects), do: error()
+
+  @doc """
+  Adds an OLE object to a collection.
+  """
+  @spec add_ole_object(reference(), reference()) :: :ok | {:error, atom()}
+  def add_ole_object(_ole_objects, _ole_object), do: error()
+
+  @doc """
+  Gets all OLE objects from a collection.
+  """
+  @spec get_ole_object_list(reference()) :: [reference()] | {:error, atom()}
+  def get_ole_object_list(_ole_objects), do: error()
+
+  @doc """
+  Gets count of OLE objects in a collection.
+  """
+  @spec count_ole_objects(reference()) :: non_neg_integer() | {:error, atom()}
+  def count_ole_objects(_ole_objects), do: error()
+
+  @doc """
+  Checks if collection has any OLE objects.
+  """
+  @spec has_ole_objects(reference()) :: boolean() | {:error, atom()}
+  def has_ole_objects(_ole_objects), do: error()
+
+  @doc """
+  Gets requires property from OLE object.
+  """
+  @spec get_ole_object_requires(reference()) :: String.t() | {:error, atom()}
+  def get_ole_object_requires(_ole_object), do: error()
+
+  @doc """
+  Sets requires property for OLE object.
+  """
+  @spec set_ole_object_requires(reference(), String.t()) :: :ok | {:error, atom()}
+  def set_ole_object_requires(_ole_object, _requires), do: error()
+
+  @doc """
+  Gets program ID from OLE object.
+  """
+  @spec get_ole_object_prog_id(reference()) :: String.t() | {:error, atom()}
+  def get_ole_object_prog_id(_ole_object), do: error()
+
+  @doc """
+  Sets program ID for OLE object.
+  """
+  @spec set_ole_object_prog_id(reference(), String.t()) :: :ok | {:error, atom()}
+  def set_ole_object_prog_id(_ole_object, _prog_id), do: error()
+
+  @doc """
+  Gets object extension from OLE object.
+  """
+  @spec get_ole_object_extension(reference()) :: String.t() | {:error, atom()}
+  def get_ole_object_extension(_ole_object), do: error()
+
+  @doc """
+  Sets object extension for OLE object.
+  """
+  @spec set_ole_object_extension(reference(), String.t()) :: :ok | {:error, atom()}
+  def set_ole_object_extension(_ole_object, _extension), do: error()
+
+  @doc """
+  Gets object data from OLE object.
+  """
+  @spec get_ole_object_data(reference()) :: binary() | nil | {:error, atom()}
+  def get_ole_object_data(_ole_object), do: error()
+
+  @doc """
+  Sets object data for OLE object.
+  """
+  @spec set_ole_object_data(reference(), binary()) :: :ok | {:error, atom()}
+  def set_ole_object_data(_ole_object, _data), do: error()
+
+  @doc """
+  Gets embedded object properties from OLE object.
+  """
+  @spec get_ole_object_properties(reference()) :: reference() | {:error, atom()}
+  def get_ole_object_properties(_ole_object), do: error()
+
+  @doc """
+  Sets embedded object properties for OLE object.
+  """
+  @spec set_ole_object_properties(reference(), reference()) :: :ok | {:error, atom()}
+  def set_ole_object_properties(_ole_object, _properties), do: error()
+
+  @doc """
+  Gets program ID from embedded object properties.
+  """
+  @spec get_embedded_object_prog_id(reference()) :: String.t() | {:error, atom()}
+  def get_embedded_object_prog_id(_properties), do: error()
+
+  @doc """
+  Sets program ID for embedded object properties.
+  """
+  @spec set_embedded_object_prog_id(reference(), String.t()) :: :ok | {:error, atom()}
+  def set_embedded_object_prog_id(_properties, _prog_id), do: error()
+
+  @doc """
+  Gets shape ID from embedded object properties.
+  """
+  @spec get_embedded_object_shape_id(reference()) :: non_neg_integer() | {:error, atom()}
+  def get_embedded_object_shape_id(_properties), do: error()
+
+  @doc """
+  Sets shape ID for embedded object properties.
+  """
+  @spec set_embedded_object_shape_id(reference(), non_neg_integer()) :: :ok | {:error, atom()}
+  def set_embedded_object_shape_id(_properties, _shape_id), do: error()
+
+  @doc """
+  Loads OLE object from file.
+  """
+  @spec load_ole_object_from_file(String.t(), String.t()) :: reference() | {:error, atom()}
+  def load_ole_object_from_file(_file_path, _prog_id), do: error()
+
+  @doc """
+  Saves OLE object data to file.
+  """
+  @spec save_ole_object_to_file(reference(), String.t()) :: :ok | {:error, atom()}
+  def save_ole_object_to_file(_ole_object, _file_path), do: error()
+
+  @doc """
+  Creates OLE object with file data.
+  """
+  @spec create_ole_object_with_data(String.t(), String.t(), binary()) ::
+          reference() | {:error, atom()}
+  def create_ole_object_with_data(_prog_id, _extension, _data), do: error()
+
+  @doc """
+  Checks if OLE object is binary format.
+  """
+  @spec is_ole_object_binary(reference()) :: boolean() | {:error, atom()}
+  def is_ole_object_binary(_ole_object), do: error()
+
+  @doc """
+  Checks if OLE object is Excel format.
+  """
+  @spec is_ole_object_excel(reference()) :: boolean() | {:error, atom()}
+  def is_ole_object_excel(_ole_object), do: error()
+
   defp error(), do: :erlang.nif_error(:nif_not_loaded)
 end

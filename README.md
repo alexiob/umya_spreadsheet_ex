@@ -143,8 +143,8 @@ UmyaSpreadsheet has comprehensive guides for all major features:
 
 ### Reference Documentation
 
-- [**Troubleshooting Guide**](TROUBLESHOOTING.md) - Solutions for common issues and problems
-- [**Limitations & Compatibility**](LIMITATIONS.md) - Known limitations, compatibility matrix, and workarounds
+- [**Troubleshooting Guide**](docs/troubleshooting.md) - Solutions for common issues and problems
+- [**Limitations & Compatibility**](docs/limitations.md) - Known limitations, compatibility matrix, and workarounds
 
 ## Installation
 

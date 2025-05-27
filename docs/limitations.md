@@ -209,6 +209,7 @@ xcode-select --install
 | OpenOffice Calc | ⚠️ Limited | ⚠️ Limited | Basic features only |
 
 **Known LibreOffice Issues:**
+
 - Some conditional formatting rules may not display correctly
 - Chart formatting may differ slightly
 - Custom number formats may not be preserved exactly
@@ -248,7 +249,7 @@ Typical performance on modern hardware:
 # Approximate processing speeds
 operations_per_second = %{
   cell_read: 50_000,          # cells/second
-  cell_write: 25_000,         # cells/second  
+  cell_write: 25_000,         # cells/second
   file_read_10mb: 2,          # files/second
   file_write_10mb: 1,         # files/second
   formula_calculation: 10_000  # formulas/second
@@ -260,6 +261,7 @@ operations_per_second = %{
 ### Issue: Global Defined Names Warning
 
 **Symptom:**
+
 ```
 Warning: Global defined name 'TaxRate' created without name due to API limitations in umya-spreadsheet 2.3.0
 ```
@@ -273,6 +275,7 @@ Warning: Global defined name 'TaxRate' created without name due to API limitatio
 ### Issue: Password Protection Algorithm Limitations
 
 **Symptom:**
+
 ```
 {:error, "Failed to write file with password"}
 ```
@@ -280,6 +283,7 @@ Warning: Global defined name 'TaxRate' created without name due to API limitatio
 **Impact:** Some advanced encryption algorithms not supported
 
 **Workaround:**
+
 ```elixir
 # Use basic password protection
 UmyaSpreadsheet.write_with_password(spreadsheet, path, "password")
@@ -294,6 +298,7 @@ UmyaSpreadsheet.write_with_password(spreadsheet, path, "password")
 **Impact:** Potential out-of-memory errors
 
 **Workaround:**
+
 ```elixir
 # Use lazy reading
 {:ok, spreadsheet} = UmyaSpreadsheet.lazy_read("large_file.xlsx")
@@ -301,7 +306,7 @@ UmyaSpreadsheet.write_with_password(spreadsheet, path, "password")
 # Process in chunks
 def process_large_file(file_path) do
   {:ok, spreadsheet} = UmyaSpreadsheet.lazy_read(file_path)
-  
+
   # Process specific ranges instead of entire file
   for row <- 1..1000 do
     value = UmyaSpreadsheet.get_cell_value(spreadsheet, "Sheet1", "A#{row}")
@@ -317,6 +322,7 @@ end
 **Impact:** Race conditions in multi-process scenarios
 
 **Workaround:**
+
 ```elixir
 # Use separate spreadsheet instances per process
 Task.async(fn ->
@@ -378,4 +384,4 @@ Help improve UmyaSpreadsheet by:
 3. **Contributing code** to address limitations
 4. **Improving documentation** with real-world examples
 
-For more information, see the [CONTRIBUTING.md](CONTRIBUTING.md) guide.
+For more information, see the [DEVELOPMENT.md](../DEVELOPMENT.md) guide.

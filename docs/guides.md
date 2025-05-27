@@ -77,6 +77,14 @@ Welcome to the UmyaSpreadsheet documentation. This collection of guides provides
   - Downloading images from spreadsheets
   - Changing existing images
 
+- [**OLE Objects**](ole_objects.html): Embed documents and files in Excel spreadsheets
+
+  - Embedding Word documents, PowerPoint presentations, PDF files, and text files
+  - Creating and managing OLE object collections
+  - Loading objects from files or binary data
+  - Extracting embedded objects and managing properties
+  - Working with ProgIDs and file format detection
+
 - [**Pivot Tables**](pivot_tables.html): Create and manage data analysis tools
 
   - Creating pivot tables from data ranges

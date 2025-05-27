@@ -83,6 +83,7 @@ defmodule UmyaSpreadsheet.MixProject do
         "docs/formula_functions.md",
         "docs/hyperlinks.md",
         "docs/image_handling.md",
+        "docs/ole_objects.md",
         "docs/pivot_tables.md",
         "docs/print_settings.md",
         "docs/shapes_and_drawing.md",
@@ -110,7 +111,8 @@ defmodule UmyaSpreadsheet.MixProject do
           "docs/data_validation.md",
           "docs/auto_filters.md",
           "docs/formula_functions.md",
-          "docs/hyperlinks.md"
+          "docs/hyperlinks.md",
+          "docs/ole_objects.md"
         ],
         "Visual Elements": [
           "docs/charts.md",
