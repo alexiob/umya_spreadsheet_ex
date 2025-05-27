@@ -1,5 +1,5 @@
 defmodule UmyaSpreadsheet.OleObjectsTest do
-  use ExUnit.Case
+  use ExUnit.Case, async: true
   doctest UmyaSpreadsheet.OleObjects
 
   alias UmyaSpreadsheet.OleObjects

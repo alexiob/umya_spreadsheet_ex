@@ -85,6 +85,13 @@ Welcome to the UmyaSpreadsheet documentation. This collection of guides provides
   - Extracting embedded objects and managing properties
   - Working with ProgIDs and file format detection
 
+- [**Page Breaks**](page_breaks.html): Control print layout and page breaking
+
+  - Manual page break insertion with row and column controls
+  - Managing print layout for consistent document formatting
+  - Row breaks and column breaks for precise pagination
+  - Bulk operations and advanced page break management
+
 - [**Pivot Tables**](pivot_tables.html): Create and manage data analysis tools
 
   - Creating pivot tables from data ranges

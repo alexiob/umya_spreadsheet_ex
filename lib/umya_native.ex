@@ -1491,5 +1491,74 @@ defmodule UmyaNative do
   @spec is_ole_object_excel(reference()) :: boolean() | {:error, atom()}
   def is_ole_object_excel(_ole_object), do: error()
 
+  # Page Breaks functions
+  @doc """
+  Adds a row page break at the specified row number.
+  """
+  @spec add_row_page_break(reference(), String.t(), non_neg_integer(), boolean()) ::
+          :ok | {:error, atom()}
+  def add_row_page_break(_spreadsheet, _sheet_name, _row_number, _manual), do: error()
+
+  @doc """
+  Adds a column page break at the specified column number.
+  """
+  @spec add_column_page_break(reference(), String.t(), non_neg_integer(), boolean()) ::
+          :ok | {:error, atom()}
+  def add_column_page_break(_spreadsheet, _sheet_name, _column_number, _manual), do: error()
+
+  @doc """
+  Removes a row page break at the specified row number.
+  """
+  @spec remove_row_page_break(reference(), String.t(), non_neg_integer()) ::
+          :ok | {:error, atom()}
+  def remove_row_page_break(_spreadsheet, _sheet_name, _row_number), do: error()
+
+  @doc """
+  Removes a column page break at the specified column number.
+  """
+  @spec remove_column_page_break(reference(), String.t(), non_neg_integer()) ::
+          :ok | {:error, atom()}
+  def remove_column_page_break(_spreadsheet, _sheet_name, _column_number), do: error()
+
+  @doc """
+  Gets all row page breaks for the specified sheet.
+  """
+  @spec get_row_page_breaks(reference(), String.t()) ::
+          [{non_neg_integer(), boolean()}] | {:error, atom()}
+  def get_row_page_breaks(_spreadsheet, _sheet_name), do: error()
+
+  @doc """
+  Gets all column page breaks for the specified sheet.
+  """
+  @spec get_column_page_breaks(reference(), String.t()) ::
+          [{non_neg_integer(), boolean()}] | {:error, atom()}
+  def get_column_page_breaks(_spreadsheet, _sheet_name), do: error()
+
+  @doc """
+  Clears all row page breaks for the specified sheet.
+  """
+  @spec clear_row_page_breaks(reference(), String.t()) :: :ok | {:error, atom()}
+  def clear_row_page_breaks(_spreadsheet, _sheet_name), do: error()
+
+  @doc """
+  Clears all column page breaks for the specified sheet.
+  """
+  @spec clear_column_page_breaks(reference(), String.t()) :: :ok | {:error, atom()}
+  def clear_column_page_breaks(_spreadsheet, _sheet_name), do: error()
+
+  @doc """
+  Checks if a row page break exists at the specified row number.
+  """
+  @spec has_row_page_break(reference(), String.t(), non_neg_integer()) ::
+          boolean() | {:error, atom()}
+  def has_row_page_break(_spreadsheet, _sheet_name, _row_number), do: error()
+
+  @doc """
+  Checks if a column page break exists at the specified column number.
+  """
+  @spec has_column_page_break(reference(), String.t(), non_neg_integer()) ::
+          boolean() | {:error, atom()}
+  def has_column_page_break(_spreadsheet, _sheet_name, _column_number), do: error()
+
   defp error(), do: :erlang.nif_error(:nif_not_loaded)
 end

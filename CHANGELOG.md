@@ -4,6 +4,34 @@
 
 ### Added
 
+- **Complete Page Breaks Implementation**:
+  - **Row Page Break Management** - Full control over manual row page breaks for print layout
+    - `UmyaSpreadsheet.PageBreaks.add_row_page_break/4` - Add manual row breaks at specific rows
+    - `UmyaSpreadsheet.PageBreaks.remove_row_page_break/3` - Remove specific row breaks
+    - `UmyaSpreadsheet.PageBreaks.get_row_page_breaks/2` - Retrieve all row breaks for a worksheet
+    - `UmyaSpreadsheet.PageBreaks.clear_row_page_breaks/2` - Remove all row breaks from worksheet
+    - `UmyaSpreadsheet.PageBreaks.has_row_page_break/3` - Check if row break exists at specific row
+  - **Column Page Break Management** - Full control over manual column page breaks for print layout
+    - `UmyaSpreadsheet.PageBreaks.add_column_page_break/4` - Add manual column breaks at specific columns
+    - `UmyaSpreadsheet.PageBreaks.remove_column_page_break/3` - Remove specific column breaks
+    - `UmyaSpreadsheet.PageBreaks.get_column_page_breaks/2` - Retrieve all column breaks for a worksheet
+    - `UmyaSpreadsheet.PageBreaks.clear_column_page_breaks/2` - Remove all column breaks from worksheet
+    - `UmyaSpreadsheet.PageBreaks.has_column_page_break/3` - Check if column break exists at specific column
+  - **Bulk Operations & Convenience Functions** - Efficient batch operations for page break management
+    - `UmyaSpreadsheet.PageBreaks.add_row_page_breaks/3` - Add multiple row breaks in single operation
+    - `UmyaSpreadsheet.PageBreaks.add_column_page_breaks/3` - Add multiple column breaks in single operation
+    - `UmyaSpreadsheet.PageBreaks.remove_row_page_breaks/3` - Remove multiple row breaks efficiently
+    - `UmyaSpreadsheet.PageBreaks.remove_column_page_breaks/3` - Remove multiple column breaks efficiently
+    - `UmyaSpreadsheet.PageBreaks.clear_all_page_breaks/2` - Clear both row and column breaks
+    - `UmyaSpreadsheet.PageBreaks.get_all_page_breaks/2` - Get both row and column breaks as single result
+  - **Comprehensive Page Breaks Documentation**:
+    - **Complete Page Breaks Guide** - Comprehensive documentation for print layout control
+      - Guide covers manual page break insertion with row and column break management
+      - Detailed examples for basic operations, bulk operations, and advanced usage patterns
+      - Best practices for print layout design and performance optimization
+      - Real-world examples including reports, invoices, and multi-section documents
+      - Complete API reference with error handling patterns and troubleshooting guide
+
 - **Complete OLE Objects Documentation**:
   - **Comprehensive OLE Objects Guide** - Complete documentation for working with embedded objects in Excel
     - Guide covers embedding Word documents (.docx), PowerPoint presentations (.pptx), PDF files (.pdf), and text files (.txt)

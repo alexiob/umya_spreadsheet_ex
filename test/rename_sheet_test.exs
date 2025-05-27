@@ -1,5 +1,5 @@
 defmodule RenameSheetTest do
-  use ExUnit.Case
+  use ExUnit.Case, async: true
 
   test "rename_sheet functionality" do
     # Create a new spreadsheet
@@ -19,10 +19,13 @@ defmodule RenameSheetTest do
 
     # Test 2: Try to rename to an existing name (should fail)
     :ok = UmyaSpreadsheet.add_sheet(spreadsheet, "Another Sheet")
-    assert {:error, _reason} = UmyaSpreadsheet.rename_sheet(spreadsheet, "Renamed Sheet", "Another Sheet")
+
+    assert {:error, _reason} =
+             UmyaSpreadsheet.rename_sheet(spreadsheet, "Renamed Sheet", "Another Sheet")
 
     # Test 3: Try to rename a non-existent sheet (should fail)
-    assert {:error, _reason} = UmyaSpreadsheet.rename_sheet(spreadsheet, "Non-existent", "New Name")
+    assert {:error, _reason} =
+             UmyaSpreadsheet.rename_sheet(spreadsheet, "Non-existent", "New Name")
 
     # Final verification
     final_names = UmyaSpreadsheet.get_sheet_names(spreadsheet)

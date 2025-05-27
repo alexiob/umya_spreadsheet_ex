@@ -60,6 +60,7 @@ mod formula_functions;
 mod helpers;
 mod hyperlink;
 mod ole_object_functions;
+mod page_breaks;
 mod print_settings;
 mod rich_text_functions;
 mod set_background_color;
@@ -1757,5 +1758,16 @@ rustler::init!(
         ole_object_functions::create_ole_object_with_data,
         ole_object_functions::is_ole_object_binary,
         ole_object_functions::is_ole_object_excel,
+        // Page Breaks functions
+        page_breaks::add_row_page_break,
+        page_breaks::add_column_page_break,
+        page_breaks::remove_row_page_break,
+        page_breaks::remove_column_page_break,
+        page_breaks::get_row_page_breaks,
+        page_breaks::get_column_page_breaks,
+        page_breaks::clear_row_page_breaks,
+        page_breaks::clear_column_page_breaks,
+        page_breaks::has_row_page_break,
+        page_breaks::has_column_page_break,
     ]
 );

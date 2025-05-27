@@ -1,5 +1,5 @@
 defmodule RichTextTest do
-  use ExUnit.Case
+  use ExUnit.Case, async: true
   doctest UmyaSpreadsheet
 
   setup do

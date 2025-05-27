@@ -1,5 +1,5 @@
 defmodule ConditionalFormattingAdditionalTest do
-  use ExUnit.Case
+  use ExUnit.Case, async: true
   doctest UmyaSpreadsheet
 
   alias UmyaSpreadsheet
@@ -16,16 +16,17 @@ defmodule ConditionalFormattingAdditionalTest do
       end
 
       # Add icon set rule with percentile thresholds
-      result = UmyaSpreadsheet.add_icon_set(
-        spreadsheet,
-        "IconSets",
-        "A1:A10",
-        "3_traffic_lights",
-        [
-          {"percentile", "33"},
-          {"percentile", "67"}
-        ]
-      )
+      result =
+        UmyaSpreadsheet.add_icon_set(
+          spreadsheet,
+          "IconSets",
+          "A1:A10",
+          "3_traffic_lights",
+          [
+            {"percentile", "33"},
+            {"percentile", "67"}
+          ]
+        )
 
       assert result == :ok
     end
@@ -40,18 +41,19 @@ defmodule ConditionalFormattingAdditionalTest do
       end
 
       # Add icon set rule with number thresholds
-      result = UmyaSpreadsheet.add_icon_set(
-        spreadsheet,
-        "IconSets",
-        "A1:A10",
-        "5_arrows",
-        [
-          {"number", "10"},
-          {"number", "20"},
-          {"number", "30"},
-          {"number", "40"}
-        ]
-      )
+      result =
+        UmyaSpreadsheet.add_icon_set(
+          spreadsheet,
+          "IconSets",
+          "A1:A10",
+          "5_arrows",
+          [
+            {"number", "10"},
+            {"number", "20"},
+            {"number", "30"},
+            {"number", "40"}
+          ]
+        )
 
       assert result == :ok
     end
@@ -66,16 +68,17 @@ defmodule ConditionalFormattingAdditionalTest do
       end
 
       # Add icon set rule with mixed thresholds
-      result = UmyaSpreadsheet.add_icon_set(
-        spreadsheet,
-        "IconSets",
-        "A1:A10",
-        "3_symbols",
-        [
-          {"min", ""},
-          {"percent", "50"}
-        ]
-      )
+      result =
+        UmyaSpreadsheet.add_icon_set(
+          spreadsheet,
+          "IconSets",
+          "A1:A10",
+          "3_symbols",
+          [
+            {"min", ""},
+            {"percent", "50"}
+          ]
+        )
 
       assert result == :ok
     end
@@ -84,16 +87,17 @@ defmodule ConditionalFormattingAdditionalTest do
       {:ok, spreadsheet} = UmyaSpreadsheet.new()
       UmyaSpreadsheet.add_sheet(spreadsheet, "IconSets")
 
-      result = UmyaSpreadsheet.add_icon_set(
-        spreadsheet,
-        "IconSets",
-        "A1:A10",
-        "3_traffic_lights",
-        [
-          {"invalid_type", "50"},
-          {"percentile", "75"}
-        ]
-      )
+      result =
+        UmyaSpreadsheet.add_icon_set(
+          spreadsheet,
+          "IconSets",
+          "A1:A10",
+          "3_traffic_lights",
+          [
+            {"invalid_type", "50"},
+            {"percentile", "75"}
+          ]
+        )
 
       assert {:error, _} = result
     end
@@ -102,15 +106,16 @@ defmodule ConditionalFormattingAdditionalTest do
       {:ok, spreadsheet} = UmyaSpreadsheet.new()
       UmyaSpreadsheet.add_sheet(spreadsheet, "IconSets")
 
-      result = UmyaSpreadsheet.add_icon_set(
-        spreadsheet,
-        "IconSets",
-        "A1:A10",
-        "3_traffic_lights",
-        [
-          {"percentile", "50"}
-        ]
-      )
+      result =
+        UmyaSpreadsheet.add_icon_set(
+          spreadsheet,
+          "IconSets",
+          "A1:A10",
+          "3_traffic_lights",
+          [
+            {"percentile", "50"}
+          ]
+        )
 
       assert {:error, _} = result
     end
@@ -119,20 +124,21 @@ defmodule ConditionalFormattingAdditionalTest do
       {:ok, spreadsheet} = UmyaSpreadsheet.new()
       UmyaSpreadsheet.add_sheet(spreadsheet, "IconSets")
 
-      result = UmyaSpreadsheet.add_icon_set(
-        spreadsheet,
-        "IconSets",
-        "A1:A10",
-        "3_traffic_lights",
-        [
-          {"percentile", "16"},
-          {"percentile", "33"},
-          {"percentile", "50"},
-          {"percentile", "66"},
-          {"percentile", "83"},
-          {"percentile", "90"}
-        ]
-      )
+      result =
+        UmyaSpreadsheet.add_icon_set(
+          spreadsheet,
+          "IconSets",
+          "A1:A10",
+          "3_traffic_lights",
+          [
+            {"percentile", "16"},
+            {"percentile", "33"},
+            {"percentile", "50"},
+            {"percentile", "66"},
+            {"percentile", "83"},
+            {"percentile", "90"}
+          ]
+        )
 
       assert {:error, _} = result
     end
@@ -140,16 +146,17 @@ defmodule ConditionalFormattingAdditionalTest do
     test "fails with nonexistent sheet" do
       {:ok, spreadsheet} = UmyaSpreadsheet.new()
 
-      result = UmyaSpreadsheet.add_icon_set(
-        spreadsheet,
-        "NonExistentSheet",
-        "A1:A10",
-        "3_traffic_lights",
-        [
-          {"percentile", "33"},
-          {"percentile", "67"}
-        ]
-      )
+      result =
+        UmyaSpreadsheet.add_icon_set(
+          spreadsheet,
+          "NonExistentSheet",
+          "A1:A10",
+          "3_traffic_lights",
+          [
+            {"percentile", "33"},
+            {"percentile", "67"}
+          ]
+        )
 
       assert {:error, _} = result
     end
@@ -158,16 +165,17 @@ defmodule ConditionalFormattingAdditionalTest do
       {:ok, spreadsheet} = UmyaSpreadsheet.new()
       UmyaSpreadsheet.add_sheet(spreadsheet, "IconSets")
 
-      result = UmyaSpreadsheet.add_icon_set(
-        spreadsheet,
-        "IconSets",
-        "",
-        "3_traffic_lights",
-        [
-          {"percentile", "33"},
-          {"percentile", "67"}
-        ]
-      )
+      result =
+        UmyaSpreadsheet.add_icon_set(
+          spreadsheet,
+          "IconSets",
+          "",
+          "3_traffic_lights",
+          [
+            {"percentile", "33"},
+            {"percentile", "67"}
+          ]
+        )
 
       assert {:error, _} = result
     end
@@ -184,14 +192,15 @@ defmodule ConditionalFormattingAdditionalTest do
       end
 
       # Add above average rule
-      result = UmyaSpreadsheet.add_above_below_average_rule(
-        spreadsheet,
-        "AverageTests",
-        "A1:A10",
-        "above",
-        nil,
-        "#00FF00"
-      )
+      result =
+        UmyaSpreadsheet.add_above_below_average_rule(
+          spreadsheet,
+          "AverageTests",
+          "A1:A10",
+          "above",
+          nil,
+          "#00FF00"
+        )
 
       assert result == :ok
     end
@@ -206,14 +215,15 @@ defmodule ConditionalFormattingAdditionalTest do
       end
 
       # Add below average rule
-      result = UmyaSpreadsheet.add_above_below_average_rule(
-        spreadsheet,
-        "AverageTests",
-        "A1:A10",
-        "below",
-        nil,
-        "#FF0000"
-      )
+      result =
+        UmyaSpreadsheet.add_above_below_average_rule(
+          spreadsheet,
+          "AverageTests",
+          "A1:A10",
+          "below",
+          nil,
+          "#FF0000"
+        )
 
       assert result == :ok
     end
@@ -228,14 +238,15 @@ defmodule ConditionalFormattingAdditionalTest do
       end
 
       # Add above or equal average rule
-      result = UmyaSpreadsheet.add_above_below_average_rule(
-        spreadsheet,
-        "AverageTests",
-        "A1:A10",
-        "above_equal",
-        nil,
-        "#0000FF"
-      )
+      result =
+        UmyaSpreadsheet.add_above_below_average_rule(
+          spreadsheet,
+          "AverageTests",
+          "A1:A10",
+          "above_equal",
+          nil,
+          "#0000FF"
+        )
 
       assert result == :ok
     end
@@ -250,14 +261,15 @@ defmodule ConditionalFormattingAdditionalTest do
       end
 
       # Add below or equal average rule
-      result = UmyaSpreadsheet.add_above_below_average_rule(
-        spreadsheet,
-        "AverageTests",
-        "A1:A10",
-        "below_equal",
-        nil,
-        "#FFFF00"
-      )
+      result =
+        UmyaSpreadsheet.add_above_below_average_rule(
+          spreadsheet,
+          "AverageTests",
+          "A1:A10",
+          "below_equal",
+          nil,
+          "#FFFF00"
+        )
 
       assert result == :ok
     end
@@ -272,14 +284,15 @@ defmodule ConditionalFormattingAdditionalTest do
       end
 
       # Add above average rule with 1 standard deviation
-      result = UmyaSpreadsheet.add_above_below_average_rule(
-        spreadsheet,
-        "AverageTests",
-        "A1:A10",
-        "above",
-        1,
-        "#FF00FF"
-      )
+      result =
+        UmyaSpreadsheet.add_above_below_average_rule(
+          spreadsheet,
+          "AverageTests",
+          "A1:A10",
+          "above",
+          1,
+          "#FF00FF"
+        )
 
       assert result == :ok
     end
@@ -288,14 +301,15 @@ defmodule ConditionalFormattingAdditionalTest do
       {:ok, spreadsheet} = UmyaSpreadsheet.new()
       UmyaSpreadsheet.add_sheet(spreadsheet, "AverageTests")
 
-      result = UmyaSpreadsheet.add_above_below_average_rule(
-        spreadsheet,
-        "AverageTests",
-        "A1:A10",
-        "invalid_rule",
-        nil,
-        "#FF0000"
-      )
+      result =
+        UmyaSpreadsheet.add_above_below_average_rule(
+          spreadsheet,
+          "AverageTests",
+          "A1:A10",
+          "invalid_rule",
+          nil,
+          "#FF0000"
+        )
 
       assert {:error, _} = result
     end
@@ -303,14 +317,15 @@ defmodule ConditionalFormattingAdditionalTest do
     test "fails with nonexistent sheet" do
       {:ok, spreadsheet} = UmyaSpreadsheet.new()
 
-      result = UmyaSpreadsheet.add_above_below_average_rule(
-        spreadsheet,
-        "NonExistentSheet",
-        "A1:A10",
-        "above",
-        nil,
-        "#FF0000"
-      )
+      result =
+        UmyaSpreadsheet.add_above_below_average_rule(
+          spreadsheet,
+          "NonExistentSheet",
+          "A1:A10",
+          "above",
+          nil,
+          "#FF0000"
+        )
 
       assert {:error, _} = result
     end
@@ -319,14 +334,15 @@ defmodule ConditionalFormattingAdditionalTest do
       {:ok, spreadsheet} = UmyaSpreadsheet.new()
       UmyaSpreadsheet.add_sheet(spreadsheet, "AverageTests")
 
-      result = UmyaSpreadsheet.add_above_below_average_rule(
-        spreadsheet,
-        "AverageTests",
-        "",
-        "above",
-        nil,
-        "#FF0000"
-      )
+      result =
+        UmyaSpreadsheet.add_above_below_average_rule(
+          spreadsheet,
+          "AverageTests",
+          "",
+          "above",
+          nil,
+          "#FF0000"
+        )
 
       assert {:error, _} = result
     end
@@ -338,50 +354,62 @@ defmodule ConditionalFormattingAdditionalTest do
 
       # Sheet 1: Icon Sets
       UmyaSpreadsheet.add_sheet(spreadsheet, "IconSets")
+
       for i <- 1..20 do
         UmyaSpreadsheet.set_cell_value(spreadsheet, "IconSets", "A#{i}", "#{:rand.uniform(100)}")
       end
 
       # Add 3-icon set
-      :ok = UmyaSpreadsheet.add_icon_set(
-        spreadsheet,
-        "IconSets",
-        "A1:A20",
-        "3_traffic_lights",
-        [
-          {"percentile", "33"},
-          {"percentile", "67"}
-        ]
-      )
+      :ok =
+        UmyaSpreadsheet.add_icon_set(
+          spreadsheet,
+          "IconSets",
+          "A1:A20",
+          "3_traffic_lights",
+          [
+            {"percentile", "33"},
+            {"percentile", "67"}
+          ]
+        )
 
       # Sheet 2: Average Rules
       UmyaSpreadsheet.add_sheet(spreadsheet, "AverageRules")
+
       for i <- 1..20 do
-        UmyaSpreadsheet.set_cell_value(spreadsheet, "AverageRules", "A#{i}", "#{:rand.uniform(100)}")
+        UmyaSpreadsheet.set_cell_value(
+          spreadsheet,
+          "AverageRules",
+          "A#{i}",
+          "#{:rand.uniform(100)}"
+        )
       end
 
       # Add above average rule
-      :ok = UmyaSpreadsheet.add_above_below_average_rule(
-        spreadsheet,
-        "AverageRules",
-        "A1:A20",
-        "above",
-        nil,
-        "#00FF00"
-      )
+      :ok =
+        UmyaSpreadsheet.add_above_below_average_rule(
+          spreadsheet,
+          "AverageRules",
+          "A1:A20",
+          "above",
+          nil,
+          "#00FF00"
+        )
 
       # Add below average rule
-      :ok = UmyaSpreadsheet.add_above_below_average_rule(
-        spreadsheet,
-        "AverageRules",
-        "B1:B20",
-        "below",
-        nil,
-        "#FF0000"
-      )
+      :ok =
+        UmyaSpreadsheet.add_above_below_average_rule(
+          spreadsheet,
+          "AverageRules",
+          "B1:B20",
+          "below",
+          nil,
+          "#FF0000"
+        )
 
       # Save and verify the file can be written
-      result = UmyaSpreadsheet.write(spreadsheet, "/tmp/conditional_formatting_additional_test.xlsx")
+      result =
+        UmyaSpreadsheet.write(spreadsheet, "/tmp/conditional_formatting_additional_test.xlsx")
+
       assert result == :ok
 
       # Verify the file exists

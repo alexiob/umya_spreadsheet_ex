@@ -84,6 +84,7 @@ defmodule UmyaSpreadsheet.MixProject do
         "docs/hyperlinks.md",
         "docs/image_handling.md",
         "docs/ole_objects.md",
+        "docs/page_breaks.md",
         "docs/pivot_tables.md",
         "docs/print_settings.md",
         "docs/shapes_and_drawing.md",
@@ -121,6 +122,7 @@ defmodule UmyaSpreadsheet.MixProject do
           "docs/comments.md"
         ],
         "Layout & Printing": [
+          "docs/page_breaks.md",
           "docs/pivot_tables.md",
           "docs/print_settings.md",
           "docs/window_settings.md"

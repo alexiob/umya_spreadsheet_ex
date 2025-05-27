@@ -28,26 +28,26 @@ This document outlines the current limitations, compatibility constraints, and k
 
 | Feature | Support Level | Notes |
 |---------|---------------|-------|
-| **Basic Operations** |
+| **Basic Operations** |||
 | Cell values (text, numbers) | ✅ Full | All basic data types |
 | Formulas | ✅ Full | Standard Excel formulas |
 | Multiple sheets | ✅ Full | Add, remove, rename sheets |
-| **Formatting** |
+| **Formatting** |||
 | Font styling | ✅ Full | Bold, italic, underline, colors |
 | Cell backgrounds | ✅ Full | Colors and patterns |
 | Borders | ✅ Full | All border styles |
 | Number formats | ✅ Full | Currency, dates, percentages |
 | Conditional formatting | ✅ Partial | Basic rules, color scales, data bars, icon sets |
-| **Advanced Features** |
+| **Advanced Features** |||
 | Charts | ✅ Partial | Line, bar, pie charts supported |
 | Images | ✅ Full | PNG, JPEG insertion |
 | Data validation | ✅ Full | Dropdowns, ranges, custom rules |
 | Pivot tables | ✅ Basic | Creation and basic manipulation |
 | Macros | ❌ Limited | Can preserve existing macros but not execute |
-| **Security** |
+| **Security** |||
 | Password protection | ✅ Full | Workbook and sheet protection |
 | Digital signatures | ❌ None | Not supported |
-| **Print Features** |
+| **Print Features** |||
 | Page setup | ✅ Full | Margins, orientation, scaling |
 | Headers/footers | ✅ Full | Custom headers and footers |
 | Print areas | ✅ Full | Define print ranges |
@@ -137,16 +137,16 @@ validation_types = [
 
 | Platform | Support Level | Notes |
 |----------|---------------|-------|
-| **Linux** |
+| **Linux** |||
 | Ubuntu 20.04+ | ✅ Full | Precompiled binaries available |
 | CentOS/RHEL 8+ | ✅ Full | Precompiled binaries available |
 | Debian 10+ | ✅ Full | Precompiled binaries available |
 | Alpine Linux | ⚠️ Limited | May require manual compilation |
-| **macOS** |
+| **macOS** |||
 | macOS 11+ (Intel) | ✅ Full | Precompiled binaries available |
 | macOS 11+ (Apple Silicon) | ✅ Full | Native ARM64 support |
 | macOS 10.15 and earlier | ❌ None | Not supported |
-| **Windows** |
+| **Windows** |||
 | Windows 10+ | ✅ Full | Precompiled binaries available |
 | Windows Server 2019+ | ✅ Full | Precompiled binaries available |
 | Windows 8.1 and earlier | ❌ None | Not supported |
