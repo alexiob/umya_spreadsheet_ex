@@ -77,17 +77,15 @@ defmodule UmyaSpreadsheet.OleObjectsTest do
   describe "OLE Object data management" do
     test "can set and get object data" do
       {:ok, ole_object} = UmyaSpreadsheet.new_ole_object()
-      test_data = "test binary data"
+      test_data = :binary.bin_to_list("test binary data")
 
-      # Set data - Note: This may not be implemented yet in the Rust NIF
-      # assert :ok = UmyaSpreadsheet.set_ole_object_data(ole_object, test_data)
+      # Set data - now this should work since the NIF is implemented
+      assert :ok = UmyaSpreadsheet.set_ole_object_data(ole_object, test_data)
 
-      # Get data back - Note: This may not be implemented yet in the Rust NIF
-      # assert {:ok, ^test_data} = UmyaSpreadsheet.get_ole_object_data(ole_object)
-
-      # For now, just test that the functions exist and return expected results
-      assert {:error, _} = UmyaSpreadsheet.set_ole_object_data(ole_object, test_data)
-      assert {:ok, nil} = UmyaSpreadsheet.get_ole_object_data(ole_object)
+      # Get data back - now this should work since the NIF is implemented
+      assert {:ok, retrieved_data} = UmyaSpreadsheet.get_ole_object_data(ole_object)
+      assert is_list(retrieved_data)
+      assert :binary.list_to_bin(retrieved_data) == "test binary data"
     end
 
     test "can check format types" do
@@ -127,24 +125,45 @@ defmodule UmyaSpreadsheet.OleObjectsTest do
 
   describe "File operations" do
     test "can create OLE object with data" do
-      test_data = "test file content"
+      test_data = :binary.bin_to_list("test file content")
 
-      # Create with data - Note: This may not be implemented yet in the Rust NIF
-      # assert {:ok, ole_object} = UmyaSpreadsheet.new_ole_object_with_data(test_data, "docx")
+      # Create with data - now this should work since the NIF is implemented
+      assert {:ok, ole_object} = UmyaSpreadsheet.new_ole_object_with_data(test_data, "docx")
 
-      # Should have the data - Note: This may not be implemented yet in the Rust NIF
-      # assert {:ok, ^test_data} = UmyaSpreadsheet.get_ole_object_data(ole_object)
+      # Should have the data
+      assert {:ok, retrieved_data} = UmyaSpreadsheet.get_ole_object_data(ole_object)
+      assert is_list(retrieved_data)
+      assert :binary.list_to_bin(retrieved_data) == "test file content"
 
-      # For now, just test that the function exists and returns expected error
-      assert {:error, _} = UmyaSpreadsheet.new_ole_object_with_data(test_data, "docx")
+      # Should have correct properties
+      assert {:ok, "Word.Document.12"} = UmyaSpreadsheet.get_ole_object_prog_id(ole_object)
+      assert {:ok, "docx"} = UmyaSpreadsheet.get_ole_object_extension(ole_object)
     end
 
-    # Note: File operations are disabled in this test since they require actual files
-    # test "can load and save OLE objects from files" do
-    #   # These tests would require actual files to exist
-    #   # {:ok, ole_object} = UmyaSpreadsheet.new_ole_object_from_file("test.docx")
-    #   # :ok = UmyaSpreadsheet.save_ole_object_to_file(ole_object, "output.docx")
-    # end
+    test "can load and save OLE objects from files" do
+      # Create a temporary file
+      test_dir = "test/result_files"
+      File.mkdir_p!(test_dir)
+      test_file_path = "#{test_dir}/ole_test_temp.txt"
+      output_file_path = "#{test_dir}/ole_test_output.txt"
+
+      # Write test content to the file
+      test_content = "Test OLE content"
+      File.write!(test_file_path, test_content)
+
+      # Load file into OLE object
+      assert {:ok, ole_object} = UmyaSpreadsheet.new_ole_object_from_file(test_file_path)
+
+      # Save OLE content to another file
+      assert :ok = UmyaSpreadsheet.save_ole_object_to_file(ole_object, output_file_path)
+
+      # Verify the saved content
+      assert File.read!(output_file_path) == test_content
+
+      # Clean up
+      File.rm!(test_file_path)
+      File.rm!(output_file_path)
+    end
   end
 
   describe "Helper functions" do

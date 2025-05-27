@@ -178,12 +178,11 @@ defmodule UmyaSpreadsheet.OleObjects do
         _ -> "Package"
       end
 
-    try do
-      UmyaNative.create_ole_object_with_data(prog_id, file_extension, data)
-      |> ErrorHandling.standardize_result()
-    rescue
-      ArgumentError -> {:error, "Function not implemented"}
-    end
+    # Convert string to binary list if needed
+    binary_data = if is_binary(data), do: :binary.bin_to_list(data), else: data
+
+    UmyaNative.create_ole_object_with_data(prog_id, file_extension, binary_data)
+    |> ErrorHandling.standardize_result()
   end
 
   # Collection Operations
@@ -612,12 +611,11 @@ defmodule UmyaSpreadsheet.OleObjects do
       :ok = UmyaSpreadsheet.OleObjects.set_ole_object_data(ole_object, data)
   """
   def set_ole_object_data(ole_object, data) do
-    try do
-      UmyaNative.set_ole_object_data(ole_object, data)
-      |> ErrorHandling.standardize_result()
-    rescue
-      ArgumentError -> {:error, "Function not implemented"}
-    end
+    # Convert string to binary list if needed
+    binary_data = if is_binary(data), do: :binary.bin_to_list(data), else: data
+
+    UmyaNative.set_ole_object_data(ole_object, binary_data)
+    |> ErrorHandling.standardize_result()
   end
 
   # File Operations

@@ -1760,7 +1760,7 @@ defmodule UmyaSpreadsheet do
   ## Examples
 
       iex> {:ok, ole_object} = UmyaSpreadsheet.new_ole_object()
-      iex> {:error, "Function not implemented"} = UmyaSpreadsheet.set_ole_object_data(ole_object, "test data")
+      iex> :ok = UmyaSpreadsheet.set_ole_object_data(ole_object, "test data")
   """
   defdelegate set_ole_object_data(ole_object, data), to: OleObjects
 end
