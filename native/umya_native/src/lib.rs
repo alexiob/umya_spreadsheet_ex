@@ -54,6 +54,7 @@ pub mod conditional_formatting;
 pub mod conditional_formatting_additional;
 pub mod custom_structs;
 mod data_validation;
+mod document_properties;
 mod drawing_functions;
 mod file_format_options;
 mod formula_functions;
@@ -67,6 +68,7 @@ mod set_background_color;
 mod set_cell_alignment;
 mod sheet_view_functions;
 mod table;
+mod vml_support;
 mod workbook_view_functions;
 mod write_csv_with_options;
 
@@ -1716,13 +1718,6 @@ rustler::init!(
         table::add_table_column,
         table::modify_table_column,
         table::set_table_totals_row,
-        // Comment functions
-        comment_functions::add_comment,
-        comment_functions::get_comment,
-        comment_functions::update_comment,
-        comment_functions::remove_comment,
-        comment_functions::has_comments,
-        comment_functions::get_comments_count,
         // Hyperlink functions
         hyperlink::add_hyperlink,
         hyperlink::get_hyperlink,
@@ -1784,6 +1779,39 @@ rustler::init!(
         page_breaks::clear_column_page_breaks,
         page_breaks::has_row_page_break,
         page_breaks::has_column_page_break,
+        // Document Properties functions
+        document_properties::get_custom_property,
+        document_properties::set_custom_property_string,
+        document_properties::set_custom_property_number,
+        document_properties::set_custom_property_bool,
+        document_properties::set_custom_property_date,
+        document_properties::remove_custom_property,
+        document_properties::get_custom_property_names,
+        document_properties::has_custom_property,
+        document_properties::get_custom_properties_count,
+        document_properties::clear_custom_properties,
+        document_properties::get_title,
+        document_properties::set_title,
+        document_properties::get_description,
+        document_properties::set_description,
+        document_properties::get_subject,
+        document_properties::set_subject,
+        document_properties::get_keywords,
+        document_properties::set_keywords,
+        document_properties::get_creator,
+        document_properties::set_creator,
+        document_properties::get_last_modified_by,
+        document_properties::set_last_modified_by,
+        document_properties::get_category,
+        document_properties::set_category,
+        document_properties::get_company,
+        document_properties::set_company,
+        document_properties::get_manager,
+        document_properties::set_manager,
+        document_properties::get_created,
+        document_properties::set_created,
+        document_properties::get_modified,
+        document_properties::set_modified,
         // VML Support functions
         vml_support::create_vml_shape,
         vml_support::set_vml_shape_style,
@@ -1795,6 +1823,3 @@ rustler::init!(
         vml_support::set_vml_shape_stroke_weight,
     ]
 );
-
-// Import the VML module
-mod vml_support;

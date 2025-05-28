@@ -35,6 +35,13 @@ Welcome to the UmyaSpreadsheet documentation. This collection of guides provides
   - Custom formula-based validation rules
   - Input messages and error alerts
 
+- [**Document Properties**](document_properties.html): Add and manage document metadata
+
+  - Core document properties (title, author, description, etc.)
+  - Custom properties for application-specific metadata
+  - Reading, writing and removing properties
+  - Best practices for date handling and Unicode support
+
 - [**Excel Tables**](excel_tables.html): Create, style, and manage structured Excel tables
 
   - Creating tables with headers and data ranges

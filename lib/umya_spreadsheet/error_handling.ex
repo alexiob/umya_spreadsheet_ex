@@ -24,6 +24,7 @@ defmodule UmyaSpreadsheet.ErrorHandling do
   Standardizes result format for NIF functions that might return mixed formats.
   This is the main function to use for most function return value processing.
   """
+  def standardize_result({:error, {:not_found, _}}), do: {:error, :not_found}
   def standardize_result({:error, _} = error), do: unwrap_error(error)
   def standardize_result({:ok, _} = success), do: standardize_ok_result(success)
   def standardize_result(:ok), do: :ok

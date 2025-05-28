@@ -1617,5 +1617,200 @@ defmodule UmyaNative do
   def set_vml_shape_stroke_weight(_spreadsheet, _sheet_name, _shape_id, _stroke_weight),
     do: error()
 
+  # Document Properties functions
+
+  @doc """
+  Gets a custom document property.
+  """
+  @spec get_custom_property(reference(), String.t()) :: {:ok, String.t()} | {:error, atom()}
+  def get_custom_property(_spreadsheet, _property_name), do: error()
+
+  @doc """
+  Sets a string custom document property.
+  """
+  @spec set_custom_property_string(reference(), String.t(), String.t()) :: :ok | {:error, atom()}
+  def set_custom_property_string(_spreadsheet, _property_name, _value), do: error()
+
+  @doc """
+  Sets a number custom document property.
+  """
+  @spec set_custom_property_number(reference(), String.t(), integer()) :: :ok | {:error, atom()}
+  def set_custom_property_number(_spreadsheet, _property_name, _value), do: error()
+
+  @doc """
+  Sets a boolean custom document property.
+  """
+  @spec set_custom_property_bool(reference(), String.t(), boolean()) :: :ok | {:error, atom()}
+  def set_custom_property_bool(_spreadsheet, _property_name, _value), do: error()
+
+  @doc """
+  Sets a date custom document property.
+  """
+  @spec set_custom_property_date(reference(), String.t(), integer(), integer(), integer()) ::
+          :ok | {:error, atom()}
+  def set_custom_property_date(_spreadsheet, _property_name, _year, _month, _day), do: error()
+
+  @doc """
+  Removes a custom document property.
+  """
+  @spec remove_custom_property(reference(), String.t()) :: :ok | {:error, atom()}
+  def remove_custom_property(_spreadsheet, _property_name), do: error()
+
+  @doc """
+  Gets all custom property names.
+  """
+  @spec get_custom_property_names(reference()) :: [String.t()] | {:error, atom()}
+  def get_custom_property_names(_spreadsheet), do: error()
+
+  @doc """
+  Checks if a custom property exists.
+  """
+  @spec has_custom_property(reference(), String.t()) :: boolean() | {:error, atom()}
+  def has_custom_property(_spreadsheet, _property_name), do: error()
+
+  @doc """
+  Gets the count of custom properties.
+  """
+  @spec get_custom_properties_count(reference()) :: integer() | {:error, atom()}
+  def get_custom_properties_count(_spreadsheet), do: error()
+
+  @doc """
+  Clears all custom properties.
+  """
+  @spec clear_custom_properties(reference()) :: :ok | {:error, atom()}
+  def clear_custom_properties(_spreadsheet), do: error()
+
+  @doc """
+  Gets the document title.
+  """
+  @spec get_title(reference()) :: {:ok, String.t()} | {:error, atom()}
+  def get_title(_spreadsheet), do: error()
+
+  @doc """
+  Sets the document title.
+  """
+  @spec set_title(reference(), String.t()) :: :ok | {:error, atom()}
+  def set_title(_spreadsheet, _title), do: error()
+
+  @doc """
+  Gets the document description.
+  """
+  @spec get_description(reference()) :: {:ok, String.t()} | {:error, atom()}
+  def get_description(_spreadsheet), do: error()
+
+  @doc """
+  Sets the document description.
+  """
+  @spec set_description(reference(), String.t()) :: :ok | {:error, atom()}
+  def set_description(_spreadsheet, _description), do: error()
+
+  @doc """
+  Gets the document subject.
+  """
+  @spec get_subject(reference()) :: {:ok, String.t()} | {:error, atom()}
+  def get_subject(_spreadsheet), do: error()
+
+  @doc """
+  Sets the document subject.
+  """
+  @spec set_subject(reference(), String.t()) :: :ok | {:error, atom()}
+  def set_subject(_spreadsheet, _subject), do: error()
+
+  @doc """
+  Gets the document keywords.
+  """
+  @spec get_keywords(reference()) :: {:ok, String.t()} | {:error, atom()}
+  def get_keywords(_spreadsheet), do: error()
+
+  @doc """
+  Sets the document keywords.
+  """
+  @spec set_keywords(reference(), String.t()) :: :ok | {:error, atom()}
+  def set_keywords(_spreadsheet, _keywords), do: error()
+
+  @doc """
+  Gets the document creator.
+  """
+  @spec get_creator(reference()) :: {:ok, String.t()} | {:error, atom()}
+  def get_creator(_spreadsheet), do: error()
+
+  @doc """
+  Sets the document creator.
+  """
+  @spec set_creator(reference(), String.t()) :: :ok | {:error, atom()}
+  def set_creator(_spreadsheet, _creator), do: error()
+
+  @doc """
+  Gets the document last modified by.
+  """
+  @spec get_last_modified_by(reference()) :: {:ok, String.t()} | {:error, atom()}
+  def get_last_modified_by(_spreadsheet), do: error()
+
+  @doc """
+  Sets the document last modified by.
+  """
+  @spec set_last_modified_by(reference(), String.t()) :: :ok | {:error, atom()}
+  def set_last_modified_by(_spreadsheet, _last_modified_by), do: error()
+
+  @doc """
+  Gets the document category.
+  """
+  @spec get_category(reference()) :: {:ok, String.t()} | {:error, atom()}
+  def get_category(_spreadsheet), do: error()
+
+  @doc """
+  Sets the document category.
+  """
+  @spec set_category(reference(), String.t()) :: :ok | {:error, atom()}
+  def set_category(_spreadsheet, _category), do: error()
+
+  @doc """
+  Gets the document company.
+  """
+  @spec get_company(reference()) :: {:ok, String.t()} | {:error, atom()}
+  def get_company(_spreadsheet), do: error()
+
+  @doc """
+  Sets the document company.
+  """
+  @spec set_company(reference(), String.t()) :: :ok | {:error, atom()}
+  def set_company(_spreadsheet, _company), do: error()
+
+  @doc """
+  Gets the document manager.
+  """
+  @spec get_manager(reference()) :: {:ok, String.t()} | {:error, atom()}
+  def get_manager(_spreadsheet), do: error()
+
+  @doc """
+  Sets the document manager.
+  """
+  @spec set_manager(reference(), String.t()) :: :ok | {:error, atom()}
+  def set_manager(_spreadsheet, _manager), do: error()
+
+  @doc """
+  Gets the document created date.
+  """
+  @spec get_created(reference()) :: {:ok, String.t()} | {:error, atom()}
+  def get_created(_spreadsheet), do: error()
+
+  @doc """
+  Sets the document created date.
+  """
+  @spec set_created(reference(), String.t()) :: :ok | {:error, atom()}
+  def set_created(_spreadsheet, _created), do: error()
+
+  @doc """
+  Gets the document modified date.
+  """
+  @spec get_modified(reference()) :: {:ok, String.t()} | {:error, atom()}
+  def get_modified(_spreadsheet), do: error()
+
+  @doc """
+  Sets the document modified date.
+  """
+  @spec set_modified(reference(), String.t()) :: :ok | {:error, atom()}
+  def set_modified(_spreadsheet, _modified), do: error()
+
   defp error(), do: :erlang.nif_error(:nif_not_loaded)
 end

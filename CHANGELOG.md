@@ -4,6 +4,38 @@
 
 ### Added
 
+- **Complete Document Properties Support**:
+  - **Core Document Properties** - Standard metadata fields for Excel documents
+    - `UmyaSpreadsheet.DocumentProperties.set_title/2`, `get_title/1` - Document title management
+    - `UmyaSpreadsheet.DocumentProperties.set_description/2`, `get_description/1` - Document description
+    - `UmyaSpreadsheet.DocumentProperties.set_subject/2`, `get_subject/1` - Document subject
+    - `UmyaSpreadsheet.DocumentProperties.set_keywords/2`, `get_keywords/1` - Document keywords
+    - `UmyaSpreadsheet.DocumentProperties.set_category/2`, `get_category/1` - Document category
+    - `UmyaSpreadsheet.DocumentProperties.set_creator/2`, `get_creator/1` - Document creator
+    - `UmyaSpreadsheet.DocumentProperties.set_last_modified_by/2`, `get_last_modified_by/1` - Last editor
+    - `UmyaSpreadsheet.DocumentProperties.set_company/2`, `get_company/1` - Company information
+    - `UmyaSpreadsheet.DocumentProperties.set_manager/2`, `get_manager/1` - Manager information
+    - `UmyaSpreadsheet.DocumentProperties.set_created/2`, `get_created/1` - Creation date
+    - `UmyaSpreadsheet.DocumentProperties.set_modified/2`, `get_modified/1` - Last modification date
+  - **Custom Document Properties** - User-defined key-value pairs for application-specific metadata
+    - `UmyaSpreadsheet.DocumentProperties.set_custom_property_string/3` - Set string properties
+    - `UmyaSpreadsheet.DocumentProperties.set_custom_property_number/3` - Set numeric properties
+    - `UmyaSpreadsheet.DocumentProperties.set_custom_property_bool/3` - Set boolean properties
+    - `UmyaSpreadsheet.DocumentProperties.set_custom_property_date/3` - Set date properties
+    - `UmyaSpreadsheet.DocumentProperties.get_custom_property/2` - Retrieve typed properties
+    - `UmyaSpreadsheet.DocumentProperties.remove_custom_property/2` - Remove specific properties
+    - `UmyaSpreadsheet.DocumentProperties.clear_custom_properties/1` - Remove all custom properties
+  - **Property Management Utilities** - Metadata management and retrieval
+    - `UmyaSpreadsheet.DocumentProperties.set_properties/2` - Set multiple properties at once
+    - `UmyaSpreadsheet.DocumentProperties.get_all_properties/1` - Retrieve all core properties
+    - `UmyaSpreadsheet.DocumentProperties.get_custom_property_names/1` - List all custom property names
+    - `UmyaSpreadsheet.DocumentProperties.get_custom_properties_count/1` - Count custom properties
+    - `UmyaSpreadsheet.DocumentProperties.has_custom_property/2` - Check if property exists
+  - **Comprehensive Documentation** - Complete guide with examples and best practices
+    - Detailed guide for core and custom document properties
+    - Best practices for date handling, Unicode support, and large numbers
+    - Error handling patterns and troubleshooting guidance
+
 - **VML Drawing Support**:
   - **VmlDrawing Module** - Full support for Vector Markup Language elements in spreadsheets
     - `UmyaSpreadsheet.VmlDrawing.create_shape/3` - Create VML shapes in worksheets
@@ -16,6 +48,17 @@
     - `UmyaSpreadsheet.VmlDrawing.set_shape_stroke_weight/4` - Set outline thickness
   - **Legacy Drawing Compatibility** - Support for legacy Office drawing objects
   - **Complex Drawing Object Management** - Creation and control of sophisticated drawing elements
+
+### Fixed
+
+- **Document Properties Module Fixes**:
+  - Fixed NIF loading error in UmyaNative module for document properties
+  - Fixed missing module declaration for VML support in lib.rs
+  - Fixed type conversion issues for floating-point and negative numeric properties
+  - Improved date handling with timezone-aware comparisons
+  - Enhanced error standardization for property not found cases
+  - Improved handling of very large numeric values and scientific notation
+  - Added comprehensive property value conversion for proper type support
 
 ## 0.6.8 - 2025-05-27
 
