@@ -105,6 +105,14 @@ Welcome to the UmyaSpreadsheet documentation. This collection of guides provides
   - Creating connectors between cells
   - Building diagrams and flowcharts
 
+- [**VML Drawings**](vml_drawings.html): Work with Vector Markup Language (VML) shapes
+
+  - Creating VML shapes for legacy compatibility
+  - Shape types (rectangles, ovals, lines, rounded rectangles)
+  - Style properties for positioning and sizing
+  - Fill and stroke properties for appearance customization
+  - Best practices for VML shape management
+
 - [**Window Settings**](window_settings.html): Control Excel viewing experience
 
   - Setting active sheet selection and focus

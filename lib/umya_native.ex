@@ -1560,5 +1560,62 @@ defmodule UmyaNative do
           boolean() | {:error, atom()}
   def has_column_page_break(_spreadsheet, _sheet_name, _column_number), do: error()
 
+  # VML Support functions
+  @doc """
+  Creates a new VML shape in the specified worksheet.
+  """
+  @spec create_vml_shape(reference(), String.t(), String.t()) :: :ok | {:error, atom()}
+  def create_vml_shape(_spreadsheet, _sheet_name, _shape_id), do: error()
+
+  @doc """
+  Sets the CSS style for a VML shape.
+  """
+  @spec set_vml_shape_style(reference(), String.t(), String.t(), String.t()) ::
+          :ok | {:error, atom()}
+  def set_vml_shape_style(_spreadsheet, _sheet_name, _shape_id, _style), do: error()
+
+  @doc """
+  Sets the type of a VML shape.
+  """
+  @spec set_vml_shape_type(reference(), String.t(), String.t(), String.t()) ::
+          :ok | {:error, atom()}
+  def set_vml_shape_type(_spreadsheet, _sheet_name, _shape_id, _shape_type), do: error()
+
+  @doc """
+  Sets whether a VML shape is filled.
+  """
+  @spec set_vml_shape_filled(reference(), String.t(), String.t(), boolean()) ::
+          :ok | {:error, atom()}
+  def set_vml_shape_filled(_spreadsheet, _sheet_name, _shape_id, _filled), do: error()
+
+  @doc """
+  Sets the fill color for a VML shape.
+  """
+  @spec set_vml_shape_fill_color(reference(), String.t(), String.t(), String.t()) ::
+          :ok | {:error, atom()}
+  def set_vml_shape_fill_color(_spreadsheet, _sheet_name, _shape_id, _fill_color), do: error()
+
+  @doc """
+  Sets whether a VML shape has a stroke (outline).
+  """
+  @spec set_vml_shape_stroked(reference(), String.t(), String.t(), boolean()) ::
+          :ok | {:error, atom()}
+  def set_vml_shape_stroked(_spreadsheet, _sheet_name, _shape_id, _stroked), do: error()
+
+  @doc """
+  Sets the stroke color for a VML shape.
+  """
+  @spec set_vml_shape_stroke_color(reference(), String.t(), String.t(), String.t()) ::
+          :ok | {:error, atom()}
+  def set_vml_shape_stroke_color(_spreadsheet, _sheet_name, _shape_id, _stroke_color), do: error()
+
+  @doc """
+  Sets the stroke weight (thickness) for a VML shape.
+  """
+  @spec set_vml_shape_stroke_weight(reference(), String.t(), String.t(), String.t()) ::
+          :ok | {:error, atom()}
+  def set_vml_shape_stroke_weight(_spreadsheet, _sheet_name, _shape_id, _stroke_weight),
+    do: error()
+
   defp error(), do: :erlang.nif_error(:nif_not_loaded)
 end

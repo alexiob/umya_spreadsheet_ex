@@ -1,5 +1,22 @@
 # Changelog
 
+## 0.6.9 - 2025-05-28
+
+### Added
+
+- **VML Drawing Support**:
+  - **VmlDrawing Module** - Full support for Vector Markup Language elements in spreadsheets
+    - `UmyaSpreadsheet.VmlDrawing.create_shape/3` - Create VML shapes in worksheets
+    - `UmyaSpreadsheet.VmlDrawing.set_shape_type/4` - Set shape type (rect, oval, line, etc.)
+    - `UmyaSpreadsheet.VmlDrawing.set_shape_style/4` - Set CSS style for positioning and dimensions
+    - `UmyaSpreadsheet.VmlDrawing.set_shape_filled/4` - Control shape fill visibility
+    - `UmyaSpreadsheet.VmlDrawing.set_shape_fill_color/4` - Set shape fill color
+    - `UmyaSpreadsheet.VmlDrawing.set_shape_stroked/4` - Control shape outline visibility
+    - `UmyaSpreadsheet.VmlDrawing.set_shape_stroke_color/4` - Set outline color
+    - `UmyaSpreadsheet.VmlDrawing.set_shape_stroke_weight/4` - Set outline thickness
+  - **Legacy Drawing Compatibility** - Support for legacy Office drawing objects
+  - **Complex Drawing Object Management** - Creation and control of sophisticated drawing elements
+
 ## 0.6.8 - 2025-05-27
 
 ### Added

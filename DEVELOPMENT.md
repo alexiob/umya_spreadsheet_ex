@@ -6,10 +6,7 @@ Based on comprehensive analysis of the Rust structs vs. implemented NIF function
 
 #### 5. Advanced Drawing
 
-- **VML Support**: Vector Markup Language objects
-  - `VmlDrawing` struct: VML drawing container
-  - Complex drawing object management
-  - Legacy drawing compatibility
+- **COMPLETED**: VML Support has been implemented in v0.7.0
 
 #### 7. Document Properties
 

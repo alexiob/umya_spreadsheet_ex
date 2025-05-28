@@ -24,16 +24,12 @@ defmodule UmyaSpreadsheetTest.WriteWithCompressionTest do
         # Try to write with compression level 9
         result = UmyaSpreadsheet.write_with_compression(spreadsheet, path, 9)
 
-        # Print progress
-        IO.puts("Iteration #{i}/#{iterations}, Result: #{inspect(result)}")
-
         # Check if file was created
         file_exists = File.exists?(path)
-        IO.puts("  File exists: #{file_exists}")
 
         if file_exists do
           file_size = File.stat!(path).size
-          IO.puts("  File size: #{file_size} bytes")
+          assert file_size > 0, "File size should be greater than 0 on iteration #{i}"
         end
 
         # Return success or failure for this iteration

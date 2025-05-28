@@ -162,7 +162,7 @@ Or add `umya_spreadsheet_ex` to your list of dependencies in `mix.exs`:
 ```elixir
 def deps do
   [
-    {:umya_spreadsheet_ex, "~> 0.6.8"}
+    {:umya_spreadsheet_ex, "~> 0.6.9"}
   ]
 end
 ```

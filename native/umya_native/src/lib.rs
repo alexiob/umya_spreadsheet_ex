@@ -1784,5 +1784,17 @@ rustler::init!(
         page_breaks::clear_column_page_breaks,
         page_breaks::has_row_page_break,
         page_breaks::has_column_page_break,
+        // VML Support functions
+        vml_support::create_vml_shape,
+        vml_support::set_vml_shape_style,
+        vml_support::set_vml_shape_type,
+        vml_support::set_vml_shape_filled,
+        vml_support::set_vml_shape_fill_color,
+        vml_support::set_vml_shape_stroked,
+        vml_support::set_vml_shape_stroke_color,
+        vml_support::set_vml_shape_stroke_weight,
     ]
 );
+
+// Import the VML module
+mod vml_support;
