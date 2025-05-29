@@ -70,6 +70,7 @@ mod set_cell_alignment;
 mod sheet_view_functions;
 mod table;
 mod vml_support;
+mod workbook_protection_functions;
 mod workbook_view_functions;
 mod write_csv_with_options;
 
@@ -1714,8 +1715,12 @@ rustler::init!(
         sheet_view_functions::set_zoom_scale_page_layout,
         sheet_view_functions::set_zoom_scale_page_break,
         sheet_view_functions::set_selection,
+        workbook_view_functions::get_active_tab,
+        workbook_view_functions::get_workbook_window_position,
         workbook_view_functions::set_active_tab,
         workbook_view_functions::set_workbook_window_position,
+        workbook_protection_functions::is_workbook_protected,
+        workbook_protection_functions::get_workbook_protection_details,
         copy_column_styling,
         // Comment functions
         comment_functions::add_comment,

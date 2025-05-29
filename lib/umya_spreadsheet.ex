@@ -669,6 +669,12 @@ defmodule UmyaSpreadsheet do
     to: SheetViewFunctions
 
   # Workbook View Functions delegation
+  defdelegate get_active_tab(spreadsheet),
+    to: WorkbookViewFunctions
+
+  defdelegate get_workbook_window_position(spreadsheet),
+    to: WorkbookViewFunctions
+
   defdelegate set_active_tab(spreadsheet, tab_index),
     to: WorkbookViewFunctions
 
@@ -680,6 +686,13 @@ defmodule UmyaSpreadsheet do
                 window_height
               ),
               to: WorkbookViewFunctions
+
+  # Workbook Protection Functions delegation
+  defdelegate is_workbook_protected(spreadsheet),
+    to: UmyaSpreadsheet.WorkbookProtectionFunctions
+
+  defdelegate get_workbook_protection_details(spreadsheet),
+    to: UmyaSpreadsheet.WorkbookProtectionFunctions
 
   # Cell Functions delegation
   defdelegate get_cell_value(spreadsheet, sheet_name, cell_address),

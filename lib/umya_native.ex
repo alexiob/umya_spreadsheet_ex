@@ -1159,6 +1159,18 @@ defmodule UmyaNative do
 
   # Workbook view functions
   @doc """
+  Gets the active tab (sheet) index when opening the workbook.
+  """
+  @spec get_active_tab(reference()) :: {:ok, integer()} | {:error, atom()}
+  def get_active_tab(_spreadsheet), do: error()
+
+  @doc """
+  Gets the window position and size for the workbook.
+  """
+  @spec get_workbook_window_position(reference()) :: {:ok, map()} | {:error, atom()}
+  def get_workbook_window_position(_spreadsheet), do: error()
+
+  @doc """
   Sets the active tab (sheet) when opening the workbook.
   """
   @spec set_active_tab(reference(), integer()) :: :ok | {:error, atom()}
@@ -1177,6 +1189,18 @@ defmodule UmyaNative do
         _window_height
       ),
       do: error()
+
+  @doc """
+  Checks if the workbook has protection enabled.
+  """
+  @spec is_workbook_protected(reference()) :: {:ok, boolean()} | {:error, atom()}
+  def is_workbook_protected(_spreadsheet), do: error()
+
+  @doc """
+  Gets the workbook protection details including lock status.
+  """
+  @spec get_workbook_protection_details(reference()) :: {:ok, map()} | {:error, atom()}
+  def get_workbook_protection_details(_spreadsheet), do: error()
 
   # Comment functions
   @doc """

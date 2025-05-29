@@ -27,7 +27,7 @@ UmyaSpreadsheet.set_selection(spreadsheet, "Sheet1", "B2:C5")
 UmyaSpreadsheet.write(spreadsheet, "window_settings.xlsx")
 ```
 
-## Setting the Active Tab
+## Working with Active Tabs
 
 When a workbook contains multiple worksheets, you can control which sheet is active when the workbook is opened:
 
@@ -49,8 +49,44 @@ To determine the index of a sheet, you can use:
 
 ```elixir
 sheet_names = UmyaSpreadsheet.get_sheet_names(spreadsheet)
+```
+
+You can also retrieve the current active tab index using:
+
+```elixir
+# Get the active tab index (returns an integer, 0-based)
+active_tab_index = UmyaSpreadsheet.get_active_tab(spreadsheet)
+
+# Use this to determine which sheet is currently active
+sheet_names = UmyaSpreadsheet.get_sheet_names(spreadsheet)
+active_sheet_name = Enum.at(sheet_names, active_tab_index)
+
+IO.puts("Active sheet: #{active_sheet_name}")
+```
+
+## Window Position and Size
+
+You can control the initial position and size of the Excel window when a workbook is opened:
+
+```elixir
+# Set the window position (x, y) and size (width, height)
+UmyaSpreadsheet.set_workbook_window_position(spreadsheet, 100, 50, 800, 600)
+```
+
+To retrieve the current window position and size settings:
+
+```elixir
+# Get the window position and size as a map
+position = UmyaSpreadsheet.get_workbook_window_position(spreadsheet)
+
+# The returned map has :x, :y, :width, and :height keys
+IO.puts("Window position: #{position[:x]}, #{position[:y]}")
+IO.puts("Window size: #{position[:width]} x #{position[:height]}")
+```
+
 summary_index = Enum.find_index(sheet_names, fn name -> name == "Summary" end)
 UmyaSpreadsheet.set_active_tab(spreadsheet, summary_index)
+
 ```
 
 ## Workbook Window Position and Size
@@ -64,6 +100,7 @@ UmyaSpreadsheet.set_workbook_window_position(spreadsheet, 100, 100, 800, 600)
 ```
 
 This setting only works when:
+
 - The workbook is opened in Excel desktop applications
 - The user does not have Excel already open
 - The user's Excel preferences don't override these settings

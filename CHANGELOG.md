@@ -4,6 +4,18 @@
 
 ### Added
 
+- **Workbook View Getter Functions**:
+  - **Active Tab Retrieval** - Get the currently active worksheet in a workbook
+    - `UmyaSpreadsheet.get_active_tab/1` - Returns the 0-based index of the active tab
+  - **Window Position Retrieval** - Get the position and size of the Excel window
+    - `UmyaSpreadsheet.get_workbook_window_position/1` - Returns a map with :x, :y, :width, and :height of the workbook window
+
+- **Workbook Protection Getter Functions**:
+  - **Protection Status** - Check if a workbook has protection settings enabled
+    - `UmyaSpreadsheet.is_workbook_protected/1` - Returns true if the workbook has protection enabled
+  - **Protection Details** - Get detailed information about workbook protection settings
+    - `UmyaSpreadsheet.get_workbook_protection_details/1` - Returns a map with detailed protection settings
+
 - **Complete Cell Formatting Getter Functions**:
   - **Font Property Inspection API** - Retrieve all font properties from spreadsheet cells
     - `UmyaSpreadsheet.get_font_name/3` - Get font name/typeface (Arial, Times New Roman, etc.)
