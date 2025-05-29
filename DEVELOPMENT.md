@@ -6,13 +6,6 @@ Based on comprehensive analysis of the Rust structs vs. implemented NIF function
 
 ### Lower Priority Features
 
-#### 8. Advanced Typography
-
-- **Font Management**: Enhanced font support
-  - `FontScheme` struct: Font scheme definitions
-  - `FontFamilyNumbering` struct: Font family numbering
-  - Advanced typography controls
-
 #### 9. Advanced Fills
 
 - **Gradient Patterns**: Complex fill patterns

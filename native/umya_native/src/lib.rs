@@ -58,6 +58,7 @@ mod document_properties;
 mod drawing_functions;
 mod file_format_options;
 mod formula_functions;
+mod get_cell_formatting;
 mod helpers;
 mod hyperlink;
 mod ole_object_functions;
@@ -1637,6 +1638,16 @@ rustler::init!(
         cell_formatting::set_border_style,
         cell_formatting::set_cell_rotation,
         cell_formatting::set_cell_indent,
+        // Cell formatting getter functions
+        get_cell_formatting::get_font_name,
+        get_cell_formatting::get_font_size,
+        get_cell_formatting::get_font_bold,
+        get_cell_formatting::get_font_italic,
+        get_cell_formatting::get_font_underline,
+        get_cell_formatting::get_font_strikethrough,
+        get_cell_formatting::get_font_family,
+        get_cell_formatting::get_font_scheme,
+        get_cell_formatting::get_font_color,
         // Print settings functions
         print_settings::set_page_orientation,
         print_settings::set_paper_size,

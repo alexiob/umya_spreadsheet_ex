@@ -214,6 +214,35 @@ defmodule UmyaNative do
   @spec set_cell_indent(reference(), String.t(), String.t(), integer()) :: :ok | {:error, atom()}
   def set_cell_indent(_spreadsheet, _sheet_name, _cell_address, _indent), do: error()
 
+  # Font formatting getter functions
+  @spec get_font_name(reference(), String.t(), String.t()) :: String.t() | {:error, atom()}
+  def get_font_name(_spreadsheet, _sheet_name, _cell_address), do: error()
+
+  @spec get_font_size(reference(), String.t(), String.t()) :: number() | {:error, atom()}
+  def get_font_size(_spreadsheet, _sheet_name, _cell_address), do: error()
+
+  @spec get_font_bold(reference(), String.t(), String.t()) :: boolean() | {:error, atom()}
+  def get_font_bold(_spreadsheet, _sheet_name, _cell_address), do: error()
+
+  @spec get_font_italic(reference(), String.t(), String.t()) :: boolean() | {:error, atom()}
+  def get_font_italic(_spreadsheet, _sheet_name, _cell_address), do: error()
+
+  @spec get_font_underline(reference(), String.t(), String.t()) :: String.t() | {:error, atom()}
+  def get_font_underline(_spreadsheet, _sheet_name, _cell_address), do: error()
+
+  @spec get_font_strikethrough(reference(), String.t(), String.t()) ::
+          boolean() | {:error, atom()}
+  def get_font_strikethrough(_spreadsheet, _sheet_name, _cell_address), do: error()
+
+  @spec get_font_family(reference(), String.t(), String.t()) :: String.t() | {:error, atom()}
+  def get_font_family(_spreadsheet, _sheet_name, _cell_address), do: error()
+
+  @spec get_font_scheme(reference(), String.t(), String.t()) :: String.t() | {:error, atom()}
+  def get_font_scheme(_spreadsheet, _sheet_name, _cell_address), do: error()
+
+  @spec get_font_color(reference(), String.t(), String.t()) :: String.t() | {:error, atom()}
+  def get_font_color(_spreadsheet, _sheet_name, _cell_address), do: error()
+
   @spec set_cell_alignment(reference(), String.t(), String.t(), String.t(), String.t()) ::
           :ok | {:error, atom()}
   def set_cell_alignment(_spreadsheet, _sheet_name, _cell_address, _horizontal, _vertical),

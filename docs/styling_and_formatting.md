@@ -104,6 +104,96 @@ UmyaSpreadsheet.set_font_size(spreadsheet, "Sheet1", "A3", 16)
 UmyaSpreadsheet.set_font_color(spreadsheet, "Sheet1", "A3", "blue")
 ```
 
+### Getting Font Properties
+
+You can retrieve font properties from any cell to check the current formatting state:
+
+```elixir
+# Get font name for cell A1
+{:ok, font_name} = UmyaSpreadsheet.get_font_name(spreadsheet, "Sheet1", "A1")
+# Returns "Arial" if set, or the default font name
+
+# Get font size for cell A2
+{:ok, font_size} = UmyaSpreadsheet.get_font_size(spreadsheet, "Sheet1", "A2")
+# Returns 14.0 if set, or the default font size
+
+# Get bold state for cell A3
+{:ok, is_bold} = UmyaSpreadsheet.get_font_bold(spreadsheet, "Sheet1", "A3")
+# Returns true or false
+
+# Get italic state
+{:ok, is_italic} = UmyaSpreadsheet.get_font_italic(spreadsheet, "Sheet1", "A3")
+# Returns true or false
+
+# Get underline style
+{:ok, underline_style} = UmyaSpreadsheet.get_font_underline(spreadsheet, "Sheet1", "A3")
+# Returns "none", "single", "double", "single_accounting", or "double_accounting"
+
+# Get strikethrough state
+{:ok, is_strikethrough} = UmyaSpreadsheet.get_font_strikethrough(spreadsheet, "Sheet1", "A3")
+# Returns true or false
+
+# Get font family type
+{:ok, font_family} = UmyaSpreadsheet.get_font_family(spreadsheet, "Sheet1", "A3")
+# Returns "roman", "swiss", "modern", "script", or "decorative"
+
+# Get font scheme
+{:ok, font_scheme} = UmyaSpreadsheet.get_font_scheme(spreadsheet, "Sheet1", "A3")
+# Returns "major", "minor", or "none"
+
+# Get font color
+{:ok, font_color} = UmyaSpreadsheet.get_font_color(spreadsheet, "Sheet1", "A3")
+# Returns hex color string like "FF0000" or theme color info
+```
+
+#### Font Getter Methods Return Values
+
+All font getter methods return tuples:
+
+- `{:ok, value}` on success where `value` is the font property
+- `{:error, reason}` if the cell doesn't exist or an error occurs
+
+This pattern makes it easy to pattern match and handle errors:
+
+```elixir
+case UmyaSpreadsheet.get_font_bold(spreadsheet, "Sheet1", "A1") do
+  {:ok, true} ->
+    IO.puts("Cell A1 has bold text")
+  {:ok, false} ->
+    IO.puts("Cell A1 text is not bold")
+  {:error, reason} ->
+    IO.puts("Error reading font bold state: #{reason}")
+end
+```
+
+#### Practical Example: Copying Font Properties
+
+You can use the getter methods to copy font formatting from one cell to another:
+
+```elixir
+# Read all font properties from source cell
+{:ok, font_name} = UmyaSpreadsheet.get_font_name(spreadsheet, "Sheet1", "A1")
+{:ok, font_size} = UmyaSpreadsheet.get_font_size(spreadsheet, "Sheet1", "A1")
+{:ok, is_bold} = UmyaSpreadsheet.get_font_bold(spreadsheet, "Sheet1", "A1")
+{:ok, is_italic} = UmyaSpreadsheet.get_font_italic(spreadsheet, "Sheet1", "A1")
+{:ok, underline_style} = UmyaSpreadsheet.get_font_underline(spreadsheet, "Sheet1", "A1")
+{:ok, is_strikethrough} = UmyaSpreadsheet.get_font_strikethrough(spreadsheet, "Sheet1", "A1")
+{:ok, font_family} = UmyaSpreadsheet.get_font_family(spreadsheet, "Sheet1", "A1")
+{:ok, font_scheme} = UmyaSpreadsheet.get_font_scheme(spreadsheet, "Sheet1", "A1")
+{:ok, font_color} = UmyaSpreadsheet.get_font_color(spreadsheet, "Sheet1", "A1")
+
+# Apply all properties to target cell
+UmyaSpreadsheet.set_font_name(spreadsheet, "Sheet1", "B1", font_name)
+UmyaSpreadsheet.set_font_size(spreadsheet, "Sheet1", "B1", font_size)
+UmyaSpreadsheet.set_font_bold(spreadsheet, "Sheet1", "B1", is_bold)
+UmyaSpreadsheet.set_font_italic(spreadsheet, "Sheet1", "B1", is_italic)
+UmyaSpreadsheet.set_font_underline(spreadsheet, "Sheet1", "B1", underline_style)
+UmyaSpreadsheet.set_font_strikethrough(spreadsheet, "Sheet1", "B1", is_strikethrough)
+UmyaSpreadsheet.set_font_family(spreadsheet, "Sheet1", "B1", font_family)
+UmyaSpreadsheet.set_font_scheme(spreadsheet, "Sheet1", "B1", font_scheme)
+UmyaSpreadsheet.set_font_color(spreadsheet, "Sheet1", "B1", font_color)
+```
+
 ### Text Wrapping and Rotation
 
 Control how text is displayed within cells with wrapping and rotation options:
@@ -217,6 +307,7 @@ UmyaSpreadsheet.copy_column_styling(spreadsheet, "Sheet1", 1, 2, 3, 5)
 ```
 
 This is particularly useful when:
+
 - Creating tables with consistent header and data styling
 - Applying a consistent format across multiple sections of a spreadsheet
 - Quickly replicating complex styling patterns
@@ -417,6 +508,7 @@ UmyaSpreadsheet.set_sheet_state(spreadsheet, "Sheet2", "visible")
 ```
 
 Available sheet states:
+
 - `"visible"` - Sheet is normally visible (default)
 - `"hidden"` - Sheet is hidden but can be unhidden by users in Excel
 - `"very_hidden"` - Sheet is hidden and cannot be unhidden through the Excel UI

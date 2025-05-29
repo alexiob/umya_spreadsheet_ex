@@ -1,5 +1,59 @@
 # Changelog
 
+## 0.6.11 - 2025-05-29
+
+### Added
+
+- **Font Property Getter Functions**:
+  - **Complete Font Inspection API** - Retrieve all font properties from spreadsheet cells
+    - `UmyaSpreadsheet.get_font_name/3` - Get font name/typeface (Arial, Times New Roman, etc.)
+    - `UmyaSpreadsheet.get_font_size/3` - Get font size in points
+    - `UmyaSpreadsheet.get_font_bold/3` - Get bold state (true/false)
+    - `UmyaSpreadsheet.get_font_italic/3` - Get italic state (true/false)
+    - `UmyaSpreadsheet.get_font_underline/3` - Get underline style (none, single, double, accounting)
+    - `UmyaSpreadsheet.get_font_strikethrough/3` - Get strikethrough state (true/false)
+    - `UmyaSpreadsheet.get_font_family/3` - Get font family type (roman, swiss, modern, script, decorative)
+    - `UmyaSpreadsheet.get_font_scheme/3` - Get font scheme (major, minor, none)
+    - `UmyaSpreadsheet.get_font_color/3` - Get font color (hex codes or theme references)
+  - **Consistent Error Handling** - All getter functions return `{:ok, value}` or `{:error, reason}` tuples
+  - **Font Property Copying** - Enable programmatic copying of font styles between cells
+  - **Enhanced Documentation** - Complete styling guide with getter method examples and patterns
+
+### Fixed
+
+- Fixed Rust compilation errors in font getter functions caused by improper `Option<&Cell>` handling
+- Fixed Color API method calls in `get_font_color` function (corrected `get_argb()` and `get_theme_index()` usage)
+- Resolved all font management getter function compilation issues in native Rust code
+
+## 0.6.10 - 2025-05-29
+
+### Addedngelog
+
+## 0.6.11 - 2025-05-29
+
+### Added
+
+- **Font Property Getter Functions**:
+  - **Complete Font Inspection API** - Retrieve all font properties from spreadsheet cells
+    - `UmyaSpreadsheet.get_font_name/3` - Get font name/typeface (Arial, Times New Roman, etc.)
+    - `UmyaSpreadsheet.get_font_size/3` - Get font size in points
+    - `UmyaSpreadsheet.get_font_bold/3` - Get bold state (true/false)
+    - `UmyaSpreadsheet.get_font_italic/3` - Get italic state (true/false)
+    - `UmyaSpreadsheet.get_font_underline/3` - Get underline style (none, single, double, accounting)
+    - `UmyaSpreadsheet.get_font_strikethrough/3` - Get strikethrough state (true/false)
+    - `UmyaSpreadsheet.get_font_family/3` - Get font family type (roman, swiss, modern, script, decorative)
+    - `UmyaSpreadsheet.get_font_scheme/3` - Get font scheme (major, minor, none)
+    - `UmyaSpreadsheet.get_font_color/3` - Get font color (hex codes or theme references)
+  - **Consistent Error Handling** - All getter functions return `{:ok, value}` or `{:error, reason}` tuples
+  - **Font Property Copying** - Enable programmatic copying of font styles between cells
+  - **Enhanced Documentation** - Complete styling guide with getter method examples and patterns
+
+### Fixed
+
+- Fixed Rust compilation errors in font getter functions caused by improper `Option<&Cell>` handling
+- Fixed Color API method calls in `get_font_color` function (corrected `get_argb()` and `get_theme_index()` usage)
+- Resolved all font management getter function compilation issues in native Rust code
+
 ## 0.6.10 - 2025-05-29
 
 ### Added

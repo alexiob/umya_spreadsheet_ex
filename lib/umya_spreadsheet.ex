@@ -783,6 +783,34 @@ defmodule UmyaSpreadsheet do
   defdelegate set_font_scheme(spreadsheet, sheet_name, cell_address, font_scheme),
     to: FontFunctions
 
+  # Font getter functions delegation
+  defdelegate get_font_name(spreadsheet, sheet_name, cell_address),
+    to: FontFunctions
+
+  defdelegate get_font_size(spreadsheet, sheet_name, cell_address),
+    to: FontFunctions
+
+  defdelegate get_font_bold(spreadsheet, sheet_name, cell_address),
+    to: FontFunctions
+
+  defdelegate get_font_italic(spreadsheet, sheet_name, cell_address),
+    to: FontFunctions
+
+  defdelegate get_font_underline(spreadsheet, sheet_name, cell_address),
+    to: FontFunctions
+
+  defdelegate get_font_strikethrough(spreadsheet, sheet_name, cell_address),
+    to: FontFunctions
+
+  defdelegate get_font_family(spreadsheet, sheet_name, cell_address),
+    to: FontFunctions
+
+  defdelegate get_font_scheme(spreadsheet, sheet_name, cell_address),
+    to: FontFunctions
+
+  defdelegate get_font_color(spreadsheet, sheet_name, cell_address),
+    to: FontFunctions
+
   # Row/Column Functions delegation
   defdelegate set_row_height(spreadsheet, sheet_name, row_number, height),
     to: RowColumnFunctions
