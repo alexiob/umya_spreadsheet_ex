@@ -288,4 +288,120 @@ defmodule UmyaSpreadsheet.SheetViewFunctions do
       result -> result
     end
   end
+
+  @doc """
+  Gets whether gridlines are shown in a sheet.
+
+  ## Parameters
+
+  - `spreadsheet` - The spreadsheet struct
+  - `sheet_name` - The name of the sheet
+
+  ## Returns
+
+  - `{:ok, boolean}` where `boolean` indicates whether gridlines are shown
+  - `{:error, reason}` on failure
+
+  ## Examples
+
+      {:ok, spreadsheet} = UmyaSpreadsheet.read_file("input.xlsx")
+      {:ok, show_gridlines} = UmyaSpreadsheet.SheetViewFunctions.get_show_grid_lines(spreadsheet, "Sheet1")
+      # show_gridlines = true
+  """
+  def get_show_grid_lines(%Spreadsheet{reference: ref}, sheet_name) do
+    UmyaNative.get_show_grid_lines(ref, sheet_name)
+  end
+
+  @doc """
+  Gets the zoom scale for a sheet view.
+
+  ## Parameters
+
+  - `spreadsheet` - The spreadsheet struct
+  - `sheet_name` - The name of the sheet
+
+  ## Returns
+
+  - `{:ok, integer}` where `integer` is the zoom scale percentage
+  - `{:error, reason}` on failure
+
+  ## Examples
+
+      {:ok, spreadsheet} = UmyaSpreadsheet.read_file("input.xlsx")
+      {:ok, zoom_scale} = UmyaSpreadsheet.SheetViewFunctions.get_zoom_scale(spreadsheet, "Sheet1")
+      # zoom_scale = 100
+  """
+  def get_zoom_scale(%Spreadsheet{reference: ref}, sheet_name) do
+    UmyaNative.get_zoom_scale(ref, sheet_name)
+  end
+
+  @doc """
+  Gets the tab color for a worksheet.
+
+  ## Parameters
+
+  - `spreadsheet` - The spreadsheet struct
+  - `sheet_name` - The name of the sheet
+
+  ## Returns
+
+  - `{:ok, color}` where `color` is a string with the color code (e.g., "#FF0000" for red)
+    or an empty string if no color is set
+  - `{:error, reason}` on failure
+
+  ## Examples
+
+      {:ok, spreadsheet} = UmyaSpreadsheet.read_file("input.xlsx")
+      {:ok, color} = UmyaSpreadsheet.SheetViewFunctions.get_tab_color(spreadsheet, "Sheet1")
+      # color = "#FF0000"
+  """
+  def get_tab_color(%Spreadsheet{reference: ref}, sheet_name) do
+    UmyaNative.get_tab_color(ref, sheet_name)
+  end
+
+  @doc """
+  Gets the sheet view type.
+
+  ## Parameters
+
+  - `spreadsheet` - The spreadsheet struct
+  - `sheet_name` - The name of the sheet
+
+  ## Returns
+
+  - `{:ok, view_type}` where `view_type` is one of "normal", "page_layout", or "page_break_preview"
+  - `{:error, reason}` on failure
+
+  ## Examples
+
+      {:ok, spreadsheet} = UmyaSpreadsheet.read_file("input.xlsx")
+      {:ok, view_type} = UmyaSpreadsheet.SheetViewFunctions.get_sheet_view(spreadsheet, "Sheet1")
+      # view_type = "normal"
+  """
+  def get_sheet_view(%Spreadsheet{reference: ref}, sheet_name) do
+    UmyaNative.get_sheet_view(ref, sheet_name)
+  end
+
+  @doc """
+  Gets the active selection in a worksheet.
+
+  ## Parameters
+
+  - `spreadsheet` - The spreadsheet struct
+  - `sheet_name` - The name of the sheet
+
+  ## Returns
+
+  - `{:ok, selection}` where `selection` is a map with "active_cell" and "sqref" keys
+  - `{:error, reason}` on failure
+
+  ## Examples
+
+      {:ok, spreadsheet} = UmyaSpreadsheet.read_file("input.xlsx")
+      {:ok, selection} = UmyaSpreadsheet.SheetViewFunctions.get_selection(spreadsheet, "Sheet1")
+      # selection = %{"active_cell" => "A1", "sqref" => "A1:B5"}
+  """
+  def get_selection(%Spreadsheet{reference: ref}, sheet_name) do
+    UmyaNative.get_selection(ref, sheet_name)
+  end
 end

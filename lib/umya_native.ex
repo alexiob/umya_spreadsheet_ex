@@ -1157,6 +1157,36 @@ defmodule UmyaNative do
   @spec set_selection(reference(), String.t(), String.t(), String.t()) :: :ok | {:error, atom()}
   def set_selection(_spreadsheet, _sheet_name, _active_cell, _sqref), do: error()
 
+  @doc """
+  Gets whether gridlines are shown in a sheet.
+  """
+  @spec get_show_grid_lines(reference(), String.t()) :: {:ok, boolean()} | {:error, atom()}
+  def get_show_grid_lines(_spreadsheet, _sheet_name), do: error()
+
+  @doc """
+  Gets the zoom scale for a sheet view.
+  """
+  @spec get_zoom_scale(reference(), String.t()) :: {:ok, integer()} | {:error, atom()}
+  def get_zoom_scale(_spreadsheet, _sheet_name), do: error()
+
+  @doc """
+  Gets the tab color for a worksheet.
+  """
+  @spec get_tab_color(reference(), String.t()) :: {:ok, String.t()} | {:error, atom()}
+  def get_tab_color(_spreadsheet, _sheet_name), do: error()
+
+  @doc """
+  Gets the sheet view type.
+  """
+  @spec get_sheet_view(reference(), String.t()) :: {:ok, String.t()} | {:error, atom()}
+  def get_sheet_view(_spreadsheet, _sheet_name), do: error()
+
+  @doc """
+  Gets the active selection in a worksheet.
+  """
+  @spec get_selection(reference(), String.t()) :: {:ok, map()} | {:error, atom()}
+  def get_selection(_spreadsheet, _sheet_name), do: error()
+
   # Workbook view functions
   @doc """
   Gets the active tab (sheet) index when opening the workbook.

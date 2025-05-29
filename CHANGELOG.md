@@ -4,6 +4,14 @@
 
 ### Added
 
+- **Sheet View Getter Functions**:
+  - **Sheet Display Settings** - Retrieve sheet view display settings
+    - `UmyaSpreadsheet.get_show_grid_lines/2` - Get whether gridlines are shown (true/false)
+    - `UmyaSpreadsheet.get_zoom_scale/2` - Get zoom level percentage (e.g., 100, 150, 75)
+    - `UmyaSpreadsheet.get_tab_color/2` - Get tab color in hex format (e.g., "#FF0000")
+    - `UmyaSpreadsheet.get_sheet_view/2` - Get view type ("normal", "page_layout", "page_break_preview")
+    - `UmyaSpreadsheet.get_selection/2` - Get active cell and selection range as map
+
 - **Workbook View Getter Functions**:
   - **Active Tab Retrieval** - Get the currently active worksheet in a workbook
     - `UmyaSpreadsheet.get_active_tab/1` - Returns the 0-based index of the active tab

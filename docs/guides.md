@@ -120,6 +120,14 @@ Welcome to the UmyaSpreadsheet documentation. This collection of guides provides
   - Fill and stroke properties for appearance customization
   - Best practices for VML shape management
 
+- [**Sheet View Settings**](sheet_view.html): Control individual worksheet appearance and behavior
+
+  - Zoom levels for different Excel view modes (Normal, Page Layout, Page Break)
+  - Grid line visibility controls for cleaner presentations
+  - Pane freezing and splitting for large dataset navigation
+  - Tab colors for visual organization and categorization
+  - Cell selection management and user focus control
+
 - [**Window Settings**](window_settings.html): Control Excel viewing experience
 
   - Setting active sheet selection and focus
