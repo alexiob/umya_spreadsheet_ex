@@ -144,7 +144,8 @@ Welcome to the UmyaSpreadsheet documentation. This collection of guides provides
 - [**Sheet Operations**](sheet_operations.html): Managing worksheets effectively
 
   - Adding, removing, and cloning sheets
-  - Sheet protection and visibility
+  - Sheet protection and visibility settings
+  - Inspecting sheet properties and metadata (count, state, protection details, merged cells)
   - Working with sheet properties
 
 - [**Styling and Formatting**](styling_and_formatting.html): Making your spreadsheets look professional

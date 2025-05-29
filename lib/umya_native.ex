@@ -113,6 +113,18 @@ defmodule UmyaNative do
   @spec get_sheet_names(reference()) :: [String.t()]
   def get_sheet_names(_spreadsheet), do: error()
 
+  @spec get_sheet_count(reference()) :: non_neg_integer()
+  def get_sheet_count(_spreadsheet), do: error()
+
+  @spec get_sheet_state(reference(), String.t()) :: String.t() | {:error, String.t()}
+  def get_sheet_state(_spreadsheet, _sheet_name), do: error()
+
+  @spec get_sheet_protection(reference(), String.t()) :: {:ok, map()} | {:error, String.t()}
+  def get_sheet_protection(_spreadsheet, _sheet_name), do: error()
+
+  @spec get_merge_cells(reference(), String.t()) :: [String.t()] | {:error, String.t()}
+  def get_merge_cells(_spreadsheet, _sheet_name), do: error()
+
   @spec add_sheet(reference(), String.t()) :: :ok | {:error, atom()}
   def add_sheet(_spreadsheet, _sheet_name), do: error()
 

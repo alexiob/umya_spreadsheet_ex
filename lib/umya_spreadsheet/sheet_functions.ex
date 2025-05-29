@@ -379,4 +379,133 @@ defmodule UmyaSpreadsheet.SheetFunctions do
     UmyaNative.remove_column_by_index(ref, sheet_name, column_index, amount)
     |> ErrorHandling.standardize_result()
   end
+
+  @doc """
+  Gets the total number of sheets in the spreadsheet.
+
+  ## Parameters
+
+  - `spreadsheet` - The spreadsheet struct
+
+  ## Returns
+
+  - The number of sheets as an integer
+
+  ## Examples
+
+      {:ok, spreadsheet} = UmyaSpreadsheet.read_file("input.xlsx")
+      3 = UmyaSpreadsheet.SheetFunctions.get_sheet_count(spreadsheet)
+  """
+  def get_sheet_count(%Spreadsheet{reference: ref}) do
+    UmyaNative.get_sheet_count(ref)
+  end
+
+  @doc """
+  Gets the currently active sheet tab index.
+
+  ## Parameters
+
+  - `spreadsheet` - The spreadsheet struct
+
+  ## Returns
+
+  - `{:ok, index}` on success where index is the 0-based active tab index
+  - `{:error, reason}` on failure
+
+  ## Examples
+
+      {:ok, spreadsheet} = UmyaSpreadsheet.read_file("input.xlsx")
+      {:ok, 0} = UmyaSpreadsheet.SheetFunctions.get_active_sheet(spreadsheet)
+  """
+  def get_active_sheet(%Spreadsheet{reference: ref}) do
+    UmyaNative.get_active_tab(ref)
+    |> ErrorHandling.standardize_result()
+  end
+
+  @doc """
+  Gets the visibility state of a sheet.
+
+  ## Parameters
+
+  - `spreadsheet` - The spreadsheet struct
+  - `sheet_name` - The name of the sheet
+
+  ## Returns
+
+  - `{:ok, state}` on success where state is "visible", "hidden", or "veryhidden"
+  - `{:error, reason}` on failure
+
+  ## Examples
+
+      {:ok, spreadsheet} = UmyaSpreadsheet.read_file("input.xlsx")
+      {:ok, "visible"} = UmyaSpreadsheet.SheetFunctions.get_sheet_state(spreadsheet, "Sheet1")
+  """
+  def get_sheet_state(%Spreadsheet{reference: ref}, sheet_name) do
+    # Note: This would need a native implementation if not already available
+    # For now, we'll mark this as a placeholder that needs native implementation
+    case UmyaNative.get_sheet_state(ref, sheet_name) do
+      {:ok, state} -> {:ok, state}
+      error -> ErrorHandling.standardize_result(error)
+    end
+  rescue
+    UndefinedFunctionError -> {:error, "get_sheet_state native function not yet implemented"}
+  end
+
+  @doc """
+  Checks if a sheet is protected and gets protection details.
+
+  ## Parameters
+
+  - `spreadsheet` - The spreadsheet struct
+  - `sheet_name` - The name of the sheet
+
+  ## Returns
+
+  - `{:ok, %{protected: boolean, details: map}}` on success
+  - `{:error, reason}` on failure
+
+  ## Examples
+
+      {:ok, spreadsheet} = UmyaSpreadsheet.read_file("input.xlsx")
+      {:ok, %{protected: true, details: %{}}} = UmyaSpreadsheet.SheetFunctions.get_sheet_protection(spreadsheet, "Sheet1")
+  """
+  def get_sheet_protection(%Spreadsheet{reference: ref}, sheet_name) do
+    # Note: This would need a native implementation if not already available
+    # For now, we'll mark this as a placeholder that needs native implementation
+    case UmyaNative.get_sheet_protection(ref, sheet_name) do
+      {:ok, details} -> {:ok, details}
+      error -> ErrorHandling.standardize_result(error)
+    end
+  rescue
+    UndefinedFunctionError -> {:error, "get_sheet_protection native function not yet implemented"}
+  end
+
+  @doc """
+  Gets the list of merged cell ranges in a sheet.
+
+  ## Parameters
+
+  - `spreadsheet` - The spreadsheet struct
+  - `sheet_name` - The name of the sheet
+
+  ## Returns
+
+  - `{:ok, ranges}` on success where ranges is a list of range strings
+  - `{:error, reason}` on failure
+
+  ## Examples
+
+      {:ok, spreadsheet} = UmyaSpreadsheet.read_file("input.xlsx")
+      {:ok, ["A1:B2", "C3:D4"]} = UmyaSpreadsheet.SheetFunctions.get_merge_cells(spreadsheet, "Sheet1")
+  """
+  def get_merge_cells(%Spreadsheet{reference: ref}, sheet_name) do
+    # Note: This would need a native implementation if not already available
+    # For now, we'll mark this as a placeholder that needs native implementation
+    case UmyaNative.get_merge_cells(ref, sheet_name) do
+      {:ok, ranges} -> {:ok, ranges}
+      error -> ErrorHandling.standardize_result(error)
+    end
+  rescue
+    UndefinedFunctionError -> {:error, "get_merge_cells native function not yet implemented"}
+  end
 end

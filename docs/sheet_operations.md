@@ -8,6 +8,7 @@ UmyaSpreadsheet provides a complete set of functions to:
 
 - Create, copy, and remove worksheets
 - Control sheet visibility and protection settings
+- Inspect sheet properties and retrieve metadata
 - Manage rows and columns (insert, remove, resize)
 - Apply styles to rows and columns
 - Work with merged cells and grid lines
@@ -84,6 +85,93 @@ UmyaSpreadsheet.set_sheet_protection(spreadsheet, "Sheet1", nil, false)
 ```
 
 The protection settings determine what users can modify while the sheet is protected.
+
+## Sheet Information and Inspection
+
+Retrieve comprehensive information about sheets and their properties using the new getter functions:
+
+### Getting Sheet Count
+
+Get the total number of sheets in a spreadsheet:
+
+```elixir
+count = UmyaSpreadsheet.SheetFunctions.get_sheet_count(spreadsheet)
+# => 3 (if there are 3 sheets in the workbook)
+```
+
+### Getting Active Sheet
+
+Get the index of the currently active sheet:
+
+```elixir
+active_index = UmyaSpreadsheet.SheetFunctions.get_active_sheet(spreadsheet)
+# => {:ok, 0} (zero-based index, meaning first sheet is active)
+```
+
+### Getting Sheet Visibility State
+
+Check the visibility state of a specific sheet:
+
+```elixir
+{:ok, state} = UmyaSpreadsheet.SheetFunctions.get_sheet_state(spreadsheet, "Sheet1")
+# => {:ok, "visible"} or {:ok, "hidden"} or {:ok, "veryhidden"}
+```
+
+This is useful for checking the current state before modifying it or for auditing sheet visibility in your application.
+
+### Getting Sheet Protection Details
+
+Retrieve detailed protection settings for a sheet:
+
+```elixir
+{:ok, protection} = UmyaSpreadsheet.SheetFunctions.get_sheet_protection(spreadsheet, "Sheet1")
+# => {:ok, %{
+#   "protected" => "true",
+#   "objects" => "false",
+#   "scenarios" => "false",
+#   "format_cells" => "true",
+#   "format_columns" => "true",
+#   "format_rows" => "true",
+#   "insert_columns" => "true",
+#   "insert_rows" => "true",
+#   "insert_hyperlinks" => "true",
+#   "delete_columns" => "true",
+#   "delete_rows" => "true",
+#   "select_locked_cells" => "true",
+#   "select_unlocked_cells" => "true",
+#   "sort" => "true",
+#   "auto_filter" => "true",
+#   "pivot_tables" => "true"
+# }}
+```
+
+### Getting Merged Cells
+
+Get a list of all merged cell ranges in a sheet:
+
+```elixir
+{:ok, merged_cells} = UmyaSpreadsheet.SheetFunctions.get_merge_cells(spreadsheet, "Sheet1")
+# => {:ok, ["A1:C3", "E5:F6"]} (list of cell range strings)
+```
+
+This is particularly useful for:
+
+- Auditing merged cell usage
+- Avoiding conflicts when adding new merged cells
+- Understanding the layout structure of existing spreadsheets
+
+### Error Handling for Getter Functions
+
+All getter functions include proper error handling for invalid sheet names:
+
+```elixir
+case UmyaSpreadsheet.SheetFunctions.get_sheet_state(spreadsheet, "NonExistentSheet") do
+  {:ok, state} -> IO.puts("Sheet state: #{state}")
+  {:error, reason} -> IO.puts("Error: #{reason}")
+end
+```
+
+This ensures your application can gracefully handle cases where sheet names might not exist.
 
 ## Row Operations
 

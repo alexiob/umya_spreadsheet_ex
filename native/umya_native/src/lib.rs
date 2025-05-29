@@ -1,4 +1,4 @@
-use rustler::{Atom, Error as NifError, NifResult, ResourceArc};
+use rustler::{Atom, Encoder, Error as NifError, NifResult, ResourceArc};
 use std::panic::{self, AssertUnwindSafe};
 use std::path::Path;
 use std::sync::Mutex;
@@ -1611,6 +1611,10 @@ rustler::init!(
         get_cell_value,
         set_cell_value,
         get_sheet_names,
+        get_sheet_count,
+        get_sheet_state,
+        get_sheet_protection,
+        get_merge_cells,
         add_sheet,
         rename_sheet,
         move_range,
@@ -1873,4 +1877,133 @@ rustler::init!(
 #[rustler::nif]
 fn test_simple_function() -> NifResult<String> {
     Ok("test_works".to_string())
+}
+
+#[rustler::nif]
+fn get_sheet_state(
+    resource: ResourceArc<UmyaSpreadsheet>,
+    sheet_name: String,
+) -> NifResult<String> {
+    let guard = resource.spreadsheet.lock().unwrap();
+
+    match guard.get_sheet_by_name(&sheet_name) {
+        Some(sheet) => {
+            let state_str = match sheet.get_state() {
+                umya_spreadsheet::SheetStateValues::Visible => "visible",
+                umya_spreadsheet::SheetStateValues::Hidden => "hidden",
+                umya_spreadsheet::SheetStateValues::VeryHidden => "veryhidden",
+            };
+            Ok(state_str.to_string())
+        }
+        None => Err(NifError::Term(Box::new((
+            atoms::error(),
+            "Sheet not found".to_string(),
+        )))),
+    }
+}
+
+#[rustler::nif]
+fn get_sheet_protection<'a>(
+    env: rustler::Env<'a>,
+    resource: ResourceArc<UmyaSpreadsheet>,
+    sheet_name: String,
+) -> rustler::Term<'a> {
+    let guard = resource.spreadsheet.lock().unwrap();
+
+    match guard.get_sheet_by_name(&sheet_name) {
+        Some(sheet) => match sheet.get_sheet_protection() {
+            Some(protection) => {
+                let mut details = std::collections::HashMap::new();
+                details.insert("protected".to_string(), protection.get_sheet().to_string());
+                details.insert("objects".to_string(), protection.get_objects().to_string());
+                details.insert(
+                    "scenarios".to_string(),
+                    protection.get_scenarios().to_string(),
+                );
+                details.insert(
+                    "format_cells".to_string(),
+                    protection.get_format_cells().to_string(),
+                );
+                details.insert(
+                    "format_columns".to_string(),
+                    protection.get_format_columns().to_string(),
+                );
+                details.insert(
+                    "format_rows".to_string(),
+                    protection.get_format_rows().to_string(),
+                );
+                details.insert(
+                    "insert_columns".to_string(),
+                    protection.get_insert_columns().to_string(),
+                );
+                details.insert(
+                    "insert_rows".to_string(),
+                    protection.get_insert_rows().to_string(),
+                );
+                details.insert(
+                    "insert_hyperlinks".to_string(),
+                    protection.get_insert_hyperlinks().to_string(),
+                );
+                details.insert(
+                    "delete_columns".to_string(),
+                    protection.get_delete_columns().to_string(),
+                );
+                details.insert(
+                    "delete_rows".to_string(),
+                    protection.get_delete_rows().to_string(),
+                );
+                details.insert(
+                    "select_locked_cells".to_string(),
+                    protection.get_select_locked_cells().to_string(),
+                );
+                details.insert(
+                    "select_unlocked_cells".to_string(),
+                    protection.get_select_unlocked_cells().to_string(),
+                );
+                details.insert("sort".to_string(), protection.get_sort().to_string());
+                details.insert(
+                    "auto_filter".to_string(),
+                    protection.get_auto_filter().to_string(),
+                );
+                details.insert(
+                    "pivot_tables".to_string(),
+                    protection.get_pivot_tables().to_string(),
+                );
+
+                (atoms::ok(), details).encode(env)
+            }
+            None => {
+                let mut details = std::collections::HashMap::new();
+                details.insert("protected".to_string(), "false".to_string());
+                (atoms::ok(), details).encode(env)
+            }
+        },
+        None => (atoms::error(), "Sheet not found".to_string()).encode(env),
+    }
+}
+
+#[rustler::nif]
+fn get_merge_cells(
+    resource: ResourceArc<UmyaSpreadsheet>,
+    sheet_name: String,
+) -> NifResult<Vec<String>> {
+    let guard = resource.spreadsheet.lock().unwrap();
+
+    match guard.get_sheet_by_name(&sheet_name) {
+        Some(sheet) => {
+            let merge_cells = sheet.get_merge_cells();
+            let ranges: Vec<String> = merge_cells.iter().map(|range| range.get_range()).collect();
+            Ok(ranges)
+        }
+        None => Err(NifError::Term(Box::new((
+            atoms::error(),
+            "Sheet not found".to_string(),
+        )))),
+    }
+}
+
+#[rustler::nif]
+fn get_sheet_count(resource: ResourceArc<UmyaSpreadsheet>) -> NifResult<usize> {
+    let guard = resource.spreadsheet.lock().unwrap();
+    Ok(guard.get_sheet_count())
 }

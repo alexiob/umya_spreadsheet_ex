@@ -4,6 +4,17 @@
 
 ### Added
 
+- **Sheet Property Getter Functions**:
+  - **Sheet Metadata Inspection** - Comprehensive sheet information retrieval
+    - `UmyaSpreadsheet.SheetFunctions.get_sheet_count/1` - Get total number of sheets in spreadsheet
+    - `UmyaSpreadsheet.SheetFunctions.get_active_sheet/1` - Get currently active sheet tab index (0-based)
+    - `UmyaSpreadsheet.SheetFunctions.get_sheet_state/2` - Get sheet visibility state ("visible", "hidden", "veryhidden")
+    - `UmyaSpreadsheet.SheetFunctions.get_sheet_protection/2` - Get detailed sheet protection settings and status
+    - `UmyaSpreadsheet.SheetFunctions.get_merge_cells/2` - Get list of merged cell ranges in a sheet
+  - **Native Rust Implementation** - All getter functions implemented in native Rust for optimal performance
+  - **Error Handling** - Proper error handling for non-existent sheets and invalid operations
+  - **Comprehensive Test Coverage** - Full unit test suite with 8 test cases covering success and error scenarios
+
 - **Sheet View Getter Functions**:
   - **Sheet Display Settings** - Retrieve sheet view display settings
     - `UmyaSpreadsheet.get_show_grid_lines/2` - Get whether gridlines are shown (true/false)
