@@ -988,6 +988,20 @@ defmodule UmyaNative do
           :ok | {:error, atom()}
   def set_table_totals_row(_spreadsheet, _sheet_name, _table_name, _show_totals_row), do: error()
 
+  @spec get_table(reference(), String.t(), String.t()) :: {:ok, map()} | {:error, atom()}
+  def get_table(_spreadsheet, _sheet_name, _table_name), do: error()
+
+  @spec get_table_style(reference(), String.t(), String.t()) :: {:ok, map()} | {:error, atom()}
+  def get_table_style(_spreadsheet, _sheet_name, _table_name), do: error()
+
+  @spec get_table_columns(reference(), String.t(), String.t()) ::
+          {:ok, [map()]} | {:error, atom()}
+  def get_table_columns(_spreadsheet, _sheet_name, _table_name), do: error()
+
+  @spec get_table_totals_row(reference(), String.t(), String.t()) ::
+          {:ok, boolean()} | {:error, atom()}
+  def get_table_totals_row(_spreadsheet, _sheet_name, _table_name), do: error()
+
   # Drawing operations
   @spec add_shape(
           reference(),

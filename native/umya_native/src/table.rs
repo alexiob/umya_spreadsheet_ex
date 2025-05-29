@@ -449,6 +449,211 @@ pub fn set_table_totals_row(
 }
 
 // ============================================================================
+// TABLE GETTER FUNCTIONS
+// ============================================================================
+
+/// Get a specific table by name from a worksheet
+#[rustler::nif]
+pub fn get_table(
+    env: Env,
+    resource: ResourceArc<UmyaSpreadsheet>,
+    sheet_name: String,
+    table_name: String,
+) -> Term {
+    let guard = resource.spreadsheet.lock().unwrap();
+
+    match guard.get_sheet_by_name(&sheet_name) {
+        Some(sheet) => {
+            let tables = sheet.get_tables();
+
+            if let Some(table) = tables.iter().find(|t| t.get_name() == table_name) {
+                let mut table_map = HashMap::new();
+
+                table_map.insert("name".to_string(), table.get_name().to_string());
+                table_map.insert(
+                    "display_name".to_string(),
+                    table.get_display_name().to_string(),
+                );
+
+                // Convert area coordinates to cell references
+                let (start_coord, end_coord) = table.get_area();
+                let start_cell = coordinate_to_cell_reference(start_coord);
+                let end_cell = coordinate_to_cell_reference(end_coord);
+                table_map.insert("start_cell".to_string(), start_cell);
+                table_map.insert("end_cell".to_string(), end_cell);
+
+                // Get column information
+                let columns: Vec<String> = table
+                    .get_columns()
+                    .iter()
+                    .map(|col| col.get_name().to_string())
+                    .collect();
+                table_map.insert("columns".to_string(), format!("{:?}", columns));
+
+                table_map.insert(
+                    "has_totals_row".to_string(),
+                    table.get_totals_row_shown().to_string(),
+                );
+
+                // Get style info if available
+                if let Some(style_info) = table.get_style_info() {
+                    let mut style_map = HashMap::new();
+                    style_map.insert("name".to_string(), style_info.get_name().to_string());
+                    style_map.insert(
+                        "show_first_col".to_string(),
+                        style_info.is_show_first_col().to_string(),
+                    );
+                    style_map.insert(
+                        "show_last_col".to_string(),
+                        style_info.is_show_last_col().to_string(),
+                    );
+                    style_map.insert(
+                        "show_row_stripes".to_string(),
+                        style_info.is_show_row_stripes().to_string(),
+                    );
+                    style_map.insert(
+                        "show_col_stripes".to_string(),
+                        style_info.is_show_col_stripes().to_string(),
+                    );
+                    table_map.insert("style_info".to_string(), format!("{:?}", style_map));
+                }
+
+                (atoms::ok(), table_map).encode(env)
+            } else {
+                (atoms::error(), "Table not found".to_string()).encode(env)
+            }
+        }
+        None => (atoms::error(), "Sheet not found".to_string()).encode(env),
+    }
+}
+
+/// Get table style information for a specific table
+#[rustler::nif]
+pub fn get_table_style(
+    env: Env,
+    resource: ResourceArc<UmyaSpreadsheet>,
+    sheet_name: String,
+    table_name: String,
+) -> Term {
+    let guard = resource.spreadsheet.lock().unwrap();
+
+    match guard.get_sheet_by_name(&sheet_name) {
+        Some(sheet) => {
+            let tables = sheet.get_tables();
+
+            if let Some(table) = tables.iter().find(|t| t.get_name() == table_name) {
+                if let Some(style_info) = table.get_style_info() {
+                    let mut style_map = HashMap::new();
+
+                    style_map.insert("name".to_string(), style_info.get_name().to_string());
+                    style_map.insert(
+                        "show_first_column".to_string(),
+                        style_info.is_show_first_col().to_string(),
+                    );
+                    style_map.insert(
+                        "show_last_column".to_string(),
+                        style_info.is_show_last_col().to_string(),
+                    );
+                    style_map.insert(
+                        "show_row_stripes".to_string(),
+                        style_info.is_show_row_stripes().to_string(),
+                    );
+                    style_map.insert(
+                        "show_column_stripes".to_string(),
+                        style_info.is_show_col_stripes().to_string(),
+                    );
+
+                    (atoms::ok(), style_map).encode(env)
+                } else {
+                    (atoms::ok(), HashMap::<String, String>::new()).encode(env)
+                }
+            } else {
+                (atoms::error(), "Table not found".to_string()).encode(env)
+            }
+        }
+        None => (atoms::error(), "Sheet not found".to_string()).encode(env),
+    }
+}
+
+/// Get table columns information for a specific table
+#[rustler::nif]
+pub fn get_table_columns(
+    env: Env,
+    resource: ResourceArc<UmyaSpreadsheet>,
+    sheet_name: String,
+    table_name: String,
+) -> Term {
+    let guard = resource.spreadsheet.lock().unwrap();
+
+    match guard.get_sheet_by_name(&sheet_name) {
+        Some(sheet) => {
+            let tables = sheet.get_tables();
+
+            if let Some(table) = tables.iter().find(|t| t.get_name() == table_name) {
+                let columns = table.get_columns();
+                let mut columns_info = Vec::new();
+
+                for column in columns {
+                    let mut column_map = HashMap::new();
+                    column_map.insert("name".to_string(), column.get_name().to_string());
+
+                    if let Some(label) = column.get_totals_row_label() {
+                        column_map.insert("totals_row_label".to_string(), label.to_string());
+                    }
+
+                    let function = column.get_totals_row_function();
+                    let function_str = match function {
+                        TotalsRowFunctionValues::Sum => "sum",
+                        TotalsRowFunctionValues::Count => "count",
+                        TotalsRowFunctionValues::Average => "average",
+                        TotalsRowFunctionValues::Maximum => "max",
+                        TotalsRowFunctionValues::Minimum => "min",
+                        TotalsRowFunctionValues::StandardDeviation => "stddev",
+                        TotalsRowFunctionValues::Variance => "var",
+                        TotalsRowFunctionValues::CountNumbers => "countnums",
+                        TotalsRowFunctionValues::Custom => "custom",
+                        TotalsRowFunctionValues::None => "none",
+                    };
+                    column_map.insert("totals_row_function".to_string(), function_str.to_string());
+
+                    columns_info.push(column_map);
+                }
+
+                (atoms::ok(), columns_info).encode(env)
+            } else {
+                (atoms::error(), "Table not found".to_string()).encode(env)
+            }
+        }
+        None => (atoms::error(), "Sheet not found".to_string()).encode(env),
+    }
+}
+
+/// Get totals row visibility status for a specific table
+#[rustler::nif]
+pub fn get_table_totals_row(
+    env: Env,
+    resource: ResourceArc<UmyaSpreadsheet>,
+    sheet_name: String,
+    table_name: String,
+) -> Term {
+    let guard = resource.spreadsheet.lock().unwrap();
+
+    match guard.get_sheet_by_name(&sheet_name) {
+        Some(sheet) => {
+            let tables = sheet.get_tables();
+
+            if let Some(table) = tables.iter().find(|t| t.get_name() == table_name) {
+                let totals_row_shown = *table.get_totals_row_shown();
+                (atoms::ok(), totals_row_shown).encode(env)
+            } else {
+                (atoms::error(), "Table not found".to_string()).encode(env)
+            }
+        }
+        None => (atoms::error(), "Sheet not found".to_string()).encode(env),
+    }
+}
+
+// ============================================================================
 // HELPER FUNCTIONS
 // ============================================================================
 

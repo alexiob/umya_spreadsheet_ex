@@ -175,6 +175,109 @@ Available font scheme values:
 - `"minor"` - Minor scheme (typically for body text)
 - `"none"` - No scheme (font won't change with theme changes)
 
+## Inspecting Cell Background Properties
+
+UmyaSpreadsheet provides functions to inspect the background and fill properties of cells:
+
+```elixir
+# Get the background color of a cell
+{:ok, bg_color} = UmyaSpreadsheet.get_cell_background_color(spreadsheet, "Sheet1", "A1")
+# => {:ok, "#FFFFFF"} or {:ok, nil} if no background color is set
+
+# Get the foreground color of a cell (pattern color)
+{:ok, fg_color} = UmyaSpreadsheet.get_cell_foreground_color(spreadsheet, "Sheet1", "A1")
+# => {:ok, "#000000"} or {:ok, nil} if no foreground color is set
+
+# Get the pattern type of a cell
+{:ok, pattern} = UmyaSpreadsheet.get_cell_pattern_type(spreadsheet, "Sheet1", "A1")
+# => {:ok, "solid"} or {:ok, nil} if no pattern is set
+```
+
+### Available Pattern Types
+
+Common pattern types include:
+
+- `"solid"` - Solid fill
+- `"gray125"` - 12.5% gray pattern
+- `"gray0625"` - 6.25% gray pattern
+- `"horizontal"` - Horizontal lines
+- `"vertical"` - Vertical lines
+- `"diagonal"` - Diagonal lines
+- `"cross"` - Cross pattern
+- `"diagonal_cross"` - Diagonal cross pattern
+
+### Practical Background Inspection Example
+
+```elixir
+def inspect_cell_background(spreadsheet, sheet_name, cell_address) do
+  with {:ok, bg_color} <- UmyaSpreadsheet.get_cell_background_color(spreadsheet, sheet_name, cell_address),
+       {:ok, fg_color} <- UmyaSpreadsheet.get_cell_foreground_color(spreadsheet, sheet_name, cell_address),
+       {:ok, pattern} <- UmyaSpreadsheet.get_cell_pattern_type(spreadsheet, sheet_name, cell_address) do
+
+    IO.puts("=== Cell Background Details for #{cell_address} ===")
+    IO.puts("Background Color: #{bg_color || "None"}")
+    IO.puts("Foreground Color: #{fg_color || "None"}")
+    IO.puts("Pattern Type: #{pattern || "None"}")
+
+    case {bg_color, fg_color, pattern} do
+      {nil, nil, nil} ->
+        IO.puts("Cell has no background formatting")
+
+      {bg, nil, "solid"} when not is_nil(bg) ->
+        IO.puts("Cell has solid background color: #{bg}")
+
+      {bg, fg, pat} when not is_nil(bg) and not is_nil(fg) ->
+        IO.puts("Cell has patterned background - BG: #{bg}, FG: #{fg}, Pattern: #{pat}")
+
+      _ ->
+        IO.puts("Cell has partial background formatting")
+    end
+
+    {:ok, %{background: bg_color, foreground: fg_color, pattern: pattern}}
+  else
+    {:error, reason} ->
+      IO.puts("Error inspecting cell background: #{reason}")
+      {:error, reason}
+  end
+end
+
+# Usage
+inspect_cell_background(spreadsheet, "Sheet1", "A1")
+```
+
+### Bulk Background Analysis
+
+```elixir
+def analyze_range_backgrounds(spreadsheet, sheet_name, start_cell, end_cell) do
+  # This would require implementing a range parser, but shows the concept
+  cells = parse_range(start_cell, end_cell)  # Helper function needed
+
+  background_summary =
+    Enum.map(cells, fn cell ->
+      with {:ok, bg} <- UmyaSpreadsheet.get_cell_background_color(spreadsheet, sheet_name, cell),
+           {:ok, fg} <- UmyaSpreadsheet.get_cell_foreground_color(spreadsheet, sheet_name, cell),
+           {:ok, pattern} <- UmyaSpreadsheet.get_cell_pattern_type(spreadsheet, sheet_name, cell) do
+        %{cell: cell, background: bg, foreground: fg, pattern: pattern}
+      else
+        _ -> %{cell: cell, background: nil, foreground: nil, pattern: nil}
+      end
+    end)
+
+  # Group by background properties
+  grouped = Enum.group_by(background_summary, fn entry ->
+    {entry.background, entry.foreground, entry.pattern}
+  end)
+
+  IO.puts("=== Background Analysis for #{start_cell}:#{end_cell} ===")
+  Enum.each(grouped, fn {{bg, fg, pattern}, cells} ->
+    cell_list = Enum.map(cells, & &1.cell) |> Enum.join(", ")
+    IO.puts("#{bg || "No BG"}/#{fg || "No FG"}/#{pattern || "No Pattern"}: #{cell_list}")
+  end)
+
+  {:ok, background_summary}
+end
+```
+
 ## Combining Formatting Options
 
 You can combine multiple formatting options to create richly formatted cells:

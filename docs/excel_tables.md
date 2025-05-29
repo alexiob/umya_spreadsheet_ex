@@ -126,6 +126,83 @@ Enum.each(columns, fn column ->
 end)
 ```
 
+### Inspecting Specific Tables
+
+UmyaSpreadsheet provides dedicated getter functions for inspecting specific table properties:
+
+```elixir
+# Get detailed information about a specific table
+{:ok, table_info} = UmyaSpreadsheet.get_table(spreadsheet, "Sheet1", "EmployeeTable")
+# => {:ok, %{
+#      "name" => "EmployeeTable",
+#      "display_name" => "Employee Data",
+#      "ref" => "A1:D3",
+#      "totals_row_shown" => true,
+#      "columns" => [...]
+#    }}
+
+# Get just the table style information
+{:ok, style_info} = UmyaSpreadsheet.get_table_style(spreadsheet, "Sheet1", "EmployeeTable")
+# => {:ok, %{
+#      "name" => "TableStyleMedium9",
+#      "show_first_column" => true,
+#      "show_last_column" => false,
+#      "show_row_stripes" => true,
+#      "show_column_stripes" => false
+#    }}
+
+# Get table column definitions
+{:ok, columns} = UmyaSpreadsheet.get_table_columns(spreadsheet, "Sheet1", "EmployeeTable")
+# => {:ok, [
+#      %{"id" => 1, "name" => "Name", "totals_row_function" => "none"},
+#      %{"id" => 2, "name" => "Department", "totals_row_function" => "none"},
+#      %{"id" => 3, "name" => "Salary", "totals_row_function" => "sum"}
+#    ]}
+
+# Check if totals row is visible
+{:ok, has_totals} = UmyaSpreadsheet.get_table_totals_row(spreadsheet, "Sheet1", "EmployeeTable")
+# => {:ok, true} or {:ok, false}
+```
+
+### Practical Table Inspection Example
+
+```elixir
+def inspect_table_details(spreadsheet, sheet_name, table_name) do
+  with {:ok, table} <- UmyaSpreadsheet.get_table(spreadsheet, sheet_name, table_name),
+       {:ok, style} <- UmyaSpreadsheet.get_table_style(spreadsheet, sheet_name, table_name),
+       {:ok, columns} <- UmyaSpreadsheet.get_table_columns(spreadsheet, sheet_name, table_name),
+       {:ok, has_totals} <- UmyaSpreadsheet.get_table_totals_row(spreadsheet, sheet_name, table_name) do
+
+    IO.puts("=== Table Details ===")
+    IO.puts("Name: #{table["name"]}")
+    IO.puts("Display Name: #{table["display_name"]}")
+    IO.puts("Range: #{table["ref"]}")
+    IO.puts("Has Totals Row: #{has_totals}")
+
+    IO.puts("\n=== Style Information ===")
+    IO.puts("Style: #{style["name"]}")
+    IO.puts("First Column Highlighted: #{style["show_first_column"]}")
+    IO.puts("Last Column Highlighted: #{style["show_last_column"]}")
+    IO.puts("Row Stripes: #{style["show_row_stripes"]}")
+    IO.puts("Column Stripes: #{style["show_column_stripes"]}")
+
+    IO.puts("\n=== Columns ===")
+    Enum.each(columns, fn column ->
+      IO.puts("- #{column["name"]} (ID: #{column["id"]}, Function: #{column["totals_row_function"]})")
+    end)
+
+    {:ok, :inspection_complete}
+  else
+    {:error, reason} ->
+      IO.puts("Error inspecting table: #{reason}")
+      {:error, reason}
+  end
+end
+
+# Usage
+inspect_table_details(spreadsheet, "Sheet1", "EmployeeTable")
+```
+
 ### Removing Tables
 
 ```elixir

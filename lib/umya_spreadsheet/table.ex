@@ -170,7 +170,8 @@ defmodule UmyaSpreadsheet.Table do
 
   Returns `{:ok, integer}` with the number of tables on success.
   """
-  @spec count_tables(Spreadsheet.t(), String.t()) :: {:ok, non_neg_integer()} | {:error, String.t()}
+  @spec count_tables(Spreadsheet.t(), String.t()) ::
+          {:ok, non_neg_integer()} | {:error, String.t()}
   def count_tables(%Spreadsheet{reference: resource}, sheet_name) do
     UmyaNative.count_tables(resource, sheet_name)
   end
@@ -255,7 +256,8 @@ defmodule UmyaSpreadsheet.Table do
 
   Returns `:ok` on success or `{:error, reason}` on failure.
   """
-  @spec remove_table_style(Spreadsheet.t(), String.t(), String.t()) :: {:ok, :ok} | {:error, String.t()}
+  @spec remove_table_style(Spreadsheet.t(), String.t(), String.t()) ::
+          {:ok, :ok} | {:error, String.t()}
   def remove_table_style(%Spreadsheet{reference: resource}, sheet_name, table_name) do
     UmyaNative.remove_table_style(resource, sheet_name, table_name)
   end
@@ -403,5 +405,121 @@ defmodule UmyaSpreadsheet.Table do
         show_totals_row
       ) do
     UmyaNative.set_table_totals_row(resource, sheet_name, table_name, show_totals_row)
+  end
+
+  @doc """
+  Gets a specific table by name from a worksheet.
+
+  ## Parameters
+
+    * `spreadsheet` - A spreadsheet struct
+    * `sheet_name` - Name of the sheet containing the table
+    * `table_name` - Internal name of the table to retrieve
+
+  ## Returns
+
+  A map containing table information with keys:
+  - `"name"` - Internal table name
+  - `"display_name"` - Display name
+  - `"start_cell"` - Top-left cell reference
+  - `"end_cell"` - Bottom-right cell reference
+  - `"columns"` - List of column names
+  - `"has_totals_row"` - Boolean indicating if totals row is enabled
+  - `"style_info"` - Map with styling information (if table has custom styling)
+
+  ## Examples
+
+  ```elixir
+  {:ok, table} = Table.get_table(spreadsheet, "Sheet1", "SalesTable")
+  # table = %{"name" => "SalesTable", "display_name" => "Sales Data", ...}
+  ```
+  """
+  @spec get_table(Spreadsheet.t(), String.t(), String.t()) :: {:ok, map()} | {:error, String.t()}
+  def get_table(%Spreadsheet{reference: resource}, sheet_name, table_name) do
+    UmyaNative.get_table(resource, sheet_name, table_name)
+  end
+
+  @doc """
+  Gets table style information for a specific table.
+
+  ## Parameters
+
+    * `spreadsheet` - A spreadsheet struct
+    * `sheet_name` - Name of the sheet containing the table
+    * `table_name` - Internal name of the table
+
+  ## Returns
+
+  A map containing style information with keys:
+  - `"name"` - Style name (e.g., "TableStyleLight1")
+  - `"show_first_column"` - Boolean indicating if first column is highlighted
+  - `"show_last_column"` - Boolean indicating if last column is highlighted
+  - `"show_row_stripes"` - Boolean indicating if row stripes are shown
+  - `"show_column_stripes"` - Boolean indicating if column stripes are shown
+
+  ## Examples
+
+  ```elixir
+  {:ok, style} = Table.get_table_style(spreadsheet, "Sheet1", "SalesTable")
+  # style = %{"name" => "TableStyleLight1", "show_first_column" => "true", ...}
+  ```
+  """
+  @spec get_table_style(Spreadsheet.t(), String.t(), String.t()) ::
+          {:ok, map()} | {:error, String.t()}
+  def get_table_style(%Spreadsheet{reference: resource}, sheet_name, table_name) do
+    UmyaNative.get_table_style(resource, sheet_name, table_name)
+  end
+
+  @doc """
+  Gets column information for a specific table.
+
+  ## Parameters
+
+    * `spreadsheet` - A spreadsheet struct
+    * `sheet_name` - Name of the sheet containing the table
+    * `table_name` - Internal name of the table
+
+  ## Returns
+
+  A list of maps, each containing column information with keys:
+  - `"name"` - Column name
+  - `"totals_row_label"` - Custom label for totals row (if set)
+  - `"totals_row_function"` - Function used in totals row (e.g., "sum", "count")
+
+  ## Examples
+
+  ```elixir
+  {:ok, columns} = Table.get_table_columns(spreadsheet, "Sheet1", "SalesTable")
+  # columns = [%{"name" => "Region", "totals_row_function" => "none"}, ...]
+  ```
+  """
+  @spec get_table_columns(Spreadsheet.t(), String.t(), String.t()) ::
+          {:ok, [map()]} | {:error, String.t()}
+  def get_table_columns(%Spreadsheet{reference: resource}, sheet_name, table_name) do
+    UmyaNative.get_table_columns(resource, sheet_name, table_name)
+  end
+
+  @doc """
+  Gets the totals row visibility status for a specific table.
+
+  ## Parameters
+
+    * `spreadsheet` - A spreadsheet struct
+    * `sheet_name` - Name of the sheet containing the table
+    * `table_name` - Internal name of the table
+
+  ## Examples
+
+  ```elixir
+  {:ok, has_totals_row?} = Table.get_table_totals_row(spreadsheet, "Sheet1", "SalesTable")
+  # has_totals_row? = true or false
+  ```
+
+  Returns `{:ok, boolean}` if successful, `{:error, reason}` otherwise.
+  """
+  @spec get_table_totals_row(Spreadsheet.t(), String.t(), String.t()) ::
+          {:ok, boolean()} | {:error, String.t()}
+  def get_table_totals_row(%Spreadsheet{reference: resource}, sheet_name, table_name) do
+    UmyaNative.get_table_totals_row(resource, sheet_name, table_name)
   end
 end

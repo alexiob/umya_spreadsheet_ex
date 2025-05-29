@@ -830,15 +830,6 @@ defmodule UmyaSpreadsheet do
   defdelegate get_border_color(spreadsheet, sheet_name, cell_address, border_position),
     to: CellFunctions
 
-  defdelegate get_cell_background_color(spreadsheet, sheet_name, cell_address),
-    to: CellFunctions
-
-  defdelegate get_cell_foreground_color(spreadsheet, sheet_name, cell_address),
-    to: CellFunctions
-
-  defdelegate get_cell_pattern_type(spreadsheet, sheet_name, cell_address),
-    to: CellFunctions
-
   defdelegate get_cell_number_format_id(spreadsheet, sheet_name, cell_address),
     to: CellFunctions
 
@@ -1054,6 +1045,7 @@ defmodule UmyaSpreadsheet do
               to: Table
 
   defdelegate get_tables(spreadsheet, sheet_name), to: Table
+  defdelegate get_table(spreadsheet, sheet_name, table_name), to: Table
   defdelegate remove_table(spreadsheet, sheet_name, table_name), to: Table
   defdelegate has_tables(spreadsheet, sheet_name), to: Table
   defdelegate count_tables(spreadsheet, sheet_name), to: Table
@@ -1070,6 +1062,7 @@ defmodule UmyaSpreadsheet do
               ),
               to: Table
 
+  defdelegate get_table_style(spreadsheet, sheet_name, table_name), to: Table
   defdelegate remove_table_style(spreadsheet, sheet_name, table_name), to: Table
 
   defdelegate add_table_column(
@@ -1081,6 +1074,8 @@ defmodule UmyaSpreadsheet do
                 totals_row_label \\ nil
               ),
               to: Table
+
+  defdelegate get_table_columns(spreadsheet, sheet_name, table_name), to: Table
 
   defdelegate modify_table_column(
                 spreadsheet,
@@ -1096,8 +1091,19 @@ defmodule UmyaSpreadsheet do
   defdelegate set_table_totals_row(spreadsheet, sheet_name, table_name, show_totals_row),
     to: Table
 
+  defdelegate get_table_totals_row(spreadsheet, sheet_name, table_name), to: Table
+
   # Background Functions delegation
   defdelegate set_background_color(spreadsheet, sheet_name, cell_address, color),
+    to: BackgroundFunctions
+
+  defdelegate get_cell_background_color(spreadsheet, sheet_name, cell_address),
+    to: BackgroundFunctions
+
+  defdelegate get_cell_foreground_color(spreadsheet, sheet_name, cell_address),
+    to: BackgroundFunctions
+
+  defdelegate get_cell_pattern_type(spreadsheet, sheet_name, cell_address),
     to: BackgroundFunctions
 
   # Comment functions

@@ -1742,14 +1742,18 @@ rustler::init!(
         // Table functions
         table::add_table,
         table::get_tables,
+        table::get_table,
         table::remove_table,
         table::has_tables,
         table::count_tables,
         table::set_table_style,
+        table::get_table_style,
         table::remove_table_style,
         table::add_table_column,
+        table::get_table_columns,
         table::modify_table_column,
         table::set_table_totals_row,
+        table::get_table_totals_row,
         // Hyperlink functions
         hyperlink::add_hyperlink,
         hyperlink::get_hyperlink,

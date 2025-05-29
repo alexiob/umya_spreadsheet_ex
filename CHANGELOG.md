@@ -34,6 +34,15 @@
   - **Cell Protection Inspection** - Retrieve cell protection properties
     - `UmyaSpreadsheet.get_cell_locked/3` - Get cell locked state (true/false)
     - `UmyaSpreadsheet.get_cell_hidden/3` - Get cell hidden state (true/false)
+  - **Table Inspection API** - Comprehensive table property getters for Excel table analysis
+    - `UmyaSpreadsheet.get_table/4` - Get specific table information by name (structure, range, columns)
+    - `UmyaSpreadsheet.get_table_style/4` - Get table style properties (name, column/row highlights, banding)
+    - `UmyaSpreadsheet.get_table_columns/4` - Get table column definitions (names, IDs, totals functions)
+    - `UmyaSpreadsheet.get_table_totals_row/4` - Get totals row visibility status (true/false)
+  - **Background Functions Enhancement** - Added missing background property getters
+    - `UmyaSpreadsheet.get_cell_background_color/3` - Get cell background color (hex codes)
+    - `UmyaSpreadsheet.get_cell_foreground_color/3` - Get cell foreground/pattern color (hex codes)
+    - `UmyaSpreadsheet.get_cell_pattern_type/3` - Get cell fill pattern type (solid, gray125, etc.)
   - **Comprehensive Test Coverage** - 100% test coverage with proper error handling validation
   - **Consistent API Design** - All getter functions follow the same pattern and return appropriate default values
 
