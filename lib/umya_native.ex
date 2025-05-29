@@ -494,6 +494,21 @@ defmodule UmyaNative do
           :ok | {:error, atom()}
   def set_column_auto_width(_spreadsheet, _sheet_name, _column, _auto_width), do: error()
 
+  @spec get_column_width(reference(), String.t(), String.t()) :: float() | {:error, atom()}
+  def get_column_width(_spreadsheet, _sheet_name, _column), do: error()
+
+  @spec get_column_auto_width(reference(), String.t(), String.t()) :: boolean() | {:error, atom()}
+  def get_column_auto_width(_spreadsheet, _sheet_name, _column), do: error()
+
+  @spec get_column_hidden(reference(), String.t(), String.t()) :: boolean() | {:error, atom()}
+  def get_column_hidden(_spreadsheet, _sheet_name, _column), do: error()
+
+  @spec get_row_height(reference(), String.t(), integer()) :: float() | {:error, atom()}
+  def get_row_height(_spreadsheet, _sheet_name, _row_number), do: error()
+
+  @spec get_row_hidden(reference(), String.t(), integer()) :: boolean() | {:error, atom()}
+  def get_row_hidden(_spreadsheet, _sheet_name, _row_number), do: error()
+
   # Sheet & workbook protection
   @spec set_sheet_protection(reference(), String.t(), String.t() | nil, boolean()) ::
           :ok | {:error, atom()}

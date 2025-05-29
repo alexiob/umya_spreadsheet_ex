@@ -896,6 +896,21 @@ defmodule UmyaSpreadsheet do
               ),
               to: RowColumnFunctions
 
+  defdelegate get_column_width(spreadsheet, sheet_name, column),
+    to: RowColumnFunctions
+
+  defdelegate get_column_auto_width(spreadsheet, sheet_name, column),
+    to: RowColumnFunctions
+
+  defdelegate get_column_hidden(spreadsheet, sheet_name, column),
+    to: RowColumnFunctions
+
+  defdelegate get_row_height(spreadsheet, sheet_name, row_number),
+    to: RowColumnFunctions
+
+  defdelegate get_row_hidden(spreadsheet, sheet_name, row_number),
+    to: RowColumnFunctions
+
   # Border Functions delegation
   defdelegate set_border_style(
                 spreadsheet,

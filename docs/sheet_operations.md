@@ -197,7 +197,7 @@ UmyaSpreadsheet.remove_row(spreadsheet, "Sheet1", 5, 2)
 
 This shifts remaining rows up, with all content and formatting preserved.
 
-### Set Row Height
+### Row Height
 
 Adjust the height of a specific row:
 
@@ -207,6 +207,23 @@ UmyaSpreadsheet.set_row_height(spreadsheet, "Sheet1", 1, 30.0)
 ```
 
 Standard Excel row height is 15.0 points.
+
+Retrieve row properties and settings:
+
+```elixir
+# Get the current height of row 1
+{:ok, height} = UmyaSpreadsheet.get_row_height(spreadsheet, "Sheet1", 1)
+# => {:ok, 30.0}
+
+# Check if row 2 is hidden
+{:ok, hidden} = UmyaSpreadsheet.get_row_hidden(spreadsheet, "Sheet1", 2)
+# => {:ok, false}
+```
+
+These getter functions return default values when the row hasn't been explicitly configured:
+
+- Default row height: 15.0 points
+- Default hidden: false
 
 ### Row Styling
 
@@ -266,6 +283,53 @@ UmyaSpreadsheet.set_column_auto_width(spreadsheet, "Sheet1", "B", true)
 ```
 
 Standard Excel column width is 8.43 characters (approximately equivalent to 64 pixels).
+
+### Column Width and Visibility Inspection
+
+Retrieve column properties and settings:
+
+```elixir
+# Get the current width of column A
+{:ok, width} = UmyaSpreadsheet.get_column_width(spreadsheet, "Sheet1", "A")
+# => {:ok, 15.0}
+
+# Check if auto-width is enabled for column B
+{:ok, auto_width} = UmyaSpreadsheet.get_column_auto_width(spreadsheet, "Sheet1", "B")
+# => {:ok, true}
+
+# Check if column C is hidden
+{:ok, hidden} = UmyaSpreadsheet.get_column_hidden(spreadsheet, "Sheet1", "C")
+# => {:ok, false}
+```
+
+These getter functions return default values when the column hasn't been explicitly configured:
+
+- Default column width: 8.43 characters
+- Default auto-width: false
+- Default hidden: false
+
+### Column Width and Visibility Inspection
+
+Retrieve column properties and settings:
+
+```elixir
+# Get the current width of column A
+{:ok, width} = UmyaSpreadsheet.get_column_width(spreadsheet, "Sheet1", "A")
+# => {:ok, 15.0}
+
+# Check if auto-width is enabled for column B
+{:ok, auto_width} = UmyaSpreadsheet.get_column_auto_width(spreadsheet, "Sheet1", "B")
+# => {:ok, true}
+
+# Check if column C is hidden
+{:ok, hidden} = UmyaSpreadsheet.get_column_hidden(spreadsheet, "Sheet1", "C")
+# => {:ok, false}
+```
+
+These getter functions return default values when the column hasn't been explicitly configured:
+- Default column width: 8.43 characters
+- Default auto-width: false
+- Default hidden: false
 
 ### Column Styling
 

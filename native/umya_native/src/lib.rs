@@ -591,10 +591,9 @@ fn set_row_height(
                 .set_height(height);
             Ok(atoms::ok())
         }
-        None => Err(NifError::Term(Box::new((
-            atoms::error(),
+        None => Err(NifError::Term(Box::new(
             "Sheet not found".to_string(),
-        )))),
+        ))),
     }
 }
 
@@ -689,10 +688,9 @@ fn set_row_style(
             let bg_color_obj = match helpers::color_helper::create_color_object(&bg_color) {
                 Ok(color) => color,
                 Err(_) => {
-                    return Err(NifError::Term(Box::new((
-                        atoms::error(),
+                    return Err(NifError::Term(Box::new(
                         "Invalid background color format".to_string(),
-                    ))))
+                    )))
                 }
             };
 
@@ -700,10 +698,9 @@ fn set_row_style(
             let font_color_obj = match helpers::color_helper::create_color_object(&font_color) {
                 Ok(color) => color,
                 Err(_) => {
-                    return Err(NifError::Term(Box::new((
-                        atoms::error(),
+                    return Err(NifError::Term(Box::new(
                         "Invalid font color format".to_string(),
-                    ))))
+                    )))
                 }
             };
 
@@ -719,10 +716,9 @@ fn set_row_style(
 
             Ok(atoms::ok())
         }
-        None => Err(NifError::Term(Box::new((
-            atoms::error(),
+        None => Err(NifError::Term(Box::new(
             "Sheet not found".to_string(),
-        )))),
+        ))),
     }
 }
 
@@ -1141,10 +1137,9 @@ fn set_column_width(
             sheet.get_column_dimension_mut(&column).set_width(width);
             Ok(atoms::ok())
         }
-        None => Err(NifError::Term(Box::new((
-            atoms::error(),
+        None => Err(NifError::Term(Box::new(
             "Sheet not found".to_string(),
-        )))),
+        ))),
     }
 }
 
@@ -1159,15 +1154,15 @@ fn set_column_auto_width(
 
     match guard.get_sheet_by_name_mut(&sheet_name) {
         Some(sheet) => {
-            sheet
-                .get_column_dimension_mut(&column)
-                .set_auto_width(auto_width);
+            let column_dim = sheet.get_column_dimension_mut(&column);
+            // Set both auto_width and best_fit for consistency
+            column_dim.set_auto_width(auto_width);
+            column_dim.set_best_fit(auto_width);
             Ok(atoms::ok())
         }
-        None => Err(NifError::Term(Box::new((
-            atoms::error(),
+        None => Err(NifError::Term(Box::new(
             "Sheet not found".to_string(),
-        )))),
+        ))),
     }
 }
 
@@ -1623,6 +1618,14 @@ rustler::init!(
         set_font_bold,
         set_font_name,
         set_row_height,
+        set_row_style,
+        set_column_width,
+        set_column_auto_width,
+        get_column_width,
+        get_column_auto_width,
+        get_column_hidden,
+        get_row_height,
+        get_row_hidden,
         remove_cell,
         get_formatted_value,
         set_number_format,
@@ -1730,6 +1733,7 @@ rustler::init!(
         workbook_view_functions::set_workbook_window_position,
         workbook_protection_functions::is_workbook_protected,
         workbook_protection_functions::get_workbook_protection_details,
+        copy_row_styling,
         copy_column_styling,
         // Comment functions
         comment_functions::add_comment,
@@ -2006,4 +2010,125 @@ fn get_merge_cells(
 fn get_sheet_count(resource: ResourceArc<UmyaSpreadsheet>) -> NifResult<usize> {
     let guard = resource.spreadsheet.lock().unwrap();
     Ok(guard.get_sheet_count())
+}
+
+#[rustler::nif]
+fn get_column_width(
+    resource: ResourceArc<UmyaSpreadsheet>,
+    sheet_name: String,
+    column: String,
+) -> NifResult<f64> {
+    let guard = resource.spreadsheet.lock().unwrap();
+
+    match guard.get_sheet_by_name(&sheet_name) {
+        Some(sheet) => {
+            match sheet.get_column_dimension(&column) {
+                Some(column_dim) => {
+                    let width = column_dim.get_width();
+                    Ok(*width)
+                }
+                None => Ok(8.43), // Default column width
+            }
+        }
+        None => Err(NifError::Term(Box::new(
+            "Sheet not found".to_string(),
+        ))),
+    }
+}
+
+#[rustler::nif]
+fn get_column_auto_width(
+    resource: ResourceArc<UmyaSpreadsheet>,
+    sheet_name: String,
+    column: String,
+) -> NifResult<bool> {
+    let guard = resource.spreadsheet.lock().unwrap();
+
+    match guard.get_sheet_by_name(&sheet_name) {
+        Some(sheet) => {
+            match sheet.get_column_dimension(&column) {
+                Some(column_dim) => {
+                    // Return best_fit value since that's what gets persisted
+                    let best_fit = column_dim.get_best_fit();
+                    Ok(*best_fit)
+                }
+                None => Ok(false), // Default best_fit is false
+            }
+        }
+        None => Err(NifError::Term(Box::new(
+            "Sheet not found".to_string(),
+        ))),
+    }
+}
+
+#[rustler::nif]
+fn get_column_hidden(
+    resource: ResourceArc<UmyaSpreadsheet>,
+    sheet_name: String,
+    column: String,
+) -> NifResult<bool> {
+    let guard = resource.spreadsheet.lock().unwrap();
+
+    match guard.get_sheet_by_name(&sheet_name) {
+        Some(sheet) => {
+            match sheet.get_column_dimension(&column) {
+                Some(column_dim) => {
+                    let hidden = column_dim.get_hidden();
+                    Ok(*hidden)
+                }
+                None => Ok(false), // Default hidden is false
+            }
+        }
+        None => Err(NifError::Term(Box::new(
+            "Sheet not found".to_string(),
+        ))),
+    }
+}
+
+#[rustler::nif]
+fn get_row_height(
+    resource: ResourceArc<UmyaSpreadsheet>,
+    sheet_name: String,
+    row_number: u32,
+) -> NifResult<f64> {
+    let guard = resource.spreadsheet.lock().unwrap();
+
+    match guard.get_sheet_by_name(&sheet_name) {
+        Some(sheet) => {
+            match sheet.get_row_dimension(&row_number) {
+                Some(row_dim) => {
+                    let height = row_dim.get_height();
+                    Ok(*height)
+                }
+                None => Ok(15.0), // Default row height
+            }
+        }
+        None => Err(NifError::Term(Box::new(
+            "Sheet not found".to_string(),
+        ))),
+    }
+}
+
+#[rustler::nif]
+fn get_row_hidden(
+    resource: ResourceArc<UmyaSpreadsheet>,
+    sheet_name: String,
+    row_number: u32,
+) -> NifResult<bool> {
+    let guard = resource.spreadsheet.lock().unwrap();
+
+    match guard.get_sheet_by_name(&sheet_name) {
+        Some(sheet) => {
+            match sheet.get_row_dimension(&row_number) {
+                Some(row_dim) => {
+                    let hidden = row_dim.get_hidden();
+                    Ok(*hidden)
+                }
+                None => Ok(false), // Default hidden is false
+            }
+        }
+        None => Err(NifError::Term(Box::new(
+            "Sheet not found".to_string(),
+        ))),
+    }
 }

@@ -215,4 +215,139 @@ defmodule UmyaSpreadsheet.RowColumnFunctions do
       result -> result
     end
   end
+
+  @doc """
+  Gets the width of a column.
+
+  ## Parameters
+
+  - `spreadsheet` - The spreadsheet struct
+  - `sheet_name` - The name of the sheet
+  - `column` - The column letter (e.g., "A", "B")
+
+  ## Returns
+
+  - `{:ok, width}` on success where width is a float
+  - `{:error, reason}` on failure
+
+  ## Examples
+
+      {:ok, spreadsheet} = UmyaSpreadsheet.read_file("input.xlsx")
+      {:ok, width} = UmyaSpreadsheet.RowColumnFunctions.get_column_width(spreadsheet, "Sheet1", "A")
+  """
+  def get_column_width(%Spreadsheet{reference: ref}, sheet_name, column) do
+    case UmyaNative.get_column_width(ref, sheet_name, column) do
+      width when is_float(width) -> {:ok, width}
+      {:error, reason} -> {:error, reason}
+      result -> result
+    end
+  end
+
+  @doc """
+  Gets whether a column width is automatically adjusted.
+
+  ## Parameters
+
+  - `spreadsheet` - The spreadsheet struct
+  - `sheet_name` - The name of the sheet
+  - `column` - The column letter (e.g., "A", "B")
+
+  ## Returns
+
+  - `{:ok, auto_width}` on success where auto_width is a boolean
+  - `{:error, reason}` on failure
+
+  ## Examples
+
+      {:ok, spreadsheet} = UmyaSpreadsheet.read_file("input.xlsx")
+      {:ok, auto_width} = UmyaSpreadsheet.RowColumnFunctions.get_column_auto_width(spreadsheet, "Sheet1", "A")
+  """
+  def get_column_auto_width(%Spreadsheet{reference: ref}, sheet_name, column) do
+    case UmyaNative.get_column_auto_width(ref, sheet_name, column) do
+      auto_width when is_boolean(auto_width) -> {:ok, auto_width}
+      {:error, reason} -> {:error, reason}
+      result -> result
+    end
+  end
+
+  @doc """
+  Gets whether a column is hidden.
+
+  ## Parameters
+
+  - `spreadsheet` - The spreadsheet struct
+  - `sheet_name` - The name of the sheet
+  - `column` - The column letter (e.g., "A", "B")
+
+  ## Returns
+
+  - `{:ok, hidden}` on success where hidden is a boolean
+  - `{:error, reason}` on failure
+
+  ## Examples
+
+      {:ok, spreadsheet} = UmyaSpreadsheet.read_file("input.xlsx")
+      {:ok, hidden} = UmyaSpreadsheet.RowColumnFunctions.get_column_hidden(spreadsheet, "Sheet1", "A")
+  """
+  def get_column_hidden(%Spreadsheet{reference: ref}, sheet_name, column) do
+    case UmyaNative.get_column_hidden(ref, sheet_name, column) do
+      hidden when is_boolean(hidden) -> {:ok, hidden}
+      {:error, reason} -> {:error, reason}
+      result -> result
+    end
+  end
+
+  @doc """
+  Gets the height of a row.
+
+  ## Parameters
+
+  - `spreadsheet` - The spreadsheet struct
+  - `sheet_name` - The name of the sheet
+  - `row_number` - The row number (1-based)
+
+  ## Returns
+
+  - `{:ok, height}` on success where height is a float
+  - `{:error, reason}` on failure
+
+  ## Examples
+
+      {:ok, spreadsheet} = UmyaSpreadsheet.read_file("input.xlsx")
+      {:ok, height} = UmyaSpreadsheet.RowColumnFunctions.get_row_height(spreadsheet, "Sheet1", 1)
+  """
+  def get_row_height(%Spreadsheet{reference: ref}, sheet_name, row_number) do
+    case UmyaNative.get_row_height(ref, sheet_name, row_number) do
+      height when is_float(height) -> {:ok, height}
+      {:error, reason} -> {:error, reason}
+      result -> result
+    end
+  end
+
+  @doc """
+  Gets whether a row is hidden.
+
+  ## Parameters
+
+  - `spreadsheet` - The spreadsheet struct
+  - `sheet_name` - The name of the sheet
+  - `row_number` - The row number (1-based)
+
+  ## Returns
+
+  - `{:ok, hidden}` on success where hidden is a boolean
+  - `{:error, reason}` on failure
+
+  ## Examples
+
+      {:ok, spreadsheet} = UmyaSpreadsheet.read_file("input.xlsx")
+      {:ok, hidden} = UmyaSpreadsheet.RowColumnFunctions.get_row_hidden(spreadsheet, "Sheet1", 1)
+  """
+  def get_row_hidden(%Spreadsheet{reference: ref}, sheet_name, row_number) do
+    case UmyaNative.get_row_hidden(ref, sheet_name, row_number) do
+      hidden when is_boolean(hidden) -> {:ok, hidden}
+      {:error, reason} -> {:error, reason}
+      result -> result
+    end
+  end
 end

@@ -1,8 +1,44 @@
 # Changelog
 
+## 0.6.12 - 2025-05-29
+
+### Added
+
+- **Row and Column Property Getter Functions**:
+  - **Row Dimension Inspection** - Retrieve row properties and settings
+    - `UmyaSpreadsheet.get_row_height/3` - Get row height in points (default: 15.0)
+    - `UmyaSpreadsheet.get_row_hidden/3` - Get row hidden state (default: false)
+  - **Column Dimension Inspection** - Retrieve column properties and settings  
+    - `UmyaSpreadsheet.get_column_width/3` - Get column width in characters (default: 8.43)
+    - `UmyaSpreadsheet.get_column_auto_width/3` - Get auto-width enabled state (default: false)
+    - `UmyaSpreadsheet.get_column_hidden/3` - Get column hidden state (default: false)
+  - **Native Rust Implementation** - All getter functions implemented in native Rust for optimal performance
+  - **Error Handling** - Proper error handling for non-existent sheets with appropriate default value returns
+  - **Auto-width Persistence Fix** - Modified `set_column_auto_width` to set both `auto_width` and `best_fit` fields for Excel compatibility
+  - **Comprehensive Test Coverage** - Full unit test suite with 11 test cases covering all getter/setter functions and error scenarios
+
+### Fixed
+
+- **Auto-width Persistence Issue** - Fixed `get_column_auto_width` to return `best_fit` value since that's what actually persists in Excel files
+- **Error Handling Standardization** - Unified error handling across all row/column NIFs to return simple error strings instead of nested error tuples
+- **Option Handling in Rust NIFs** - Fixed proper handling of cases where row/column dimensions don't exist by returning appropriate default values
+
 ## 0.6.11 - 2025-05-29
 
 ### Added
+
+- **Row and Column Property Getter Functions**:
+  - **Row Dimension Inspection** - Retrieve row properties and settings
+    - `UmyaSpreadsheet.get_row_height/3` - Get row height in points (default: 15.0)
+    - `UmyaSpreadsheet.get_row_hidden/3` - Get row hidden state (default: false)
+  - **Column Dimension Inspection** - Retrieve column properties and settings  
+    - `UmyaSpreadsheet.get_column_width/3` - Get column width in characters (default: 8.43)
+    - `UmyaSpreadsheet.get_column_auto_width/3` - Get auto-width enabled state (default: false)
+    - `UmyaSpreadsheet.get_column_hidden/3` - Get column hidden state (default: false)
+  - **Native Rust Implementation** - All getter functions implemented in native Rust for optimal performance
+  - **Error Handling** - Proper error handling for non-existent sheets with appropriate default value returns
+  - **Auto-width Persistence Fix** - Modified `set_column_auto_width` to set both `auto_width` and `best_fit` fields for Excel compatibility
+  - **Comprehensive Test Coverage** - Full unit test suite with 11 test cases covering all getter/setter functions and error scenarios
 
 - **Sheet Property Getter Functions**:
   - **Sheet Metadata Inspection** - Comprehensive sheet information retrieval
