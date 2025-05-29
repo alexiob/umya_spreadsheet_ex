@@ -243,6 +243,59 @@ defmodule UmyaNative do
   @spec get_font_color(reference(), String.t(), String.t()) :: String.t() | {:error, atom()}
   def get_font_color(_spreadsheet, _sheet_name, _cell_address), do: error()
 
+  # Alignment getter functions
+  @spec get_cell_horizontal_alignment(reference(), String.t(), String.t()) ::
+          String.t() | {:error, atom()}
+  def get_cell_horizontal_alignment(_spreadsheet, _sheet_name, _cell_address), do: error()
+
+  @spec get_cell_vertical_alignment(reference(), String.t(), String.t()) ::
+          String.t() | {:error, atom()}
+  def get_cell_vertical_alignment(_spreadsheet, _sheet_name, _cell_address), do: error()
+
+  @spec get_cell_wrap_text(reference(), String.t(), String.t()) :: boolean() | {:error, atom()}
+  def get_cell_wrap_text(_spreadsheet, _sheet_name, _cell_address), do: error()
+
+  @spec get_cell_text_rotation(reference(), String.t(), String.t()) ::
+          non_neg_integer() | {:error, atom()}
+  def get_cell_text_rotation(_spreadsheet, _sheet_name, _cell_address), do: error()
+
+  # Border getter functions
+  @spec get_border_style(reference(), String.t(), String.t(), String.t()) ::
+          String.t() | {:error, atom()}
+  def get_border_style(_spreadsheet, _sheet_name, _cell_address, _border_position), do: error()
+
+  @spec get_border_color(reference(), String.t(), String.t(), String.t()) ::
+          String.t() | {:error, atom()}
+  def get_border_color(_spreadsheet, _sheet_name, _cell_address, _border_position), do: error()
+
+  # Fill/background getter functions
+  @spec get_cell_background_color(reference(), String.t(), String.t()) ::
+          String.t() | {:error, atom()}
+  def get_cell_background_color(_spreadsheet, _sheet_name, _cell_address), do: error()
+
+  @spec get_cell_foreground_color(reference(), String.t(), String.t()) ::
+          String.t() | {:error, atom()}
+  def get_cell_foreground_color(_spreadsheet, _sheet_name, _cell_address), do: error()
+
+  @spec get_cell_pattern_type(reference(), String.t(), String.t()) ::
+          String.t() | {:error, atom()}
+  def get_cell_pattern_type(_spreadsheet, _sheet_name, _cell_address), do: error()
+
+  # Number format getter functions
+  @spec get_cell_number_format_id(reference(), String.t(), String.t()) ::
+          non_neg_integer() | {:error, atom()}
+  def get_cell_number_format_id(_spreadsheet, _sheet_name, _cell_address), do: error()
+
+  @spec get_cell_format_code(reference(), String.t(), String.t()) :: String.t() | {:error, atom()}
+  def get_cell_format_code(_spreadsheet, _sheet_name, _cell_address), do: error()
+
+  # Protection getter functions
+  @spec get_cell_locked(reference(), String.t(), String.t()) :: boolean() | {:error, atom()}
+  def get_cell_locked(_spreadsheet, _sheet_name, _cell_address), do: error()
+
+  @spec get_cell_hidden(reference(), String.t(), String.t()) :: boolean() | {:error, atom()}
+  def get_cell_hidden(_spreadsheet, _sheet_name, _cell_address), do: error()
+
   @spec set_cell_alignment(reference(), String.t(), String.t(), String.t(), String.t()) ::
           :ok | {:error, atom()}
   def set_cell_alignment(_spreadsheet, _sheet_name, _cell_address, _horizontal, _vertical),
@@ -1850,6 +1903,9 @@ defmodule UmyaNative do
   """
   @spec set_modified(reference(), String.t()) :: :ok | {:error, atom()}
   def set_modified(_spreadsheet, _modified), do: error()
+
+  @spec test_simple_function() :: String.t()
+  def test_simple_function(), do: error()
 
   defp error(), do: :erlang.nif_error(:nif_not_loaded)
 end

@@ -77,15 +77,16 @@ defmodule UmyaSpreadsheet.CellFunctions do
   """
   def set_cell_value(%Spreadsheet{reference: ref}, sheet_name, cell_address, value) do
     # Convert value to string for compatibility with the Rust NIF
-    string_value = cond do
-      is_binary(value) -> value
-      is_integer(value) -> Integer.to_string(value)
-      is_float(value) -> Float.to_string(value)
-      is_boolean(value) -> to_string(value)
-      is_nil(value) -> ""
-      is_atom(value) -> Atom.to_string(value)
-      true -> inspect(value)
-    end
+    string_value =
+      cond do
+        is_binary(value) -> value
+        is_integer(value) -> Integer.to_string(value)
+        is_float(value) -> Float.to_string(value)
+        is_boolean(value) -> to_string(value)
+        is_nil(value) -> ""
+        is_atom(value) -> Atom.to_string(value)
+        true -> inspect(value)
+      end
 
     UmyaNative.set_cell_value(ref, sheet_name, cell_address, string_value)
     |> ErrorHandling.standardize_result()
@@ -189,7 +190,13 @@ defmodule UmyaSpreadsheet.CellFunctions do
       {:ok, spreadsheet} = UmyaSpreadsheet.read_file("input.xlsx")
       :ok = UmyaSpreadsheet.CellFunctions.set_cell_alignment(spreadsheet, "Sheet1", "A1", "center", "center")
   """
-  def set_cell_alignment(%Spreadsheet{reference: ref}, sheet_name, cell_address, horizontal, vertical) do
+  def set_cell_alignment(
+        %Spreadsheet{reference: ref},
+        sheet_name,
+        cell_address,
+        horizontal,
+        vertical
+      ) do
     UmyaNative.set_cell_alignment(ref, sheet_name, cell_address, horizontal, vertical)
     |> ErrorHandling.standardize_result()
   end
@@ -241,6 +248,259 @@ defmodule UmyaSpreadsheet.CellFunctions do
   """
   def set_cell_indent(%Spreadsheet{reference: ref}, sheet_name, cell_address, level) do
     UmyaNative.set_cell_indent(ref, sheet_name, cell_address, level)
+    |> ErrorHandling.standardize_result()
+  end
+
+  # ============================================================================
+  # CELL FORMATTING GETTER FUNCTIONS
+  # ============================================================================
+
+  @doc """
+  Gets the horizontal alignment of a cell.
+
+  ## Parameters
+
+  - `spreadsheet` - The spreadsheet struct
+  - `sheet_name` - The name of the sheet
+  - `cell_address` - The cell address (e.g., "A1", "B5")
+
+  ## Returns
+
+  - `{:ok, alignment}` where alignment is "general", "left", "center", "right", etc.
+  - `{:error, reason}` on failure
+  """
+  def get_cell_horizontal_alignment(%Spreadsheet{reference: ref}, sheet_name, cell_address) do
+    UmyaNative.get_cell_horizontal_alignment(ref, sheet_name, cell_address)
+    |> ErrorHandling.standardize_result()
+  end
+
+  @doc """
+  Gets the vertical alignment of a cell.
+
+  ## Parameters
+
+  - `spreadsheet` - The spreadsheet struct
+  - `sheet_name` - The name of the sheet
+  - `cell_address` - The cell address (e.g., "A1", "B5")
+
+  ## Returns
+
+  - `{:ok, alignment}` where alignment is "top", "center", "bottom", etc.
+  - `{:error, reason}` on failure
+  """
+  def get_cell_vertical_alignment(%Spreadsheet{reference: ref}, sheet_name, cell_address) do
+    UmyaNative.get_cell_vertical_alignment(ref, sheet_name, cell_address)
+    |> ErrorHandling.standardize_result()
+  end
+
+  @doc """
+  Gets the wrap text setting of a cell.
+
+  ## Parameters
+
+  - `spreadsheet` - The spreadsheet struct
+  - `sheet_name` - The name of the sheet
+  - `cell_address` - The cell address (e.g., "A1", "B5")
+
+  ## Returns
+
+  - `{:ok, wrap}` where wrap is a boolean indicating if text wrapping is enabled
+  - `{:error, reason}` on failure
+  """
+  def get_cell_wrap_text(%Spreadsheet{reference: ref}, sheet_name, cell_address) do
+    UmyaNative.get_cell_wrap_text(ref, sheet_name, cell_address)
+    |> ErrorHandling.standardize_result()
+  end
+
+  @doc """
+  Gets the text rotation of a cell.
+
+  ## Parameters
+
+  - `spreadsheet` - The spreadsheet struct
+  - `sheet_name` - The name of the sheet
+  - `cell_address` - The cell address (e.g., "A1", "B5")
+
+  ## Returns
+
+  - `{:ok, angle}` where angle is the rotation angle in degrees
+  - `{:error, reason}` on failure
+  """
+  def get_cell_text_rotation(%Spreadsheet{reference: ref}, sheet_name, cell_address) do
+    UmyaNative.get_cell_text_rotation(ref, sheet_name, cell_address)
+    |> ErrorHandling.standardize_result()
+  end
+
+  @doc """
+  Gets the border style of a cell.
+
+  ## Parameters
+
+  - `spreadsheet` - The spreadsheet struct
+  - `sheet_name` - The name of the sheet
+  - `cell_address` - The cell address (e.g., "A1", "B5")
+  - `border_position` - "top", "bottom", "left", "right", or "diagonal"
+
+  ## Returns
+
+  - `{:ok, style}` where style is the border style (e.g., "solid", "dashed", "dotted")
+  - `{:error, reason}` on failure
+  """
+  def get_border_style(%Spreadsheet{reference: ref}, sheet_name, cell_address, border_position) do
+    UmyaNative.get_border_style(ref, sheet_name, cell_address, border_position)
+    |> ErrorHandling.standardize_result()
+  end
+
+  @doc """
+  Gets the border color of a cell.
+
+  ## Parameters
+
+  - `spreadsheet` - The spreadsheet struct
+  - `sheet_name` - The name of the sheet
+  - `cell_address` - The cell address (e.g., "A1", "B5")
+  - `border_position` - "top", "bottom", "left", "right", or "diagonal"
+
+  ## Returns
+
+  - `{:ok, color}` where color is the border color in hex format (e.g., "#FF0000")
+  - `{:error, reason}` on failure
+  """
+  def get_border_color(%Spreadsheet{reference: ref}, sheet_name, cell_address, border_position) do
+    UmyaNative.get_border_color(ref, sheet_name, cell_address, border_position)
+    |> ErrorHandling.standardize_result()
+  end
+
+  @doc """
+  Gets the background color of a cell.
+
+  ## Parameters
+
+  - `spreadsheet` - The spreadsheet struct
+  - `sheet_name` - The name of the sheet
+  - `cell_address` - The cell address (e.g., "A1", "B5")
+
+  ## Returns
+
+  - `{:ok, color}` where color is the background color in hex format (e.g., "#FFFFFF")
+  - `{:error, reason}` on failure
+  """
+  def get_cell_background_color(%Spreadsheet{reference: ref}, sheet_name, cell_address) do
+    UmyaNative.get_cell_background_color(ref, sheet_name, cell_address)
+    |> ErrorHandling.standardize_result()
+  end
+
+  @doc """
+  Gets the foreground color of a cell.
+
+  ## Parameters
+
+  - `spreadsheet` - The spreadsheet struct
+  - `sheet_name` - The name of the sheet
+  - `cell_address` - The cell address (e.g., "A1", "B5")
+
+  ## Returns
+
+  - `{:ok, color}` where color is the foreground color in hex format (e.g., "#000000")
+  - `{:error, reason}` on failure
+  """
+  def get_cell_foreground_color(%Spreadsheet{reference: ref}, sheet_name, cell_address) do
+    UmyaNative.get_cell_foreground_color(ref, sheet_name, cell_address)
+    |> ErrorHandling.standardize_result()
+  end
+
+  @doc """
+  Gets the pattern type of a cell's fill.
+
+  ## Parameters
+
+  - `spreadsheet` - The spreadsheet struct
+  - `sheet_name` - The name of the sheet
+  - `cell_address` - The cell address (e.g., "A1", "B5")
+
+  ## Returns
+
+  - `{:ok, pattern_type}` where pattern_type is the pattern type (e.g., "solid", "none")
+  - `{:error, reason}` on failure
+  """
+  def get_cell_pattern_type(%Spreadsheet{reference: ref}, sheet_name, cell_address) do
+    UmyaNative.get_cell_pattern_type(ref, sheet_name, cell_address)
+    |> ErrorHandling.standardize_result()
+  end
+
+  @doc """
+  Gets the number format ID of a cell.
+
+  ## Parameters
+
+  - `spreadsheet` - The spreadsheet struct
+  - `sheet_name` - The name of the sheet
+  - `cell_address` - The cell address (e.g., "A1", "B5")
+
+  ## Returns
+
+  - `{:ok, format_id}` where format_id is the number format ID
+  - `{:error, reason}` on failure
+  """
+  def get_cell_number_format_id(%Spreadsheet{reference: ref}, sheet_name, cell_address) do
+    UmyaNative.get_cell_number_format_id(ref, sheet_name, cell_address)
+    |> ErrorHandling.standardize_result()
+  end
+
+  @doc """
+  Gets the number format code of a cell.
+
+  ## Parameters
+
+  - `spreadsheet` - The spreadsheet struct
+  - `sheet_name` - The name of the sheet
+  - `cell_address` - The cell address (e.g., "A1", "B5")
+
+  ## Returns
+
+  - `{:ok, format_code}` where format_code is the number format code (e.g., "0.00", "m/d/yyyy")
+  - `{:error, reason}` on failure
+  """
+  def get_cell_format_code(%Spreadsheet{reference: ref}, sheet_name, cell_address) do
+    UmyaNative.get_cell_format_code(ref, sheet_name, cell_address)
+    |> ErrorHandling.standardize_result()
+  end
+
+  @doc """
+  Gets the locked status of a cell.
+
+  ## Parameters
+
+  - `spreadsheet` - The spreadsheet struct
+  - `sheet_name` - The name of the sheet
+  - `cell_address` - The cell address (e.g., "A1", "B5")
+
+  ## Returns
+
+  - `{:ok, locked}` where locked is a boolean indicating if the cell is locked
+  - `{:error, reason}` on failure
+  """
+  def get_cell_locked(%Spreadsheet{reference: ref}, sheet_name, cell_address) do
+    UmyaNative.get_cell_locked(ref, sheet_name, cell_address)
+    |> ErrorHandling.standardize_result()
+  end
+
+  @doc """
+  Gets the hidden status of a cell.
+
+  ## Parameters
+
+  - `spreadsheet` - The spreadsheet struct
+  - `sheet_name` - The name of the sheet
+  - `cell_address` - The cell address (e.g., "A1", "B5")
+
+  ## Returns
+
+  - `{:ok, hidden}` where hidden is a boolean indicating if the cell is hidden
+  - `{:error, reason}` on failure
+  """
+  def get_cell_hidden(%Spreadsheet{reference: ref}, sheet_name, cell_address) do
+    UmyaNative.get_cell_hidden(ref, sheet_name, cell_address)
     |> ErrorHandling.standardize_result()
   end
 end

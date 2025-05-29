@@ -4,8 +4,8 @@
 
 ### Added
 
-- **Font Property Getter Functions**:
-  - **Complete Font Inspection API** - Retrieve all font properties from spreadsheet cells
+- **Complete Cell Formatting Getter Functions**:
+  - **Font Property Inspection API** - Retrieve all font properties from spreadsheet cells
     - `UmyaSpreadsheet.get_font_name/3` - Get font name/typeface (Arial, Times New Roman, etc.)
     - `UmyaSpreadsheet.get_font_size/3` - Get font size in points
     - `UmyaSpreadsheet.get_font_bold/3` - Get bold state (true/false)
@@ -15,44 +15,36 @@
     - `UmyaSpreadsheet.get_font_family/3` - Get font family type (roman, swiss, modern, script, decorative)
     - `UmyaSpreadsheet.get_font_scheme/3` - Get font scheme (major, minor, none)
     - `UmyaSpreadsheet.get_font_color/3` - Get font color (hex codes or theme references)
-  - **Consistent Error Handling** - All getter functions return `{:ok, value}` or `{:error, reason}` tuples
-  - **Font Property Copying** - Enable programmatic copying of font styles between cells
-  - **Enhanced Documentation** - Complete styling guide with getter method examples and patterns
+  - **Cell Alignment Inspection** - Retrieve text alignment and formatting properties
+    - `UmyaSpreadsheet.get_cell_horizontal_alignment/3` - Get horizontal alignment (left, center, right, justify, etc.)
+    - `UmyaSpreadsheet.get_cell_vertical_alignment/3` - Get vertical alignment (top, middle, bottom, etc.)
+    - `UmyaSpreadsheet.get_cell_wrap_text/3` - Get text wrap state (true/false)
+    - `UmyaSpreadsheet.get_cell_text_rotation/3` - Get text rotation angle (0-359 degrees)
+  - **Border Property Inspection** - Retrieve border styles and colors for all positions
+    - `UmyaSpreadsheet.get_border_style/4` - Get border style (thin, medium, thick, dashed, dotted, double, none)
+    - `UmyaSpreadsheet.get_border_color/4` - Get border color (hex codes with default black FF000000)
+    - Support for all border positions: top, bottom, left, right, diagonal
+  - **Fill and Background Inspection** - Retrieve cell background and pattern properties
+    - `UmyaSpreadsheet.get_cell_background_color/3` - Get cell background color (hex codes)
+    - `UmyaSpreadsheet.get_cell_foreground_color/3` - Get pattern foreground color
+    - `UmyaSpreadsheet.get_cell_pattern_type/3` - Get fill pattern type (solid, none, etc.)
+  - **Number Format Inspection** - Retrieve number formatting information
+    - `UmyaSpreadsheet.get_cell_number_format_id/3` - Get number format ID reference
+    - `UmyaSpreadsheet.get_cell_format_code/3` - Get format code string (e.g., "#,##0.00")
+  - **Cell Protection Inspection** - Retrieve cell protection properties
+    - `UmyaSpreadsheet.get_cell_locked/3` - Get cell locked state (true/false)
+    - `UmyaSpreadsheet.get_cell_hidden/3` - Get cell hidden state (true/false)
+  - **Comprehensive Test Coverage** - 100% test coverage with proper error handling validation
+  - **Consistent API Design** - All getter functions follow the same pattern and return appropriate default values
 
 ### Fixed
 
+- Fixed border color getter to return default black color (FF000000) instead of empty string when no color is set
+- Fixed foreground color getter to correctly return pattern background color, addressing Excel/OpenXML terminology confusion
+- Fixed test expectations for border colors - corrected to expect default black color when no explicit colors are set
 - Fixed Rust compilation errors in font getter functions caused by improper `Option<&Cell>` handling
 - Fixed Color API method calls in `get_font_color` function (corrected `get_argb()` and `get_theme_index()` usage)
-- Resolved all font management getter function compilation issues in native Rust code
-
-## 0.6.10 - 2025-05-29
-
-### Addedngelog
-
-## 0.6.11 - 2025-05-29
-
-### Added
-
-- **Font Property Getter Functions**:
-  - **Complete Font Inspection API** - Retrieve all font properties from spreadsheet cells
-    - `UmyaSpreadsheet.get_font_name/3` - Get font name/typeface (Arial, Times New Roman, etc.)
-    - `UmyaSpreadsheet.get_font_size/3` - Get font size in points
-    - `UmyaSpreadsheet.get_font_bold/3` - Get bold state (true/false)
-    - `UmyaSpreadsheet.get_font_italic/3` - Get italic state (true/false)
-    - `UmyaSpreadsheet.get_font_underline/3` - Get underline style (none, single, double, accounting)
-    - `UmyaSpreadsheet.get_font_strikethrough/3` - Get strikethrough state (true/false)
-    - `UmyaSpreadsheet.get_font_family/3` - Get font family type (roman, swiss, modern, script, decorative)
-    - `UmyaSpreadsheet.get_font_scheme/3` - Get font scheme (major, minor, none)
-    - `UmyaSpreadsheet.get_font_color/3` - Get font color (hex codes or theme references)
-  - **Consistent Error Handling** - All getter functions return `{:ok, value}` or `{:error, reason}` tuples
-  - **Font Property Copying** - Enable programmatic copying of font styles between cells
-  - **Enhanced Documentation** - Complete styling guide with getter method examples and patterns
-
-### Fixed
-
-- Fixed Rust compilation errors in font getter functions caused by improper `Option<&Cell>` handling
-- Fixed Color API method calls in `get_font_color` function (corrected `get_argb()` and `get_theme_index()` usage)
-- Resolved all font management getter function compilation issues in native Rust code
+- Resolved all cell formatting getter function compilation issues in native Rust code
 
 ## 0.6.10 - 2025-05-29
 

@@ -811,6 +811,46 @@ defmodule UmyaSpreadsheet do
   defdelegate get_font_color(spreadsheet, sheet_name, cell_address),
     to: FontFunctions
 
+  # New cell formatting getter functions delegation
+  defdelegate get_cell_horizontal_alignment(spreadsheet, sheet_name, cell_address),
+    to: CellFunctions
+
+  defdelegate get_cell_vertical_alignment(spreadsheet, sheet_name, cell_address),
+    to: CellFunctions
+
+  defdelegate get_cell_wrap_text(spreadsheet, sheet_name, cell_address),
+    to: CellFunctions
+
+  defdelegate get_cell_text_rotation(spreadsheet, sheet_name, cell_address),
+    to: CellFunctions
+
+  defdelegate get_border_style(spreadsheet, sheet_name, cell_address, border_position),
+    to: CellFunctions
+
+  defdelegate get_border_color(spreadsheet, sheet_name, cell_address, border_position),
+    to: CellFunctions
+
+  defdelegate get_cell_background_color(spreadsheet, sheet_name, cell_address),
+    to: CellFunctions
+
+  defdelegate get_cell_foreground_color(spreadsheet, sheet_name, cell_address),
+    to: CellFunctions
+
+  defdelegate get_cell_pattern_type(spreadsheet, sheet_name, cell_address),
+    to: CellFunctions
+
+  defdelegate get_cell_number_format_id(spreadsheet, sheet_name, cell_address),
+    to: CellFunctions
+
+  defdelegate get_cell_format_code(spreadsheet, sheet_name, cell_address),
+    to: CellFunctions
+
+  defdelegate get_cell_locked(spreadsheet, sheet_name, cell_address),
+    to: CellFunctions
+
+  defdelegate get_cell_hidden(spreadsheet, sheet_name, cell_address),
+    to: CellFunctions
+
   # Row/Column Functions delegation
   defdelegate set_row_height(spreadsheet, sheet_name, row_number, height),
     to: RowColumnFunctions

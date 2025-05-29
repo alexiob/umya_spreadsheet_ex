@@ -1598,6 +1598,7 @@ rustler::init!(
     "Elixir.UmyaNative",
     load = load,
     nifs = [
+        test_simple_function,
         new_file,
         new_file_empty_worksheet,
         read_file,
@@ -1648,6 +1649,24 @@ rustler::init!(
         get_cell_formatting::get_font_family,
         get_cell_formatting::get_font_scheme,
         get_cell_formatting::get_font_color,
+        // Alignment getter functions
+        get_cell_formatting::get_cell_horizontal_alignment,
+        get_cell_formatting::get_cell_vertical_alignment,
+        get_cell_formatting::get_cell_wrap_text,
+        get_cell_formatting::get_cell_text_rotation,
+        // Border getter functions
+        get_cell_formatting::get_border_style,
+        get_cell_formatting::get_border_color,
+        // Fill/background getter functions
+        get_cell_formatting::get_cell_background_color,
+        get_cell_formatting::get_cell_foreground_color,
+        get_cell_formatting::get_cell_pattern_type,
+        // Number format getter functions
+        get_cell_formatting::get_cell_number_format_id,
+        get_cell_formatting::get_cell_format_code,
+        // Protection getter functions
+        get_cell_formatting::get_cell_locked,
+        get_cell_formatting::get_cell_hidden,
         // Print settings functions
         print_settings::set_page_orientation,
         print_settings::set_paper_size,
@@ -1836,3 +1855,8 @@ rustler::init!(
         vml_support::set_vml_shape_stroke_weight,
     ]
 );
+
+#[rustler::nif]
+fn test_simple_function() -> NifResult<String> {
+    Ok("test_works".to_string())
+}
