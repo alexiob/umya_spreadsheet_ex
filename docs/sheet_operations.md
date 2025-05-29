@@ -63,6 +63,7 @@ UmyaSpreadsheet.set_sheet_state(spreadsheet, "Sheet2", "visible")
 ```
 
 Available sheet states:
+
 - `"visible"` - Normal visibility (default)
 - `"hidden"` - Hidden but can be unhidden by users in Excel
 - `"very_hidden"` - Hidden and cannot be unhidden through the Excel UI
@@ -200,6 +201,7 @@ UmyaSpreadsheet.add_merge_cells(spreadsheet, "Sheet1", "A1:C3")
 ```
 
 When cells are merged:
+
 - Only the content in the top-left cell (A1 in this example) is preserved
 - Any content in other cells of the range will be lost
 - Styling from the top-left cell is applied to the entire merged range

@@ -1,6 +1,6 @@
 use crate::atoms;
 use crate::UmyaSpreadsheet;
-use rustler::{Atom, Encoder, Env, Error as NifError, NifResult, Term};
+use rustler::{Encoder, Env, Term};
 use std::collections::HashMap;
 use std::panic::{self, AssertUnwindSafe};
 

@@ -634,7 +634,7 @@ defmodule UmyaSpreadsheet do
   # Sheet View Functions delegation
   defdelegate set_show_grid_lines(spreadsheet, sheet_name, show_gridlines),
     to: SheetViewFunctions
-    
+
   defdelegate get_show_grid_lines(spreadsheet, sheet_name),
     to: SheetViewFunctions
 
@@ -646,7 +646,7 @@ defmodule UmyaSpreadsheet do
 
   defdelegate set_zoom_scale(spreadsheet, sheet_name, scale),
     to: SheetViewFunctions
-    
+
   defdelegate get_zoom_scale(spreadsheet, sheet_name),
     to: SheetViewFunctions
 
@@ -667,19 +667,19 @@ defmodule UmyaSpreadsheet do
 
   defdelegate set_sheet_view(spreadsheet, sheet_name, view_type),
     to: SheetViewFunctions
-    
+
   defdelegate get_sheet_view(spreadsheet, sheet_name),
     to: SheetViewFunctions
 
   defdelegate set_tab_color(spreadsheet, sheet_name, color),
     to: SheetViewFunctions
-    
+
   defdelegate get_tab_color(spreadsheet, sheet_name),
     to: SheetViewFunctions
 
   defdelegate set_selection(spreadsheet, sheet_name, active_cell, sqref),
     to: SheetViewFunctions
-    
+
   defdelegate get_selection(spreadsheet, sheet_name),
     to: SheetViewFunctions
 

@@ -27,7 +27,7 @@ pub fn get_active_tab(
 #[rustler::nif]
 pub fn get_workbook_window_position(
     env: Env,
-    spreadsheet_resource: rustler::ResourceArc<UmyaSpreadsheet>,
+    _spreadsheet_resource: rustler::ResourceArc<UmyaSpreadsheet>,
 ) -> Term {
     let result = panic::catch_unwind(AssertUnwindSafe(|| {
         // Note: These are hardcoded default values based on the write_to method in workbook_view.rs

@@ -52,6 +52,7 @@ page_break_zoom = UmyaSpreadsheet.get_zoom_scale_page_break(spreadsheet, "Sheet1
 ```
 
 **Zoom Level Guidelines:**
+
 - Valid range: 10% to 400%
 - Default value: 100%
 - Values are automatically clamped to valid range
@@ -76,6 +77,7 @@ IO.puts("Grid lines visible: #{grid_lines_visible}")  # Default: true
 ```
 
 **Grid Line Best Practices:**
+
 - Grid lines are shown by default (Excel standard)
 - Hide grid lines for cleaner presentation sheets
 - Keep grid lines visible for data entry sheets
@@ -116,6 +118,7 @@ UmyaSpreadsheet.split_panes(spreadsheet, "Sheet1", 0, 800)
 ```
 
 **Freezing vs. Splitting:**
+
 - **Freezing**: Creates fixed regions that don't scroll
 - **Splitting**: Creates resizable panes with independent scrolling
 - **Use freezing** for headers and labels
@@ -153,6 +156,7 @@ end
 ```
 
 **Tab Color Tips:**
+
 - Use consistent color schemes across related workbooks
 - Common patterns: Red for important/urgent, Green for completed, Blue for data
 - Hex format: `#RRGGBB` (e.g., `#FF0000` for red)
@@ -185,6 +189,7 @@ IO.puts("Selected range: #{selection}")
 ```
 
 **Selection Best Practices:**
+
 - Direct users to important cells or data entry areas
 - Use selection to highlight key information
 - For data entry forms, select the first input cell
@@ -257,7 +262,7 @@ defmodule SheetViewChecker do
     zoom = UmyaSpreadsheet.get_zoom_scale(spreadsheet, sheet_name)
     grid_lines = UmyaSpreadsheet.get_show_grid_lines(spreadsheet, sheet_name)
     tab_color = UmyaSpreadsheet.get_tab_color(spreadsheet, sheet_name)
-    
+
     zoom != 100 or grid_lines != true or tab_color != ""
   end
 end
@@ -273,15 +278,15 @@ defmodule SheetViewCopier do
     # Copy zoom settings
     zoom = UmyaSpreadsheet.get_zoom_scale(spreadsheet, from_sheet)
     UmyaSpreadsheet.set_zoom_scale_normal(spreadsheet, to_sheet, zoom)
-    
+
     # Copy grid line setting
     grid_lines = UmyaSpreadsheet.get_show_grid_lines(spreadsheet, from_sheet)
     UmyaSpreadsheet.set_show_grid_lines(spreadsheet, to_sheet, grid_lines)
-    
+
     # Copy tab color
     tab_color = UmyaSpreadsheet.get_tab_color(spreadsheet, from_sheet)
     UmyaSpreadsheet.set_tab_color(spreadsheet, to_sheet, tab_color)
-    
+
     IO.puts("View settings copied from #{from_sheet} to #{to_sheet}")
   end
 end
@@ -316,6 +321,7 @@ SheetViewCopier.copy_view_settings(spreadsheet, "Sheet1", "Sheet2")
 ## Compatibility
 
 These sheet view features are compatible with:
+
 - Excel 2007 and later (.xlsx format)
 - LibreOffice Calc
 - Google Sheets (with some limitations)
