@@ -1,5 +1,22 @@
 # Changelog
 
+## 0.6.10 - 2025-05-29
+
+### Added
+
+- **Enhanced Font Management Features**:
+  - **Font Family Control** - Set font family types for text styling
+    - `UmyaSpreadsheet.set_font_family/4` - Apply font family numbering (roman, swiss, modern, script, decorative)
+  - **Font Scheme Support** - Control theme-aware font schemes
+    - `UmyaSpreadsheet.set_font_scheme/4` - Apply font schemes (major, minor, none)
+  - **Advanced Typography** - Comprehensive font styling capabilities
+    - Combine font family, scheme, and name for consistent typography
+  - **Complete Font Styling System** - Integrated font management with existing style properties
+
+### Fixed
+
+- Fixed issue where font family and font scheme properties weren't correctly applied to Excel files
+
 ## 0.6.9 - 2025-05-28
 
 ### Added

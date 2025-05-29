@@ -4,17 +4,6 @@
 
 Based on comprehensive analysis of the Rust structs vs. implemented NIF functions, the following features are not yet implemented in the Elixir wrapper:
 
-#### 5. Advanced Drawing
-
-- **COMPLETED**: VML Support has been implemented in v0.7.0
-
-#### 7. Document Properties
-
-- **Custom Metadata**: Document property management
-  - `CustomProperties` struct: Custom document properties
-  - Extended metadata support
-  - Document information management
-
 ### Lower Priority Features
 
 #### 8. Advanced Typography
@@ -47,31 +36,7 @@ Based on comprehensive analysis of the Rust structs vs. implemented NIF function
   - `DataBar` struct: Data bar conditional formatting
   - `IconSet` struct: Icon set conditional formatting
 
-### Implementation Roadmap
-
-#### Phase 1: Core Table Support
-
-1. Implement basic Table struct functionality
-2. Add TableColumn support for column definitions
-3. Implement TableStyleInfo for table styling
-
-#### Phase 2: Rich Content
-
-1. Add Hyperlink support for cell links
-2. Implement RichText for formatted cell content
-3. Add TextElement support for text formatting
-
-#### Phase 3: Advanced Features
-
-1. OLE Object embedding support
-2. Manual page break functionality
-3. Custom document properties
-
-#### Phase 4: Extended Functionality
-
-1. VML drawing support
-2. Advanced typography features
-3. Enhanced conditional formatting
+#
 
 ### Technical Notes
 

@@ -32,6 +32,8 @@ An Elixir NIF wrapper for the [umya-spreadsheet](https://github.com/MathNya/umya
 
   - Apply colors (background, font)
   - Set font properties (size, bold, italic, underline, strikethrough, name)
+  - Advanced typography with font family and font scheme support
+  - Theme-aware font control for consistent document styling
   - Advanced text formatting (various underline styles, text rotation, indentation)
   - Enhanced border styling (dashed, dotted, double, etc.)
   - Apply number formats (currency, percentage, dates, etc.)

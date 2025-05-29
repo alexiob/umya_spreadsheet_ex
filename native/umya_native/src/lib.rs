@@ -1632,6 +1632,8 @@ rustler::init!(
         cell_formatting::set_font_italic,
         cell_formatting::set_font_underline,
         cell_formatting::set_font_strikethrough,
+        cell_formatting::set_font_family,
+        cell_formatting::set_font_scheme,
         cell_formatting::set_border_style,
         cell_formatting::set_cell_rotation,
         cell_formatting::set_cell_indent,

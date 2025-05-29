@@ -192,6 +192,16 @@ defmodule UmyaNative do
   def set_font_strikethrough(_spreadsheet, _sheet_name, _cell_address, _is_strikethrough),
     do: error()
 
+  @spec set_font_family(reference(), String.t(), String.t(), String.t()) ::
+          :ok | {:error, atom()}
+  def set_font_family(_spreadsheet, _sheet_name, _cell_address, _font_family),
+    do: error()
+
+  @spec set_font_scheme(reference(), String.t(), String.t(), String.t()) ::
+          :ok | {:error, atom()}
+  def set_font_scheme(_spreadsheet, _sheet_name, _cell_address, _font_scheme),
+    do: error()
+
   @spec set_border_style(reference(), String.t(), String.t(), String.t(), String.t()) ::
           :ok | {:error, atom()}
   def set_border_style(_spreadsheet, _sheet_name, _cell_address, _border_position, _border_style),

@@ -777,6 +777,12 @@ defmodule UmyaSpreadsheet do
   defdelegate set_font_strikethrough(spreadsheet, sheet_name, cell_address, is_strikethrough),
     to: FontFunctions
 
+  defdelegate set_font_family(spreadsheet, sheet_name, cell_address, font_family),
+    to: FontFunctions
+
+  defdelegate set_font_scheme(spreadsheet, sheet_name, cell_address, font_scheme),
+    to: FontFunctions
+
   # Row/Column Functions delegation
   defdelegate set_row_height(spreadsheet, sheet_name, row_number, height),
     to: RowColumnFunctions

@@ -178,8 +178,64 @@ defmodule UmyaSpreadsheet.FontFunctions do
       {:ok, spreadsheet} = UmyaSpreadsheet.read_file("input.xlsx")
       :ok = UmyaSpreadsheet.FontFunctions.set_font_strikethrough(spreadsheet, "Sheet1", "A1", true)
   """
-  def set_font_strikethrough(%Spreadsheet{reference: ref}, sheet_name, cell_address, is_strikethrough) do
+  def set_font_strikethrough(
+        %Spreadsheet{reference: ref},
+        sheet_name,
+        cell_address,
+        is_strikethrough
+      ) do
     UmyaNative.set_font_strikethrough(ref, sheet_name, cell_address, is_strikethrough)
+    |> ErrorHandling.standardize_result()
+  end
+
+  @doc """
+  Sets the font family for a cell.
+
+  ## Parameters
+
+  - `spreadsheet` - The spreadsheet struct
+  - `sheet_name` - The name of the sheet
+  - `cell_address` - The cell address (e.g., "A1", "B5")
+  - `font_family` - The font family: "roman" (serif), "swiss" (sans-serif), "modern" (monospace),
+    "script", or "decorative"
+
+  ## Returns
+
+  - `:ok` on success
+  - `{:error, reason}` on failure
+
+  ## Examples
+
+      {:ok, spreadsheet} = UmyaSpreadsheet.read_file("input.xlsx")
+      :ok = UmyaSpreadsheet.FontFunctions.set_font_family(spreadsheet, "Sheet1", "A1", "swiss")
+  """
+  def set_font_family(%Spreadsheet{reference: ref}, sheet_name, cell_address, font_family) do
+    UmyaNative.set_font_family(ref, sheet_name, cell_address, font_family)
+    |> ErrorHandling.standardize_result()
+  end
+
+  @doc """
+  Sets the font scheme for a cell.
+
+  ## Parameters
+
+  - `spreadsheet` - The spreadsheet struct
+  - `sheet_name` - The name of the sheet
+  - `cell_address` - The cell address (e.g., "A1", "B5")
+  - `font_scheme` - The font scheme: "major", "minor", or "none"
+
+  ## Returns
+
+  - `:ok` on success
+  - `{:error, reason}` on failure
+
+  ## Examples
+
+      {:ok, spreadsheet} = UmyaSpreadsheet.read_file("input.xlsx")
+      :ok = UmyaSpreadsheet.FontFunctions.set_font_scheme(spreadsheet, "Sheet1", "A1", "major")
+  """
+  def set_font_scheme(%Spreadsheet{reference: ref}, sheet_name, cell_address, font_scheme) do
+    UmyaNative.set_font_scheme(ref, sheet_name, cell_address, font_scheme)
     |> ErrorHandling.standardize_result()
   end
 end
