@@ -183,4 +183,174 @@ defmodule UmyaSpreadsheet.PivotTable do
       {:error, reason} -> {:error, reason}
     end
   end
+
+  @doc """
+  Gets a list of all pivot table names in a sheet.
+
+  ## Parameters
+
+    * `spreadsheet` - A spreadsheet struct
+    * `sheet_name` - Name of the sheet to check
+
+  ## Returns
+
+    * `{:ok, [String.t()]}` - List of pivot table names
+    * `{:error, atom()}` - Error if sheet doesn't exist
+
+  ## Examples
+
+      # Get all pivot table names in a sheet
+      case PivotTable.get_pivot_table_names(spreadsheet, "Sheet1") do
+        {:ok, names} -> IO.inspect(names)
+        {:error, reason} -> IO.puts("Error: " <> inspect(reason))
+      end
+
+  """
+  @spec get_pivot_table_names(Spreadsheet.t(), String.t()) ::
+          {:ok, [String.t()]} | {:error, atom()}
+  def get_pivot_table_names(%Spreadsheet{reference: ref}, sheet_name) do
+    UmyaNative.get_pivot_table_names(UmyaSpreadsheet.unwrap_ref(ref), sheet_name)
+  end
+
+  @doc """
+  Gets detailed information about a specific pivot table.
+
+  ## Parameters
+
+    * `spreadsheet` - A spreadsheet struct
+    * `sheet_name` - Name of the sheet containing the pivot table
+    * `pivot_table_name` - Name of the pivot table
+
+  ## Returns
+
+    * `{:ok, {name, location, source_range, cache_id}}` - Tuple containing pivot table details
+    * `{:error, atom()}` - Error if sheet or pivot table doesn't exist
+
+  ## Examples
+
+      # Get detailed info about a pivot table
+      case PivotTable.get_pivot_table_info(spreadsheet, "Sheet1", "Sales Analysis") do
+        {:ok, {name, location, source_range, cache_id}} ->
+          IO.puts("Name: " <> name <> ", Location: " <> location)
+        {:error, reason} ->
+          IO.puts("Error: " <> inspect(reason))
+      end
+
+  """
+  @spec get_pivot_table_info(Spreadsheet.t(), String.t(), String.t()) ::
+          {:ok, {String.t(), String.t(), String.t(), String.t()}} | {:error, atom()}
+  def get_pivot_table_info(%Spreadsheet{reference: ref}, sheet_name, pivot_table_name) do
+    UmyaNative.get_pivot_table_info(UmyaSpreadsheet.unwrap_ref(ref), sheet_name, pivot_table_name)
+  end
+
+  @doc """
+  Gets the source data range for a pivot table.
+
+  ## Parameters
+
+    * `spreadsheet` - A spreadsheet struct
+    * `sheet_name` - Name of the sheet containing the pivot table
+    * `pivot_table_name` - Name of the pivot table
+
+  ## Returns
+
+    * `{:ok, {source_sheet, source_range}}` - Tuple containing source sheet name and range
+    * `{:error, atom()}` - Error if sheet or pivot table doesn't exist
+
+  ## Examples
+
+      # Get source range for a pivot table
+      case PivotTable.get_pivot_table_source_range(spreadsheet, "Sheet1", "Sales Analysis") do
+        {:ok, {source_sheet, source_range}} ->
+          IO.puts("Source: " <> source_sheet <> "!" <> source_range)
+        {:error, reason} ->
+          IO.puts("Error: " <> inspect(reason))
+      end
+
+  """
+  @spec get_pivot_table_source_range(Spreadsheet.t(), String.t(), String.t()) ::
+          {:ok, {String.t(), String.t()}} | {:error, atom()}
+  def get_pivot_table_source_range(%Spreadsheet{reference: ref}, sheet_name, pivot_table_name) do
+    UmyaNative.get_pivot_table_source_range(
+      UmyaSpreadsheet.unwrap_ref(ref),
+      sheet_name,
+      pivot_table_name
+    )
+  end
+
+  @doc """
+  Gets the target cell (top-left placement) for a pivot table.
+
+  ## Parameters
+
+    * `spreadsheet` - A spreadsheet struct
+    * `sheet_name` - Name of the sheet containing the pivot table
+    * `pivot_table_name` - Name of the pivot table
+
+  ## Returns
+
+    * `{:ok, String.t()}` - Target cell reference (e.g., "A3")
+    * `{:error, atom()}` - Error if sheet or pivot table doesn't exist
+
+  ## Examples
+
+      # Get target cell for a pivot table
+      case PivotTable.get_pivot_table_target_cell(spreadsheet, "Sheet1", "Sales Analysis") do
+        {:ok, target_cell} ->
+          IO.puts("Pivot table starts at: " <> target_cell)
+        {:error, reason} ->
+          IO.puts("Error: " <> inspect(reason))
+      end
+
+  """
+  @spec get_pivot_table_target_cell(Spreadsheet.t(), String.t(), String.t()) ::
+          {:ok, String.t()} | {:error, atom()}
+  def get_pivot_table_target_cell(%Spreadsheet{reference: ref}, sheet_name, pivot_table_name) do
+    UmyaNative.get_pivot_table_target_cell(
+      UmyaSpreadsheet.unwrap_ref(ref),
+      sheet_name,
+      pivot_table_name
+    )
+  end
+
+  @doc """
+  Gets the field configuration for a pivot table.
+
+  ## Parameters
+
+    * `spreadsheet` - A spreadsheet struct
+    * `sheet_name` - Name of the sheet containing the pivot table
+    * `pivot_table_name` - Name of the pivot table
+
+  ## Returns
+
+    * `{:ok, {row_fields, column_fields, data_fields}}` - Tuple containing field configurations
+      * `row_fields` - List of field indices used as row fields
+      * `column_fields` - List of field indices used as column fields
+      * `data_fields` - List of data field configs in format [{field_index, function, custom_name}]
+    * `{:error, atom()}` - Error if sheet or pivot table doesn't exist
+
+  ## Examples
+
+      # Get field configuration for a pivot table
+      case PivotTable.get_pivot_table_fields(spreadsheet, "Sheet1", "Sales Analysis") do
+        {:ok, {row_fields, column_fields, data_fields}} ->
+          IO.puts("Row fields: " <> inspect(row_fields))
+          IO.puts("Column fields: " <> inspect(column_fields))
+          IO.puts("Data fields: " <> inspect(data_fields))
+        {:error, reason} ->
+          IO.puts("Error: " <> inspect(reason))
+      end
+
+  """
+  @spec get_pivot_table_fields(Spreadsheet.t(), String.t(), String.t()) ::
+          {:ok, {[integer()], [integer()], [{integer(), String.t(), String.t()}]}}
+          | {:error, atom()}
+  def get_pivot_table_fields(%Spreadsheet{reference: ref}, sheet_name, pivot_table_name) do
+    UmyaNative.get_pivot_table_fields(
+      UmyaSpreadsheet.unwrap_ref(ref),
+      sheet_name,
+      pivot_table_name
+    )
+  end
 end

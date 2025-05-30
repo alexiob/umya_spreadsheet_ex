@@ -30,6 +30,5 @@ defmodule UmyaSpreadsheet.ErrorHandling do
   def standardize_result(:ok), do: :ok
   # Handle empty tuple from Rust NIF functions
   def standardize_result({}), do: :ok
-  def standardize_result(value) when not is_tuple(value), do: {:ok, value}
-  def standardize_result(other), do: other
+  def standardize_result(value), do: {:ok, value}
 end

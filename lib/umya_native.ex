@@ -323,6 +323,18 @@ defmodule UmyaNative do
   @spec change_image(reference(), String.t(), String.t(), String.t()) :: :ok | {:error, atom()}
   def change_image(_spreadsheet, _sheet_name, _cell_address, _new_image_path), do: error()
 
+  @spec get_image_dimensions(reference(), String.t(), String.t()) ::
+          {:ok, {non_neg_integer(), non_neg_integer()}} | {:error, atom()}
+  def get_image_dimensions(_spreadsheet, _sheet_name, _cell_address), do: error()
+
+  @spec list_images(reference(), String.t()) ::
+          {:ok, [{String.t(), String.t()}]} | {:error, atom()}
+  def list_images(_spreadsheet, _sheet_name), do: error()
+
+  @spec get_image_info(reference(), String.t(), String.t()) ::
+          {:ok, {String.t(), String.t(), non_neg_integer(), non_neg_integer()}} | {:error, atom()}
+  def get_image_info(_spreadsheet, _sheet_name, _cell_address), do: error()
+
   # Chart operations
   @spec add_chart(
           reference(),
@@ -912,6 +924,26 @@ defmodule UmyaNative do
 
   @spec remove_pivot_table(reference(), String.t(), String.t()) :: :ok | {:error, atom()}
   def remove_pivot_table(_spreadsheet, _sheet_name, _pivot_table_name), do: error()
+
+  @spec get_pivot_table_names(reference(), String.t()) :: {:ok, [String.t()]} | {:error, atom()}
+  def get_pivot_table_names(_spreadsheet, _sheet_name), do: error()
+
+  @spec get_pivot_table_info(reference(), String.t(), String.t()) ::
+          {:ok, {String.t(), String.t(), String.t(), String.t()}} | {:error, atom()}
+  def get_pivot_table_info(_spreadsheet, _sheet_name, _pivot_table_name), do: error()
+
+  @spec get_pivot_table_source_range(reference(), String.t(), String.t()) ::
+          {:ok, {String.t(), String.t()}} | {:error, atom()}
+  def get_pivot_table_source_range(_spreadsheet, _sheet_name, _pivot_table_name), do: error()
+
+  @spec get_pivot_table_target_cell(reference(), String.t(), String.t()) ::
+          {:ok, String.t()} | {:error, atom()}
+  def get_pivot_table_target_cell(_spreadsheet, _sheet_name, _pivot_table_name), do: error()
+
+  @spec get_pivot_table_fields(reference(), String.t(), String.t()) ::
+          {:ok, {[integer()], [integer()], [{integer(), String.t(), String.t()}]}}
+          | {:error, atom()}
+  def get_pivot_table_fields(_spreadsheet, _sheet_name, _pivot_table_name), do: error()
 
   # Table operations
   @spec add_table(

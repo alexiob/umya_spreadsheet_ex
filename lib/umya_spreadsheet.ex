@@ -972,6 +972,15 @@ defmodule UmyaSpreadsheet do
   defdelegate change_image(spreadsheet, sheet_name, cell_address, new_image_path),
     to: ImageFunctions
 
+  defdelegate get_image_dimensions(spreadsheet, sheet_name, cell_address),
+    to: ImageFunctions
+
+  defdelegate list_images(spreadsheet, sheet_name),
+    to: ImageFunctions
+
+  defdelegate get_image_info(spreadsheet, sheet_name, cell_address),
+    to: ImageFunctions
+
   # Chart Functions delegation
   defdelegate add_chart(
                 spreadsheet,
@@ -1107,6 +1116,23 @@ defmodule UmyaSpreadsheet do
                 data_fields
               ),
               to: PivotTable
+
+  defdelegate has_pivot_tables?(spreadsheet, sheet_name), to: PivotTable
+  defdelegate count_pivot_tables(spreadsheet, sheet_name), to: PivotTable
+  defdelegate refresh_all_pivot_tables(spreadsheet), to: PivotTable
+  defdelegate remove_pivot_table(spreadsheet, sheet_name, pivot_table_name), to: PivotTable
+
+  # PivotTable getter functions delegation
+  defdelegate get_pivot_table_names(spreadsheet, sheet_name), to: PivotTable
+  defdelegate get_pivot_table_info(spreadsheet, sheet_name, pivot_table_name), to: PivotTable
+
+  defdelegate get_pivot_table_source_range(spreadsheet, sheet_name, pivot_table_name),
+    to: PivotTable
+
+  defdelegate get_pivot_table_target_cell(spreadsheet, sheet_name, pivot_table_name),
+    to: PivotTable
+
+  defdelegate get_pivot_table_fields(spreadsheet, sheet_name, pivot_table_name), to: PivotTable
 
   # Table Functions delegation
   defdelegate add_table(

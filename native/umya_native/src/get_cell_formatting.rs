@@ -8,9 +8,9 @@ pub fn get_font_name(
     sheet_name: String,
     cell_address: String,
 ) -> NifResult<String> {
-    let guard = resource.spreadsheet.lock().unwrap();
+    let mut guard = resource.spreadsheet.lock().unwrap();
 
-    match guard.get_sheet_by_name(&sheet_name) {
+    match guard.get_sheet_by_name_mut(&sheet_name) {
         Some(sheet) => {
             if let Some(cell) = sheet.get_cell(&*cell_address) {
                 if let Some(font) = cell.get_style().get_font() {
@@ -35,9 +35,9 @@ pub fn get_font_size(
     sheet_name: String,
     cell_address: String,
 ) -> NifResult<f64> {
-    let guard = resource.spreadsheet.lock().unwrap();
+    let mut guard = resource.spreadsheet.lock().unwrap();
 
-    match guard.get_sheet_by_name(&sheet_name) {
+    match guard.get_sheet_by_name_mut(&sheet_name) {
         Some(sheet) => {
             let cell = sheet.get_cell(&*cell_address);
             if let Some(cell) = cell {

@@ -68,3 +68,27 @@ pub fn get_workbook_protection_details(
             .encode(env),
     }
 }
+
+#[rustler::nif]
+pub fn set_workbook_protection(
+    spreadsheet_resource: rustler::ResourceArc<UmyaSpreadsheet>,
+    password: String,
+) -> rustler::NifResult<rustler::Atom> {
+    let result = panic::catch_unwind(AssertUnwindSafe(|| {        let mut spreadsheet = spreadsheet_resource.spreadsheet.lock().unwrap();
+
+        // Create workbook protection with password
+        let mut protection = umya_spreadsheet::WorkbookProtection::default();
+        protection.set_workbook_password(&password);
+        spreadsheet.set_workbook_protection(protection);
+
+        atoms::ok()
+    }));
+
+    match result {
+        Ok(atom) => Ok(atom),
+        Err(_) => Err(rustler::Error::Term(Box::new((
+            atoms::error(),
+            "Error occurred in set_workbook_protection".to_string(),
+        )))),
+    }
+}

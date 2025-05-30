@@ -139,30 +139,20 @@ pub fn get_row_page_breaks(
     spreadsheet: ResourceArc<UmyaSpreadsheet>,
     sheet_name: String,
 ) -> NifResult<Vec<(u32, bool)>> {
-    let result = std::panic::catch_unwind(|| {
-        let workbook = spreadsheet.spreadsheet.lock().unwrap();
-        if let Some(worksheet) = workbook.get_sheet_by_name(&sheet_name) {
-            let row_breaks = worksheet.get_row_breaks();
-            let breaks: Vec<(u32, bool)> = row_breaks
-                .get_break_list()
-                .iter()
-                .map(|page_break| (*page_break.get_id(), *page_break.get_manual_page_break()))
-                .collect();
-            Ok(breaks)
-        } else {
-            Err(NifError::Term(Box::new((
-                atoms::error(),
-                "sheet_not_found".to_string(),
-            ))))
-        }
-    });
-
-    match result {
-        Ok(r) => r,
-        Err(_) => Err(NifError::Term(Box::new((
+    let mut workbook = spreadsheet.spreadsheet.lock().unwrap();
+    if let Some(worksheet) = workbook.get_sheet_by_name_mut(&sheet_name) {
+        let row_breaks = worksheet.get_row_breaks();
+        let breaks: Vec<(u32, bool)> = row_breaks
+            .get_break_list()
+            .iter()
+            .map(|page_break| (*page_break.get_id(), *page_break.get_manual_page_break()))
+            .collect();
+        Ok(breaks)
+    } else {
+        Err(NifError::Term(Box::new((
             atoms::error(),
-            "unknown_error".to_string(),
-        )))),
+            "sheet_not_found".to_string(),
+        ))))
     }
 }
 
@@ -172,30 +162,20 @@ pub fn get_column_page_breaks(
     spreadsheet: ResourceArc<UmyaSpreadsheet>,
     sheet_name: String,
 ) -> NifResult<Vec<(u32, bool)>> {
-    let result = std::panic::catch_unwind(|| {
-        let workbook = spreadsheet.spreadsheet.lock().unwrap();
-        if let Some(worksheet) = workbook.get_sheet_by_name(&sheet_name) {
-            let column_breaks = worksheet.get_column_breaks();
-            let breaks: Vec<(u32, bool)> = column_breaks
-                .get_break_list()
-                .iter()
-                .map(|page_break| (*page_break.get_id(), *page_break.get_manual_page_break()))
-                .collect();
-            Ok(breaks)
-        } else {
-            Err(NifError::Term(Box::new((
-                atoms::error(),
-                "sheet_not_found".to_string(),
-            ))))
-        }
-    });
-
-    match result {
-        Ok(r) => r,
-        Err(_) => Err(NifError::Term(Box::new((
+    let mut workbook = spreadsheet.spreadsheet.lock().unwrap();
+    if let Some(worksheet) = workbook.get_sheet_by_name_mut(&sheet_name) {
+        let column_breaks = worksheet.get_column_breaks();
+        let breaks: Vec<(u32, bool)> = column_breaks
+            .get_break_list()
+            .iter()
+            .map(|page_break| (*page_break.get_id(), *page_break.get_manual_page_break()))
+            .collect();
+        Ok(breaks)
+    } else {
+        Err(NifError::Term(Box::new((
             atoms::error(),
-            "unknown_error".to_string(),
-        )))),
+            "sheet_not_found".to_string(),
+        ))))
     }
 }
 
@@ -264,29 +244,19 @@ pub fn has_row_page_break(
     sheet_name: String,
     row_number: u32,
 ) -> NifResult<bool> {
-    let result = std::panic::catch_unwind(|| {
-        let workbook = spreadsheet.spreadsheet.lock().unwrap();
-        if let Some(worksheet) = workbook.get_sheet_by_name(&sheet_name) {
-            let row_breaks = worksheet.get_row_breaks();
-            let has_break = row_breaks
-                .get_break_list()
-                .iter()
-                .any(|page_break| *page_break.get_id() == row_number);
-            Ok(has_break)
-        } else {
-            Err(NifError::Term(Box::new((
-                atoms::error(),
-                "sheet_not_found".to_string(),
-            ))))
-        }
-    });
-
-    match result {
-        Ok(r) => r,
-        Err(_) => Err(NifError::Term(Box::new((
+    let mut workbook = spreadsheet.spreadsheet.lock().unwrap();
+    if let Some(worksheet) = workbook.get_sheet_by_name_mut(&sheet_name) {
+        let row_breaks = worksheet.get_row_breaks();
+        let has_break = row_breaks
+            .get_break_list()
+            .iter()
+            .any(|page_break| *page_break.get_id() == row_number);
+        Ok(has_break)
+    } else {
+        Err(NifError::Term(Box::new((
             atoms::error(),
-            "unknown_error".to_string(),
-        )))),
+            "sheet_not_found".to_string(),
+        ))))
     }
 }
 
@@ -297,28 +267,18 @@ pub fn has_column_page_break(
     sheet_name: String,
     column_number: u32,
 ) -> NifResult<bool> {
-    let result = std::panic::catch_unwind(|| {
-        let workbook = spreadsheet.spreadsheet.lock().unwrap();
-        if let Some(worksheet) = workbook.get_sheet_by_name(&sheet_name) {
-            let column_breaks = worksheet.get_column_breaks();
-            let has_break = column_breaks
-                .get_break_list()
-                .iter()
-                .any(|page_break| *page_break.get_id() == column_number);
-            Ok(has_break)
-        } else {
-            Err(NifError::Term(Box::new((
-                atoms::error(),
-                "sheet_not_found".to_string(),
-            ))))
-        }
-    });
-
-    match result {
-        Ok(r) => r,
-        Err(_) => Err(NifError::Term(Box::new((
+    let mut workbook = spreadsheet.spreadsheet.lock().unwrap();
+    if let Some(worksheet) = workbook.get_sheet_by_name_mut(&sheet_name) {
+        let column_breaks = worksheet.get_column_breaks();
+        let has_break = column_breaks
+            .get_break_list()
+            .iter()
+            .any(|page_break| *page_break.get_id() == column_number);
+        Ok(has_break)
+    } else {
+        Err(NifError::Term(Box::new((
             atoms::error(),
-            "unknown_error".to_string(),
-        )))),
+            "sheet_not_found".to_string(),
+        ))))
     }
 }

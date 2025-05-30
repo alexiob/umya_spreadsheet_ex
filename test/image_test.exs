@@ -79,11 +79,11 @@ defmodule UmyaSpreadsheet.ImageTest do
     result =
       UmyaSpreadsheet.download_image(spreadsheet, "ImageSheet", "E5", @downloaded_image_path)
 
-    assert result == {:error, "Sheet not found"}
+    assert result == {:error, "Image not found"}
 
     # Try to change an image that doesn't exist
     result = UmyaSpreadsheet.change_image(spreadsheet, "ImageSheet", "F6", @image_path_2)
-    assert result == {:error, "Sheet not found"}
+    assert result == {:error, "Image not found"}
   end
 
   test "handle errors for non-existent sheets", %{spreadsheet: spreadsheet} do

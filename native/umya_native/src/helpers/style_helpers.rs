@@ -119,6 +119,7 @@ pub fn apply_cell_style(
 /// * `font_size` - Optional font size as f64
 /// * `is_bold` - Optional boolean to set bold text
 ///
+#[allow(dead_code)]
 pub fn apply_row_style(
     sheet: &mut umya_spreadsheet::Worksheet,
     row_number: u32,
