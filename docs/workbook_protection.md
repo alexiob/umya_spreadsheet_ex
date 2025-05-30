@@ -13,10 +13,10 @@ alias UmyaSpreadsheet
 {:ok, spreadsheet} = UmyaSpreadsheet.read("protected_document.xlsx")
 
 # Check if the workbook has protection enabled
-if UmyaSpreadsheet.is_workbook_protected(spreadsheet) do
-  IO.puts("This workbook has protection enabled")
-else
-  IO.puts("This workbook is not protected")
+case UmyaSpreadsheet.is_workbook_protected(spreadsheet) do
+  {:ok, true} -> IO.puts("This workbook has protection enabled")
+  {:ok, false} -> IO.puts("This workbook is not protected")
+  {:error, reason} -> IO.puts("Error checking protection: #{reason}")
 end
 ```
 
@@ -26,19 +26,22 @@ You can retrieve detailed information about the workbook protection settings:
 
 ```elixir
 # Get protection details
-protection_details = UmyaSpreadsheet.get_workbook_protection_details(spreadsheet)
+case UmyaSpreadsheet.get_workbook_protection_details(spreadsheet) do
+  {:ok, protection_details} ->
+    # Check specific protection settings
+    if protection_details["lock_structure"] == "true" do
+      IO.puts("The workbook structure is locked (cannot add/remove/rename sheets)")
+    end
 
-# Check specific protection settings
-if protection_details[:lock_structure] do
-  IO.puts("The workbook structure is locked (cannot add/remove/rename sheets)")
-end
+    if protection_details["lock_windows"] == "true" do
+      IO.puts("The workbook windows are locked")
+    end
 
-if protection_details[:lock_windows] do
-  IO.puts("The workbook windows are locked")
-end
-
-if protection_details[:lock_revision] do
-  IO.puts("Revision tracking is locked")
+    if protection_details["lock_revision"] == "true" do
+      IO.puts("Revision tracking is locked")
+    end
+  {:error, reason} ->
+    IO.puts("Error getting protection details: #{reason}")
 end
 ```
 

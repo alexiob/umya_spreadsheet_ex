@@ -1539,6 +1539,215 @@ defmodule UmyaSpreadsheet do
   defdelegate get_defined_names(spreadsheet),
     to: FormulaFunctions
 
+  @doc """
+  Checks if a cell contains a formula.
+
+  ## Examples
+
+      iex> {:ok, spreadsheet} = UmyaSpreadsheet.new()
+      iex> UmyaSpreadsheet.set_formula(spreadsheet, "Sheet1", "A1", "=SUM(B1:B10)")
+      iex> UmyaSpreadsheet.is_formula(spreadsheet, "Sheet1", "A1")
+      true
+      iex> UmyaSpreadsheet.is_formula(spreadsheet, "Sheet1", "B1")
+      false
+  """
+  defdelegate is_formula(spreadsheet, sheet_name, cell_address),
+    to: FormulaFunctions
+
+  @doc """
+  Gets the formula text from a cell.
+
+  ## Examples
+
+      iex> {:ok, spreadsheet} = UmyaSpreadsheet.new()
+      iex> UmyaSpreadsheet.set_formula(spreadsheet, "Sheet1", "A1", "=SUM(B1:B10)")
+      iex> UmyaSpreadsheet.get_formula(spreadsheet, "Sheet1", "A1")
+      "=SUM(B1:B10)"
+  """
+  defdelegate get_formula(spreadsheet, sheet_name, cell_address),
+    to: FormulaFunctions
+
+  @doc """
+  Gets the complete formula object from a cell, returning detailed information.
+
+  ## Examples
+
+      iex> {:ok, spreadsheet} = UmyaSpreadsheet.new()
+      iex> UmyaSpreadsheet.set_formula(spreadsheet, "Sheet1", "A1", "=SUM(B1:B10)")
+      iex> {text, type, _shared_index, _reference} = UmyaSpreadsheet.get_formula_obj(spreadsheet, "Sheet1", "A1")
+      iex> text
+      "=SUM(B1:B10)"
+      iex> type
+      "Normal"
+  """
+  defdelegate get_formula_obj(spreadsheet, sheet_name, cell_address),
+    to: FormulaFunctions
+
+  @doc """
+  Gets the shared index of a formula in a cell.
+
+  ## Examples
+
+      iex> {:ok, spreadsheet} = UmyaSpreadsheet.new()
+      iex> UmyaSpreadsheet.set_formula(spreadsheet, "Sheet1", "A1", "=SUM(B1:B10)")
+      iex> UmyaSpreadsheet.get_formula_shared_index(spreadsheet, "Sheet1", "A1")
+      nil
+  """
+  defdelegate get_formula_shared_index(spreadsheet, sheet_name, cell_address),
+    to: FormulaFunctions
+
+  @doc """
+  Gets the text content of a formula in a cell.
+
+  ## Examples
+
+      iex> {:ok, spreadsheet} = UmyaSpreadsheet.new()
+      iex> UmyaSpreadsheet.set_formula(spreadsheet, "Sheet1", "A1", "=SUM(B1:B10)")
+      iex> UmyaSpreadsheet.get_text(spreadsheet, "Sheet1", "A1")
+      "=SUM(B1:B10)"
+  """
+  defdelegate get_text(spreadsheet, sheet_name, cell_address),
+    to: FormulaFunctions
+
+  @doc """
+  Gets the formula type of a cell.
+
+  ## Examples
+
+      iex> {:ok, spreadsheet} = UmyaSpreadsheet.new()
+      iex> UmyaSpreadsheet.set_formula(spreadsheet, "Sheet1", "A1", "=SUM(B1:B10)")
+      iex> UmyaSpreadsheet.get_formula_type(spreadsheet, "Sheet1", "A1")
+      "Normal"
+  """
+  defdelegate get_formula_type(spreadsheet, sheet_name, cell_address),
+    to: FormulaFunctions
+
+  @doc """
+  Gets the shared index of a formula.
+
+  ## Examples
+
+      iex> {:ok, spreadsheet} = UmyaSpreadsheet.new()
+      iex> UmyaSpreadsheet.set_formula(spreadsheet, "Sheet1", "A1", "=A1+1")
+      iex> UmyaSpreadsheet.get_shared_index(spreadsheet, "Sheet1", "A1")
+      nil
+  """
+  defdelegate get_shared_index(spreadsheet, sheet_name, cell_address),
+    to: FormulaFunctions
+
+  @doc """
+  Gets the reference of a formula.
+
+  ## Examples
+
+      iex> {:ok, spreadsheet} = UmyaSpreadsheet.new()
+      iex> UmyaSpreadsheet.set_array_formula(spreadsheet, "Sheet1", "A1:A3", "ROW(1:3)")
+      iex> UmyaSpreadsheet.get_reference(spreadsheet, "Sheet1", "A1")
+      nil
+  """
+  defdelegate get_reference(spreadsheet, sheet_name, cell_address),
+    to: FormulaFunctions
+
+  @doc """
+  Gets the bx property of a formula.
+
+  The bx property indicates whether the formula calculation
+  should be done on exit from the cell.
+
+  ## Examples
+
+      iex> {:ok, spreadsheet} = UmyaSpreadsheet.new()
+      iex> UmyaSpreadsheet.set_formula(spreadsheet, "Sheet1", "A1", "=SUM(B1:B10)")
+      iex> UmyaSpreadsheet.get_bx(spreadsheet, "Sheet1", "A1")
+      nil
+  """
+  defdelegate get_bx(spreadsheet, sheet_name, cell_address),
+    to: FormulaFunctions
+
+  @doc """
+  Gets the data table 2D property of a formula.
+
+  ## Examples
+
+      iex> {:ok, spreadsheet} = UmyaSpreadsheet.new()
+      iex> UmyaSpreadsheet.set_formula(spreadsheet, "Sheet1", "A1", "=SUM(B1:B10)")
+      iex> UmyaSpreadsheet.get_data_table_2d(spreadsheet, "Sheet1", "A1")
+      nil
+  """
+  defdelegate get_data_table_2d(spreadsheet, sheet_name, cell_address),
+    to: FormulaFunctions
+
+  @doc """
+  Gets the data table row property of a formula.
+
+  ## Examples
+
+      iex> {:ok, spreadsheet} = UmyaSpreadsheet.new()
+      iex> UmyaSpreadsheet.set_formula(spreadsheet, "Sheet1", "A1", "=SUM(B1:B10)")
+      iex> UmyaSpreadsheet.get_data_table_row(spreadsheet, "Sheet1", "A1")
+      nil
+  """
+  defdelegate get_data_table_row(spreadsheet, sheet_name, cell_address),
+    to: FormulaFunctions
+
+  @doc """
+  Gets the input 1 deleted property of a formula.
+
+  ## Examples
+
+      iex> {:ok, spreadsheet} = UmyaSpreadsheet.new()
+      iex> UmyaSpreadsheet.set_formula(spreadsheet, "Sheet1", "A1", "=SUM(B1:B10)")
+      iex> UmyaSpreadsheet.get_input_1deleted(spreadsheet, "Sheet1", "A1")
+      nil
+  """
+  defdelegate get_input_1deleted(spreadsheet, sheet_name, cell_address),
+    to: FormulaFunctions
+
+  @doc """
+  Gets the input 2 deleted property of a formula.
+
+  ## Examples
+
+      iex> {:ok, spreadsheet} = UmyaSpreadsheet.new()
+      iex> UmyaSpreadsheet.set_formula(spreadsheet, "Sheet1", "A1", "=SUM(B1:B10)")
+      iex> UmyaSpreadsheet.get_input_2deleted(spreadsheet, "Sheet1", "A1")
+      nil
+  """
+  defdelegate get_input_2deleted(spreadsheet, sheet_name, cell_address),
+    to: FormulaFunctions
+
+  @doc """
+  Gets the R1 property of a formula.
+
+  The R1 property is used in data table formulas to specify
+  the first input cell reference.
+
+  ## Examples
+
+      iex> {:ok, spreadsheet} = UmyaSpreadsheet.new()
+      iex> UmyaSpreadsheet.set_formula(spreadsheet, "Sheet1", "A1", "=SUM(B1:B10)")
+      iex> UmyaSpreadsheet.get_r1(spreadsheet, "Sheet1", "A1")
+      nil
+  """
+  defdelegate get_r1(spreadsheet, sheet_name, cell_address),
+    to: FormulaFunctions
+
+  @doc """
+  Gets the R2 property of a formula.
+
+  The R2 property is used in data table formulas to specify
+  the second input cell reference.
+
+  ## Examples
+
+      iex> {:ok, spreadsheet} = UmyaSpreadsheet.new()
+      iex> UmyaSpreadsheet.set_formula(spreadsheet, "Sheet1", "A1", "=SUM(B1:B10)")
+      iex> UmyaSpreadsheet.get_r2(spreadsheet, "Sheet1", "A1")
+      nil
+  """
+  defdelegate get_r2(spreadsheet, sheet_name, cell_address),
+    to: FormulaFunctions
+
   # File Format Options
 
   @doc """

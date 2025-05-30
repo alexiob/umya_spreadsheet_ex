@@ -383,12 +383,15 @@ UmyaSpreadsheet.write(spreadsheet, "sales_calculator.xlsx")
 You can retrieve all defined names in a workbook:
 
 ```elixir
-defined_names = UmyaSpreadsheet.get_defined_names(spreadsheet)
-# Returns: [{"Data", "Sheet1!A1:A10"}, {"TaxRate", "0.15"}, ...]
-
-# Display all defined names
-Enum.each(defined_names, fn {name, address} ->
-  IO.puts("#{name}: #{address}")
+case UmyaSpreadsheet.get_defined_names(spreadsheet) do
+  defined_names when is_list(defined_names) ->
+    # Display all defined names
+    Enum.each(defined_names, fn {name, address} ->
+      IO.puts("#{name}: #{address}")
+    end)
+  {:error, reason} ->
+    IO.puts("Error getting defined names: #{reason}")
+end
 end)
 ```
 
@@ -403,9 +406,9 @@ alias UmyaSpreadsheet
 {:ok, spreadsheet} = UmyaSpreadsheet.read("financial_model.xlsx")
 
 # Get a list of all defined names
-defined_names = UmyaSpreadsheet.get_defined_names(spreadsheet)
-
-# Create a documentation sheet
+case UmyaSpreadsheet.get_defined_names(spreadsheet) do
+  defined_names when is_list(defined_names) ->
+    # Create a documentation sheet
 UmyaSpreadsheet.add_sheet(spreadsheet, "Documentation")
 
 # Add headers
@@ -443,9 +446,10 @@ alias UmyaSpreadsheet
 # Function to analyze a spreadsheet for complex formulas
 def analyze_spreadsheet_formulas(path) do
   {:ok, spreadsheet} = UmyaSpreadsheet.read(path)
-  defined_names = UmyaSpreadsheet.get_defined_names(spreadsheet)
 
-  # Group defined names by their complexity
+  case UmyaSpreadsheet.get_defined_names(spreadsheet) do
+    defined_names when is_list(defined_names) ->
+      # Group defined names by their complexity
   {simple_formulas, complex_formulas} = Enum.split_with(defined_names, fn {_name, formula} ->
     # Simple heuristic: formulas with fewer than 3 operators are "simple"
     operator_count = formula
@@ -761,6 +765,48 @@ UmyaSpreadsheet.add_chart(
 # Save the dashboard spreadsheet
 UmyaSpreadsheet.write(spreadsheet, "sales_dashboard.xlsx")
 ```
+
+## Working with Formula Properties
+
+UmyaSpreadsheet provides several functions to retrieve formula properties from cells:
+
+```elixir
+alias UmyaSpreadsheet
+
+# Create a spreadsheet with a formula
+{:ok, spreadsheet} = UmyaSpreadsheet.new()
+UmyaSpreadsheet.set_array_formula(spreadsheet, "Sheet1", "A1:A3", "ROW(1:3)")
+
+# Check if a cell contains a formula
+is_formula = UmyaSpreadsheet.is_formula(spreadsheet, "Sheet1", "A1")
+# => true
+
+# Get the formula text from a cell
+formula = UmyaSpreadsheet.get_formula(spreadsheet, "Sheet1", "A1")
+# => "=ROW(1:3)"
+
+# Get formula type (Normal, Array, DataTable, Shared)
+type = UmyaSpreadsheet.get_formula_type(spreadsheet, "Sheet1", "A1")
+# => "Array"
+
+# Get the formula shared index (for shared formulas)
+shared_index = UmyaSpreadsheet.get_formula_shared_index(spreadsheet, "Sheet1", "A1")
+# => nil (for non-shared formulas)
+
+# Get the complete formula object with all details
+{text, type, shared_index, reference} = UmyaSpreadsheet.get_formula_obj(spreadsheet, "Sheet1", "A1")
+# => {"=ROW(1:3)", "Array", nil, nil}
+```
+
+### Formula Property Return Values
+
+When a property is not applicable to a particular formula, the getter functions return `nil`:
+
+- Integer properties (like `shared_index`) return `nil` instead of `0` when not applicable
+- Boolean properties (like `bx`, `data_table_2d`) return `nil` instead of `false` when not applicable
+- String properties (like `r1`, `r2`) return `nil` instead of empty strings when not applicable
+
+This makes it easier to distinguish between default values and actual property values.
 
 ## Limitations
 

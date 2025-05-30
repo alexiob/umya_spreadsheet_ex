@@ -54,10 +54,10 @@ You can check if a worksheet already has auto filters:
 
 ```elixir
 # Check if the worksheet has an auto filter
-if UmyaSpreadsheet.has_auto_filter(spreadsheet, "Sheet1") do
-  IO.puts("Sheet1 has an auto filter")
-else
-  IO.puts("Sheet1 does not have an auto filter")
+case UmyaSpreadsheet.has_auto_filter(spreadsheet, "Sheet1") do
+  true -> IO.puts("Sheet1 has an auto filter")
+  false -> IO.puts("Sheet1 does not have an auto filter")
+  {:error, reason} -> IO.puts("Error checking auto filter: #{reason}")
 end
 ```
 
@@ -69,7 +69,8 @@ To retrieve the range of cells that have auto filters applied:
 # Get the range of the auto filter
 case UmyaSpreadsheet.get_auto_filter_range(spreadsheet, "Sheet1") do
   nil -> IO.puts("No auto filter is set on Sheet1")
-  range -> IO.puts("Auto filter range: #{range}")
+  range when is_binary(range) -> IO.puts("Auto filter range: #{range}")
+  {:error, reason} -> IO.puts("Error getting auto filter range: #{reason}")
 end
 ```
 
@@ -138,6 +139,7 @@ UmyaSpreadsheet.write(spreadsheet, "financial_report.xlsx")
 ```
 
 With this setup, users can:
+
 - Filter transactions by category
 - Sort by amount (largest to smallest)
 - Filter to see only expenses (negative amounts)

@@ -30,8 +30,10 @@ UmyaSpreadsheet.set_page_orientation(spreadsheet, "Sheet1", "landscape")
 UmyaSpreadsheet.set_page_orientation(spreadsheet, "Sheet1", "portrait")
 
 # Get current orientation
-orientation = UmyaSpreadsheet.get_page_orientation(spreadsheet, "Sheet1")
-IO.puts("Current orientation: #{orientation}")  # "landscape" or "portrait"
+case UmyaSpreadsheet.get_page_orientation(spreadsheet, "Sheet1") do
+  {:ok, orientation} -> IO.puts("Current orientation: #{orientation}")  # "landscape" or "portrait"
+  {:error, reason} -> IO.puts("Error: #{reason}")
+end
 ```
 
 ### Paper Size
@@ -46,7 +48,7 @@ UmyaSpreadsheet.set_paper_size(spreadsheet, "Sheet1", 9)
 UmyaSpreadsheet.set_paper_size(spreadsheet, "Sheet1", 1)
 
 # Get current paper size
-paper_size = UmyaSpreadsheet.get_paper_size(spreadsheet, "Sheet1")
+{:ok, paper_size} = UmyaSpreadsheet.get_paper_size(spreadsheet, "Sheet1")
 IO.puts("Current paper size code: #{paper_size}")
 ```
 
@@ -66,7 +68,7 @@ Scale the content to a percentage of its original size:
 UmyaSpreadsheet.set_page_scale(spreadsheet, "Sheet1", 75)
 
 # Get current scale
-scale = UmyaSpreadsheet.get_page_scale(spreadsheet, "Sheet1")
+{:ok, scale} = UmyaSpreadsheet.get_page_scale(spreadsheet, "Sheet1")
 IO.puts("Current scale: #{scale}%")  # Example: 75
 ```
 
@@ -121,7 +123,7 @@ Set header content with formatting codes:
 UmyaSpreadsheet.set_header(spreadsheet, "Sheet1", "&C&\"Arial,Bold\"Confidential Document")
 
 # Get current header
-header_text = UmyaSpreadsheet.get_header(spreadsheet, "Sheet1")
+{:ok, header_text} = UmyaSpreadsheet.get_header(spreadsheet, "Sheet1")
 IO.puts("Current header: #{header_text}")
 ```
 
@@ -132,7 +134,7 @@ Set footer content:
 UmyaSpreadsheet.set_footer(spreadsheet, "Sheet1", "&RPage &P of &N")
 
 # Get current footer
-footer_text = UmyaSpreadsheet.get_footer(spreadsheet, "Sheet1")
+{:ok, footer_text} = UmyaSpreadsheet.get_footer(spreadsheet, "Sheet1")
 IO.puts("Current footer: #{footer_text}")
 ```
 
@@ -165,16 +167,16 @@ You can retrieve current print settings to inspect or modify existing spreadshee
 
 ```elixir
 # Get all current print settings
-orientation = UmyaSpreadsheet.get_page_orientation(spreadsheet, "Sheet1")
-paper_size = UmyaSpreadsheet.get_paper_size(spreadsheet, "Sheet1")
-scale = UmyaSpreadsheet.get_page_scale(spreadsheet, "Sheet1")
+{:ok, orientation} = UmyaSpreadsheet.get_page_orientation(spreadsheet, "Sheet1")
+{:ok, paper_size} = UmyaSpreadsheet.get_paper_size(spreadsheet, "Sheet1")
+{:ok, scale} = UmyaSpreadsheet.get_page_scale(spreadsheet, "Sheet1")
 {fit_width, fit_height} = UmyaSpreadsheet.get_fit_to_page(spreadsheet, "Sheet1")
 {top, right, bottom, left} = UmyaSpreadsheet.get_page_margins(spreadsheet, "Sheet1")
 {header_margin, footer_margin} = UmyaSpreadsheet.get_header_footer_margins(spreadsheet, "Sheet1")
-header = UmyaSpreadsheet.get_header(spreadsheet, "Sheet1")
-footer = UmyaSpreadsheet.get_footer(spreadsheet, "Sheet1")
+{:ok, header} = UmyaSpreadsheet.get_header(spreadsheet, "Sheet1")
+{:ok, footer} = UmyaSpreadsheet.get_footer(spreadsheet, "Sheet1")
 {h_center, v_center} = UmyaSpreadsheet.get_print_centered(spreadsheet, "Sheet1")
-print_area = UmyaSpreadsheet.get_print_area(spreadsheet, "Sheet1")
+{:ok, print_area} = UmyaSpreadsheet.get_print_area(spreadsheet, "Sheet1")
 {title_rows, title_cols} = UmyaSpreadsheet.get_print_titles(spreadsheet, "Sheet1")
 
 IO.puts("Print Settings for Sheet1:")
@@ -216,10 +218,9 @@ Define a specific area to print:
 UmyaSpreadsheet.set_print_area(spreadsheet, "Sheet1", "A1:H20")
 
 # Get current print area
-area = UmyaSpreadsheet.get_print_area(spreadsheet, "Sheet1")
-case area do
-  nil -> IO.puts("No print area defined")
-  range -> IO.puts("Print area: #{range}")
+case UmyaSpreadsheet.get_print_area(spreadsheet, "Sheet1") do
+  {:ok, range} -> IO.puts("Print area: #{range}")
+  {:error, _} -> IO.puts("No print area defined")
 end
 ```
 
@@ -265,10 +266,10 @@ UmyaSpreadsheet.set_print_area(spreadsheet, "Sheet1", "A1:G20")
 UmyaSpreadsheet.set_print_titles(spreadsheet, "Sheet1", "1:1", "")
 
 # Verify the settings were applied
-orientation = UmyaSpreadsheet.get_page_orientation(spreadsheet, "Sheet1")
-paper_size = UmyaSpreadsheet.get_paper_size(spreadsheet, "Sheet1")
+{:ok, orientation} = UmyaSpreadsheet.get_page_orientation(spreadsheet, "Sheet1")
+{:ok, paper_size} = UmyaSpreadsheet.get_paper_size(spreadsheet, "Sheet1")
 {fit_width, fit_height} = UmyaSpreadsheet.get_fit_to_page(spreadsheet, "Sheet1")
-print_area = UmyaSpreadsheet.get_print_area(spreadsheet, "Sheet1")
+{:ok, print_area} = UmyaSpreadsheet.get_print_area(spreadsheet, "Sheet1")
 
 IO.puts("Applied settings:")
 IO.puts("  Orientation: #{orientation}")      # "landscape"

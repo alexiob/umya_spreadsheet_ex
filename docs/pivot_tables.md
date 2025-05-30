@@ -32,6 +32,7 @@ UmyaSpreadsheet.add_pivot_table(
 ```
 
 This will create a pivot table that:
+
 - Uses the first column (index 0) as row labels
 - Uses the second column (index 1) as column labels
 - Sums the values from the third column (index 2) at the intersections
@@ -114,11 +115,12 @@ UmyaSpreadsheet provides several functions to manage pivot tables:
 ```elixir
 # Check if a sheet has any pivot tables
 if UmyaSpreadsheet.has_pivot_tables?(spreadsheet, "PivotSheet") do
-  # Do something with sheets that have pivot tables
+  IO.puts("Sheet has pivot tables")
 end
 
 # Count pivot tables in a sheet
 count = UmyaSpreadsheet.count_pivot_tables(spreadsheet, "PivotSheet")
+IO.puts("Sheet has #{count} pivot tables")
 ```
 
 ### Refreshing Pivot Tables

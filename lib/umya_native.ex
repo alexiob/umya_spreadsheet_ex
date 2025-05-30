@@ -1480,6 +1480,104 @@ defmodule UmyaNative do
   def get_defined_names(_spreadsheet), do: error()
 
   @doc """
+  Checks if a cell contains a formula.
+  """
+  @spec is_formula(reference(), String.t(), String.t()) :: boolean() | {:error, atom()}
+  def is_formula(_spreadsheet, _sheet_name, _cell_address), do: error()
+
+  @doc """
+  Gets the formula text from a cell.
+  """
+  @spec get_formula(reference(), String.t(), String.t()) :: String.t() | {:error, atom()}
+  def get_formula(_spreadsheet, _sheet_name, _cell_address), do: error()
+
+  @doc """
+  Gets the complete formula object from a cell, returning {text, type, shared_index, reference}.
+  """
+  @spec get_formula_obj(reference(), String.t(), String.t()) ::
+          {String.t(), String.t(), integer() | nil, String.t() | nil} | {:error, atom()}
+  def get_formula_obj(_spreadsheet, _sheet_name, _cell_address), do: error()
+
+  @doc """
+  Gets the shared index of a formula in a cell.
+  """
+  @spec get_formula_shared_index(reference(), String.t(), String.t()) ::
+          integer() | nil | {:error, atom()}
+  def get_formula_shared_index(_spreadsheet, _sheet_name, _cell_address), do: error()
+
+  @doc """
+  Gets the text content of a formula in a cell.
+  """
+  @spec get_text(reference(), String.t(), String.t()) :: String.t() | {:error, atom()}
+  def get_text(_spreadsheet, _sheet_name, _cell_address), do: error()
+
+  @doc """
+  Gets the formula type of a cell.
+  """
+  @spec get_formula_type(reference(), String.t(), String.t()) :: String.t() | {:error, atom()}
+  def get_formula_type(_spreadsheet, _sheet_name, _cell_address), do: error()
+
+  @doc """
+  Gets the shared index of a formula.
+  """
+  @spec get_shared_index(reference(), String.t(), String.t()) ::
+          integer() | nil | {:error, atom()}
+  def get_shared_index(_spreadsheet, _sheet_name, _cell_address), do: error()
+
+  @doc """
+  Gets the reference of a formula.
+  """
+  @spec get_reference(reference(), String.t(), String.t()) ::
+          String.t() | nil | {:error, atom()}
+  def get_reference(_spreadsheet, _sheet_name, _cell_address), do: error()
+
+  @doc """
+  Gets the bx property of a formula.
+  """
+  @spec get_bx(reference(), String.t(), String.t()) :: boolean() | nil | {:error, atom()}
+  def get_bx(_spreadsheet, _sheet_name, _cell_address), do: error()
+
+  @doc """
+  Gets the data table 2D property of a formula.
+  """
+  @spec get_data_table_2d(reference(), String.t(), String.t()) ::
+          boolean() | nil | {:error, atom()}
+  def get_data_table_2d(_spreadsheet, _sheet_name, _cell_address), do: error()
+
+  @doc """
+  Gets the data table row property of a formula.
+  """
+  @spec get_data_table_row(reference(), String.t(), String.t()) ::
+          boolean() | nil | {:error, atom()}
+  def get_data_table_row(_spreadsheet, _sheet_name, _cell_address), do: error()
+
+  @doc """
+  Gets the input 1 deleted property of a formula.
+  """
+  @spec get_input_1deleted(reference(), String.t(), String.t()) ::
+          boolean() | nil | {:error, atom()}
+  def get_input_1deleted(_spreadsheet, _sheet_name, _cell_address), do: error()
+
+  @doc """
+  Gets the input 2 deleted property of a formula.
+  """
+  @spec get_input_2deleted(reference(), String.t(), String.t()) ::
+          boolean() | nil | {:error, atom()}
+  def get_input_2deleted(_spreadsheet, _sheet_name, _cell_address), do: error()
+
+  @doc """
+  Gets the R1 property of a formula.
+  """
+  @spec get_r1(reference(), String.t(), String.t()) :: String.t() | nil | {:error, atom()}
+  def get_r1(_spreadsheet, _sheet_name, _cell_address), do: error()
+
+  @doc """
+  Gets the R2 property of a formula.
+  """
+  @spec get_r2(reference(), String.t(), String.t()) :: String.t() | nil | {:error, atom()}
+  def get_r2(_spreadsheet, _sheet_name, _cell_address), do: error()
+
+  @doc """
   Sets an auto filter for a range of cells in a worksheet.
   """
   @spec set_auto_filter(reference(), String.t(), String.t()) :: :ok | {:error, atom()}

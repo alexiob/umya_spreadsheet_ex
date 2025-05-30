@@ -24,6 +24,7 @@ UmyaSpreadsheet.write(spreadsheet, "comments_example.xlsx")
 ```
 
 The `add_comment` function allows you to specify:
+
 - The spreadsheet to modify
 - The sheet name where the cell is located
 - The cell address to add the comment to
@@ -84,10 +85,10 @@ UmyaSpreadsheet.remove_comment(spreadsheet, "Sheet1", "B2")
 You can check if a worksheet contains any comments:
 
 ```elixir
-if UmyaSpreadsheet.has_comments(spreadsheet, "Sheet1") do
-  IO.puts("Sheet1 contains comments")
-else
-  IO.puts("Sheet1 has no comments")
+case UmyaSpreadsheet.has_comments(spreadsheet, "Sheet1") do
+  true -> IO.puts("Sheet1 contains comments")
+  false -> IO.puts("Sheet1 has no comments")
+  {:error, reason} -> IO.puts("Error checking comments: #{reason}")
 end
 ```
 
@@ -96,8 +97,10 @@ end
 To get the number of comments in a worksheet:
 
 ```elixir
-comment_count = UmyaSpreadsheet.get_comments_count(spreadsheet, "Sheet1")
-IO.puts("Sheet1 has #{comment_count} comments")
+case UmyaSpreadsheet.get_comments_count(spreadsheet, "Sheet1") do
+  count when is_integer(count) -> IO.puts("Sheet1 has #{count} comments")
+  {:error, reason} -> IO.puts("Error getting comment count: #{reason}")
+end
 ```
 
 ## Best Practices

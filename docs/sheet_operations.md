@@ -96,15 +96,17 @@ Get the total number of sheets in a spreadsheet:
 
 ```elixir
 count = UmyaSpreadsheet.SheetFunctions.get_sheet_count(spreadsheet)
-# => 3 (if there are 3 sheets in the workbook)
+# => 3 (returns direct integer value)
 ```
+
+Note: `get_sheet_count` returns a direct integer value rather than a tuple, as it cannot fail for valid spreadsheet references.
 
 ### Getting Active Sheet
 
 Get the index of the currently active sheet:
 
 ```elixir
-active_index = UmyaSpreadsheet.SheetFunctions.get_active_sheet(spreadsheet)
+{:ok, active_index} = UmyaSpreadsheet.SheetFunctions.get_active_sheet(spreadsheet)
 # => {:ok, 0} (zero-based index, meaning first sheet is active)
 ```
 

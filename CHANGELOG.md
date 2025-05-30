@@ -1,5 +1,69 @@
 # Changelog
 
+## 0.6.15 - 2025-05-31
+
+### Fixed
+
+- **Formula Functions Module Fixes**:
+  - **Parameter Type Mismatches** - Fixed functions passing incorrect types to NIFs
+    - Modified 10 formula getter functions to properly extract references from Spreadsheet structs
+    - Resolved ArgumentError issues in `get_formula_type/3`, `get_shared_index/3`, `get_reference/3`, `get_bx/3`, `get_data_table_2d/3`, `get_data_table_row/3`, `get_input_1deleted/3`, `get_input_2deleted/3`, `get_r1/3`, and `get_r2/3`
+  - **Default Value Handling** - Improved null value handling for formula properties
+    - Implemented consistent conversion from default values to `nil`
+    - Fixed numeric properties to convert `0` to `nil` when appropriate
+    - Fixed boolean properties to convert `false` to `nil` when appropriate
+    - Fixed string properties to convert empty strings to `nil` when appropriate
+  - **Doctest Corrections** - Updated doctests to match actual function behavior
+    - Fixed `get_reference/3` doctest expectations to match true function behavior
+
+### Documentation
+
+- **Formula Function Guide Enhancements**:
+  - Added new section on working with formula properties
+  - Documented new consistent behavior for formula property default values
+  - Added examples for formula property getter functions
+  - Clarified return value expectations for different property types
+
+### Technical Details
+
+- **Type Handling** - Fixed all remaining functions that were incorrectly passing Spreadsheet structs to NIFs expecting references
+- **Parameter Extraction** - Now correctly extracting `reference` field from Spreadsheet structs before passing to NIFs
+- **Default Value Standardization** - Consistently treating default values as `nil` for better developer experience and API consistency
+- **Test Coverage** - All 600 doctests and 409 regular tests now pass with the new fixes
+
+## 0.6.14 - 2025-05-30
+
+### Documentation
+
+- **Error Handling Documentation Updates** - Fixed all documentation examples to match actual function return types and demonstrate proper error handling patterns
+- **Return Type Clarification** - Added explicit notes about which functions return direct values vs. tuples, ensuring documentation accuracy
+- **Function Signature Verification** - Updated all guide examples to reflect actual wrapper function behavior and NIF specifications
+- **Auto Filter Documentation** - Fixed error handling examples for `has_auto_filter/2` and `get_auto_filter_range/2` functions
+
+### Fixed
+
+- **Documentation Consistency Updates**:
+  - **Error Handling Standardization** - Updated all documentation examples to match actual function return types
+    - Fixed workbook protection examples to use proper `{:ok, boolean()}` pattern matching instead of direct if statements
+    - Updated comment checking examples to handle `boolean() | {:error, atom()}` return types properly
+    - Corrected formula function examples to show proper error handling for `get_defined_names/1`
+    - Fixed sheet operations examples to show correct tuple destructuring for `get_active_sheet/1`
+    - Updated print settings examples to demonstrate proper error handling for getter functions
+  - **Return Type Documentation** - Clarified which functions return direct values vs. tuples
+    - Added explicit notes about `get_sheet_count/1` returning direct integer values
+    - Documented error handling patterns for functions that can fail vs. those that cannot
+    - Fixed inconsistent documentation showing wrong assignment patterns
+  - **Function Signature Verification** - Ensured all documented examples match actual wrapper function behavior
+    - Verified ErrorHandling.standardize_result() usage patterns across different modules
+    - Confirmed NIF function specifications align with wrapper implementations
+    - Updated examples to reflect actual return type standardization
+
+### Technical Details
+
+- **Documentation Accuracy** - All getter function examples now correctly demonstrate error handling patterns
+- **Consistency Improvements** - Standardized error handling examples across all guide documents
+- **User Experience** - Developers can now copy-paste documentation examples with confidence they will work correctly
+
 ## 0.6.13 - 2025-05-30
 
 ### Added
