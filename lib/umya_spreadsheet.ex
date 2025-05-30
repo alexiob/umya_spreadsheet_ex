@@ -631,6 +631,40 @@ defmodule UmyaSpreadsheet do
   defdelegate set_print_titles(spreadsheet, sheet_name, rows, columns),
     to: PrintSettings
 
+  # Print Settings getter functions delegation
+  defdelegate get_page_orientation(spreadsheet, sheet_name),
+    to: PrintSettings
+
+  defdelegate get_paper_size(spreadsheet, sheet_name),
+    to: PrintSettings
+
+  defdelegate get_page_scale(spreadsheet, sheet_name),
+    to: PrintSettings
+
+  defdelegate get_fit_to_page(spreadsheet, sheet_name),
+    to: PrintSettings
+
+  defdelegate get_page_margins(spreadsheet, sheet_name),
+    to: PrintSettings
+
+  defdelegate get_header_footer_margins(spreadsheet, sheet_name),
+    to: PrintSettings
+
+  defdelegate get_header(spreadsheet, sheet_name),
+    to: PrintSettings
+
+  defdelegate get_footer(spreadsheet, sheet_name),
+    to: PrintSettings
+
+  defdelegate get_print_centered(spreadsheet, sheet_name),
+    to: PrintSettings
+
+  defdelegate get_print_area(spreadsheet, sheet_name),
+    to: PrintSettings
+
+  defdelegate get_print_titles(spreadsheet, sheet_name),
+    to: PrintSettings
+
   # Sheet View Functions delegation
   defdelegate set_show_grid_lines(spreadsheet, sheet_name, show_gridlines),
     to: SheetViewFunctions

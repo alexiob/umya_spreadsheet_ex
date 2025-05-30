@@ -1,5 +1,37 @@
 # Changelog
 
+## 0.6.13 - 2025-05-30
+
+### Added
+
+- **Print Settings Getter Functions**:
+  - **Page Setup Inspection** - Retrieve current print and page setup settings
+    - `UmyaSpreadsheet.get_page_orientation/2` - Get page orientation ("portrait" or "landscape", default: "portrait")
+    - `UmyaSpreadsheet.get_paper_size/2` - Get paper size code (default: 1 for Letter)
+    - `UmyaSpreadsheet.get_page_scale/2` - Get page scale percentage (default: 100)
+    - `UmyaSpreadsheet.get_fit_to_page/2` - Get fit-to-page settings as {width, height} tuple (default: {1, 1})
+  - **Margin Inspection** - Retrieve page and header/footer margin settings
+    - `UmyaSpreadsheet.get_page_margins/2` - Get page margins as {top, right, bottom, left} tuple in inches (default: {0.75, 0.7, 0.75, 0.7})
+    - `UmyaSpreadsheet.get_header_footer_margins/2` - Get header/footer margins as {header, footer} tuple in inches (default: {0.3, 0.3})
+  - **Header/Footer Content Inspection** - Retrieve header and footer text
+    - `UmyaSpreadsheet.get_header/2` - Get header text with formatting codes (default: empty string)
+    - `UmyaSpreadsheet.get_footer/2` - Get footer text with formatting codes (default: empty string)
+  - **Print Options Inspection** - Retrieve print centering and area settings
+    - `UmyaSpreadsheet.get_print_centered/2` - Get print centering as {horizontal, vertical} boolean tuple (default: {false, false})
+    - `UmyaSpreadsheet.get_print_area/2` - Get print area range or nil if not set (default: nil)
+    - `UmyaSpreadsheet.get_print_titles/2` - Get print titles as {rows, columns} tuple or nils if not set (default: {nil, nil})
+  - **Native Rust Implementation** - All getter functions implemented in native Rust for optimal performance
+  - **Error Handling** - Proper error handling for non-existent sheets with appropriate default value returns
+  - **Comprehensive Test Coverage** - Full unit test suite with 19 test cases covering all getter/setter functions, default values, and error scenarios
+  - **Documentation Updates** - Complete print settings guide with getter function examples and inspection patterns
+
+### Technical Details
+
+- **DefinedName API Integration** - Properly uses `get_address()` method for retrieving print area and print titles from Excel's defined names
+- **Type Safety** - All primitive return values properly dereferenced in Rust NIFs using `*` operator for u32, f64, and bool types
+- **String Formatting** - Header/footer text properly formatted using Rust's `format!("{:?}")` for consistent string representation
+- **Default Value Consistency** - All getter functions return Excel-compatible default values when settings are not explicitly configured
+
 ## 0.6.12 - 2025-05-29
 
 ### Added

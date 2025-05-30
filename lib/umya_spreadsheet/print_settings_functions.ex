@@ -250,4 +250,249 @@ defmodule UmyaSpreadsheet.PrintSettings do
       result -> result
     end
   end
+
+  # Getter functions
+
+  @doc """
+  Gets the page orientation for a specific sheet.
+
+  ## Parameters
+
+  - `spreadsheet` - The spreadsheet struct
+  - `sheet_name` - The name of the sheet
+
+  ## Returns
+
+  Returns `{:ok, orientation}` where orientation is "portrait" or "landscape",
+  or `{:error, reason}` on failure.
+
+  ## Examples
+
+      {:ok, spreadsheet} = UmyaSpreadsheet.read_file("input.xlsx")
+      {:ok, orientation} = UmyaSpreadsheet.get_page_orientation(spreadsheet, "Sheet1")
+  """
+  def get_page_orientation(%Spreadsheet{reference: ref}, sheet_name) do
+    UmyaNative.get_page_orientation(ref, sheet_name)
+  end
+
+  @doc """
+  Gets the paper size for a specific sheet.
+
+  ## Parameters
+
+  - `spreadsheet` - The spreadsheet struct
+  - `sheet_name` - The name of the sheet
+
+  ## Returns
+
+  Returns `{:ok, paper_size}` where paper_size is the paper size code,
+  or `{:error, reason}` on failure.
+
+  ## Examples
+
+      {:ok, spreadsheet} = UmyaSpreadsheet.read_file("input.xlsx")
+      {:ok, paper_size} = UmyaSpreadsheet.get_paper_size(spreadsheet, "Sheet1")
+  """
+  def get_paper_size(%Spreadsheet{reference: ref}, sheet_name) do
+    UmyaNative.get_paper_size(ref, sheet_name)
+  end
+
+  @doc """
+  Gets the page scale for a specific sheet.
+
+  ## Parameters
+
+  - `spreadsheet` - The spreadsheet struct
+  - `sheet_name` - The name of the sheet
+
+  ## Returns
+
+  Returns `{:ok, scale}` where scale is the scaling percentage,
+  or `{:error, reason}` on failure.
+
+  ## Examples
+
+      {:ok, spreadsheet} = UmyaSpreadsheet.read_file("input.xlsx")
+      {:ok, scale} = UmyaSpreadsheet.get_page_scale(spreadsheet, "Sheet1")
+  """
+  def get_page_scale(%Spreadsheet{reference: ref}, sheet_name) do
+    UmyaNative.get_page_scale(ref, sheet_name)
+  end
+
+  @doc """
+  Gets the fit to page settings for a specific sheet.
+
+  ## Parameters
+
+  - `spreadsheet` - The spreadsheet struct
+  - `sheet_name` - The name of the sheet
+
+  ## Returns
+
+  Returns `{:ok, {fit_width, fit_height}}` where fit_width and fit_height
+  are the number of pages to fit to, or `{:error, reason}` on failure.
+
+  ## Examples
+
+      {:ok, spreadsheet} = UmyaSpreadsheet.read_file("input.xlsx")
+      {:ok, {width, height}} = UmyaSpreadsheet.get_fit_to_page(spreadsheet, "Sheet1")
+  """
+  def get_fit_to_page(%Spreadsheet{reference: ref}, sheet_name) do
+    UmyaNative.get_fit_to_page(ref, sheet_name)
+  end
+
+  @doc """
+  Gets the page margins for a specific sheet.
+
+  ## Parameters
+
+  - `spreadsheet` - The spreadsheet struct
+  - `sheet_name` - The name of the sheet
+
+  ## Returns
+
+  Returns `{:ok, {top, right, bottom, left}}` where each value is the margin in inches,
+  or `{:error, reason}` on failure.
+
+  ## Examples
+
+      {:ok, spreadsheet} = UmyaSpreadsheet.read_file("input.xlsx")
+      {:ok, {top, right, bottom, left}} = UmyaSpreadsheet.get_page_margins(spreadsheet, "Sheet1")
+  """
+  def get_page_margins(%Spreadsheet{reference: ref}, sheet_name) do
+    UmyaNative.get_page_margins(ref, sheet_name)
+  end
+
+  @doc """
+  Gets the header and footer margins for a specific sheet.
+
+  ## Parameters
+
+  - `spreadsheet` - The spreadsheet struct
+  - `sheet_name` - The name of the sheet
+
+  ## Returns
+
+  Returns `{:ok, {header_margin, footer_margin}}` where each value is the margin in inches,
+  or `{:error, reason}` on failure.
+
+  ## Examples
+
+      {:ok, spreadsheet} = UmyaSpreadsheet.read_file("input.xlsx")
+      {:ok, {header, footer}} = UmyaSpreadsheet.get_header_footer_margins(spreadsheet, "Sheet1")
+  """
+  def get_header_footer_margins(%Spreadsheet{reference: ref}, sheet_name) do
+    UmyaNative.get_header_footer_margins(ref, sheet_name)
+  end
+
+  @doc """
+  Gets the header text for a specific sheet.
+
+  ## Parameters
+
+  - `spreadsheet` - The spreadsheet struct
+  - `sheet_name` - The name of the sheet
+
+  ## Returns
+
+  Returns `{:ok, header_text}` where header_text is the header string,
+  or `{:error, reason}` on failure.
+
+  ## Examples
+
+      {:ok, spreadsheet} = UmyaSpreadsheet.read_file("input.xlsx")
+      {:ok, header} = UmyaSpreadsheet.get_header(spreadsheet, "Sheet1")
+  """
+  def get_header(%Spreadsheet{reference: ref}, sheet_name) do
+    UmyaNative.get_header(ref, sheet_name)
+  end
+
+  @doc """
+  Gets the footer text for a specific sheet.
+
+  ## Parameters
+
+  - `spreadsheet` - The spreadsheet struct
+  - `sheet_name` - The name of the sheet
+
+  ## Returns
+
+  Returns `{:ok, footer_text}` where footer_text is the footer string,
+  or `{:error, reason}` on failure.
+
+  ## Examples
+
+      {:ok, spreadsheet} = UmyaSpreadsheet.read_file("input.xlsx")
+      {:ok, footer} = UmyaSpreadsheet.get_footer(spreadsheet, "Sheet1")
+  """
+  def get_footer(%Spreadsheet{reference: ref}, sheet_name) do
+    UmyaNative.get_footer(ref, sheet_name)
+  end
+
+  @doc """
+  Gets the print centered settings for a specific sheet.
+
+  ## Parameters
+
+  - `spreadsheet` - The spreadsheet struct
+  - `sheet_name` - The name of the sheet
+
+  ## Returns
+
+  Returns `{:ok, {horizontal, vertical}}` where each value is a boolean
+  indicating whether the sheet is centered horizontally/vertically,
+  or `{:error, reason}` on failure.
+
+  ## Examples
+
+      {:ok, spreadsheet} = UmyaSpreadsheet.read_file("input.xlsx")
+      {:ok, {horizontal, vertical}} = UmyaSpreadsheet.get_print_centered(spreadsheet, "Sheet1")
+  """
+  def get_print_centered(%Spreadsheet{reference: ref}, sheet_name) do
+    UmyaNative.get_print_centered(ref, sheet_name)
+  end
+
+  @doc """
+  Gets the print area for a specific sheet.
+
+  ## Parameters
+
+  - `spreadsheet` - The spreadsheet struct
+  - `sheet_name` - The name of the sheet
+
+  ## Returns
+
+  Returns `{:ok, print_area}` where print_area is the range string,
+  or `{:error, reason}` on failure.
+
+  ## Examples
+
+      {:ok, spreadsheet} = UmyaSpreadsheet.read_file("input.xlsx")
+      {:ok, print_area} = UmyaSpreadsheet.get_print_area(spreadsheet, "Sheet1")
+  """
+  def get_print_area(%Spreadsheet{reference: ref}, sheet_name) do
+    UmyaNative.get_print_area(ref, sheet_name)
+  end
+
+  @doc """
+  Gets the print titles for a specific sheet.
+
+  ## Parameters
+
+  - `spreadsheet` - The spreadsheet struct
+  - `sheet_name` - The name of the sheet
+
+  ## Returns
+
+  Returns `{:ok, {row_titles, column_titles}}` where each value is a range string,
+  or `{:error, reason}` on failure.
+
+  ## Examples
+
+      {:ok, spreadsheet} = UmyaSpreadsheet.read_file("input.xlsx")
+      {:ok, {rows, cols}} = UmyaSpreadsheet.get_print_titles(spreadsheet, "Sheet1")
+  """
+  def get_print_titles(%Spreadsheet{reference: ref}, sheet_name) do
+    UmyaNative.get_print_titles(ref, sheet_name)
+  end
 end

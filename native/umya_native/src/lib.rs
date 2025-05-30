@@ -1679,6 +1679,18 @@ rustler::init!(
         print_settings::set_print_centered,
         print_settings::set_print_area,
         print_settings::set_print_titles,
+        // Print settings getter functions
+        print_settings::get_page_orientation,
+        print_settings::get_paper_size,
+        print_settings::get_page_scale,
+        print_settings::get_fit_to_page,
+        print_settings::get_page_margins,
+        print_settings::get_header_footer_margins,
+        print_settings::get_header,
+        print_settings::get_footer,
+        print_settings::get_print_centered,
+        print_settings::get_print_area,
+        print_settings::get_print_titles,
         // Conditional formatting functions
         conditional_formatting::add_cell_value_rule,
         conditional_formatting::add_color_scale,

@@ -1122,6 +1122,45 @@ defmodule UmyaNative do
           :ok | {:error, atom()}
   def set_print_titles(_spreadsheet, _sheet_name, _rows, _columns), do: error()
 
+  # Print settings getter functions
+  @spec get_page_orientation(reference(), String.t()) :: {:ok, String.t()} | {:error, atom()}
+  def get_page_orientation(_spreadsheet, _sheet_name), do: error()
+
+  @spec get_paper_size(reference(), String.t()) :: {:ok, non_neg_integer()} | {:error, atom()}
+  def get_paper_size(_spreadsheet, _sheet_name), do: error()
+
+  @spec get_page_scale(reference(), String.t()) :: {:ok, non_neg_integer()} | {:error, atom()}
+  def get_page_scale(_spreadsheet, _sheet_name), do: error()
+
+  @spec get_fit_to_page(reference(), String.t()) ::
+          {:ok, {non_neg_integer(), non_neg_integer()}} | {:error, atom()}
+  def get_fit_to_page(_spreadsheet, _sheet_name), do: error()
+
+  @spec get_page_margins(reference(), String.t()) ::
+          {:ok, {float(), float(), float(), float()}} | {:error, atom()}
+  def get_page_margins(_spreadsheet, _sheet_name), do: error()
+
+  @spec get_header_footer_margins(reference(), String.t()) ::
+          {:ok, {float(), float()}} | {:error, atom()}
+  def get_header_footer_margins(_spreadsheet, _sheet_name), do: error()
+
+  @spec get_header(reference(), String.t()) :: {:ok, String.t()} | {:error, atom()}
+  def get_header(_spreadsheet, _sheet_name), do: error()
+
+  @spec get_footer(reference(), String.t()) :: {:ok, String.t()} | {:error, atom()}
+  def get_footer(_spreadsheet, _sheet_name), do: error()
+
+  @spec get_print_centered(reference(), String.t()) ::
+          {:ok, {boolean(), boolean()}} | {:error, atom()}
+  def get_print_centered(_spreadsheet, _sheet_name), do: error()
+
+  @spec get_print_area(reference(), String.t()) :: {:ok, String.t()} | {:error, atom()}
+  def get_print_area(_spreadsheet, _sheet_name), do: error()
+
+  @spec get_print_titles(reference(), String.t()) ::
+          {:ok, {String.t(), String.t()}} | {:error, atom()}
+  def get_print_titles(_spreadsheet, _sheet_name), do: error()
+
   # Sheet view functions
   @spec set_show_grid_lines(reference(), String.t(), boolean()) :: :ok | {:error, atom()}
   def set_show_grid_lines(_spreadsheet, _sheet_name, _value), do: error()

@@ -75,9 +75,20 @@ When reviewing code, adhere to the following principles derived from Uncle Bob's
 
 ### Error Handling
 
-- Use exceptions rather than return codes.
-- Avoid catching generic exceptions.
-- Fail fast and handle exceptions at a high level.
+- Functions should return tuples: `{:ok, result}` or `{:error, reason}`.
+- The only exception is when a function is returning just `:ok`.
+- Use `try/catch` for exceptional cases, not for control flow.
+- Avoid using `raise` for expected errors; use pattern matching instead.
+- Handle errors gracefully and provide meaningful error messages.
+- Use `Logger` for logging errors and important events.
+- Avoid using `IO.puts` for error handling in production code.
+- Use `Logger.error/1` or `Logger.warn/1` for logging errors and warnings.
+- Ensure that error messages are clear and actionable.
+- Use `Logger.info/1` for informational messages that are useful for debugging.
+- Avoid logging sensitive information.
+- Use structured logging where possible to include metadata.
+- Ensure that logs are consistent and follow a standard format.
+- Use `Logger.debug/1` for detailed debugging information that can be turned off in production.
 
 ### Avoid Duplication
 
