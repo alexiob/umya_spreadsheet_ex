@@ -591,9 +591,7 @@ fn set_row_height(
                 .set_height(height);
             Ok(atoms::ok())
         }
-        None => Err(NifError::Term(Box::new(
-            "Sheet not found".to_string(),
-        ))),
+        None => Err(NifError::Term(Box::new("Sheet not found".to_string()))),
     }
 }
 
@@ -716,9 +714,7 @@ fn set_row_style(
 
             Ok(atoms::ok())
         }
-        None => Err(NifError::Term(Box::new(
-            "Sheet not found".to_string(),
-        ))),
+        None => Err(NifError::Term(Box::new("Sheet not found".to_string()))),
     }
 }
 
@@ -1137,9 +1133,7 @@ fn set_column_width(
             sheet.get_column_dimension_mut(&column).set_width(width);
             Ok(atoms::ok())
         }
-        None => Err(NifError::Term(Box::new(
-            "Sheet not found".to_string(),
-        ))),
+        None => Err(NifError::Term(Box::new("Sheet not found".to_string()))),
     }
 }
 
@@ -1160,9 +1154,7 @@ fn set_column_auto_width(
             column_dim.set_best_fit(auto_width);
             Ok(atoms::ok())
         }
-        None => Err(NifError::Term(Box::new(
-            "Sheet not found".to_string(),
-        ))),
+        None => Err(NifError::Term(Box::new("Sheet not found".to_string()))),
     }
 }
 
@@ -2030,9 +2022,7 @@ fn get_column_width(
                 None => Ok(8.43), // Default column width
             }
         }
-        None => Err(NifError::Term(Box::new(
-            "Sheet not found".to_string(),
-        ))),
+        None => Err(NifError::Term(Box::new("Sheet not found".to_string()))),
     }
 }
 
@@ -2055,9 +2045,7 @@ fn get_column_auto_width(
                 None => Ok(false), // Default best_fit is false
             }
         }
-        None => Err(NifError::Term(Box::new(
-            "Sheet not found".to_string(),
-        ))),
+        None => Err(NifError::Term(Box::new("Sheet not found".to_string()))),
     }
 }
 
@@ -2079,9 +2067,7 @@ fn get_column_hidden(
                 None => Ok(false), // Default hidden is false
             }
         }
-        None => Err(NifError::Term(Box::new(
-            "Sheet not found".to_string(),
-        ))),
+        None => Err(NifError::Term(Box::new("Sheet not found".to_string()))),
     }
 }
 
@@ -2103,9 +2089,7 @@ fn get_row_height(
                 None => Ok(15.0), // Default row height
             }
         }
-        None => Err(NifError::Term(Box::new(
-            "Sheet not found".to_string(),
-        ))),
+        None => Err(NifError::Term(Box::new("Sheet not found".to_string()))),
     }
 }
 
@@ -2127,8 +2111,6 @@ fn get_row_hidden(
                 None => Ok(false), // Default hidden is false
             }
         }
-        None => Err(NifError::Term(Box::new(
-            "Sheet not found".to_string(),
-        ))),
+        None => Err(NifError::Term(Box::new("Sheet not found".to_string()))),
     }
 }

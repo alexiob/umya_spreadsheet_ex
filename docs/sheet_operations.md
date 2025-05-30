@@ -327,6 +327,7 @@ Retrieve column properties and settings:
 ```
 
 These getter functions return default values when the column hasn't been explicitly configured:
+
 - Default column width: 8.43 characters
 - Default auto-width: false
 - Default hidden: false

@@ -8,7 +8,7 @@
   - **Row Dimension Inspection** - Retrieve row properties and settings
     - `UmyaSpreadsheet.get_row_height/3` - Get row height in points (default: 15.0)
     - `UmyaSpreadsheet.get_row_hidden/3` - Get row hidden state (default: false)
-  - **Column Dimension Inspection** - Retrieve column properties and settings  
+  - **Column Dimension Inspection** - Retrieve column properties and settings
     - `UmyaSpreadsheet.get_column_width/3` - Get column width in characters (default: 8.43)
     - `UmyaSpreadsheet.get_column_auto_width/3` - Get auto-width enabled state (default: false)
     - `UmyaSpreadsheet.get_column_hidden/3` - Get column hidden state (default: false)
@@ -31,7 +31,7 @@
   - **Row Dimension Inspection** - Retrieve row properties and settings
     - `UmyaSpreadsheet.get_row_height/3` - Get row height in points (default: 15.0)
     - `UmyaSpreadsheet.get_row_hidden/3` - Get row hidden state (default: false)
-  - **Column Dimension Inspection** - Retrieve column properties and settings  
+  - **Column Dimension Inspection** - Retrieve column properties and settings
     - `UmyaSpreadsheet.get_column_width/3` - Get column width in characters (default: 8.43)
     - `UmyaSpreadsheet.get_column_auto_width/3` - Get auto-width enabled state (default: false)
     - `UmyaSpreadsheet.get_column_hidden/3` - Get column hidden state (default: false)
