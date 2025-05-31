@@ -240,4 +240,238 @@ defmodule UmyaSpreadsheetTest.VmlDrawingTest do
       assert File.stat!(@temp_file).size > 0
     end
   end
+
+  describe "VML shape property getters" do
+    test "get_shape_* functions retrieve correct values", %{spreadsheet: spreadsheet} do
+      # Create a test shape with specific properties
+      assert :ok = UmyaSpreadsheet.VmlDrawing.create_shape(spreadsheet, "Sheet1", "test_shape")
+
+      # Set various properties
+      style_value = "position:absolute;left:150pt;top:150pt;width:120pt;height:80pt"
+      type_value = "oval"
+      fill_color_value = "#33AA33"
+      stroke_color_value = "#AA3333"
+      stroke_weight_value = "2.5pt"
+
+      assert :ok =
+               UmyaSpreadsheet.VmlDrawing.set_shape_style(
+                 spreadsheet,
+                 "Sheet1",
+                 "test_shape",
+                 style_value
+               )
+
+      assert :ok =
+               UmyaSpreadsheet.VmlDrawing.set_shape_type(
+                 spreadsheet,
+                 "Sheet1",
+                 "test_shape",
+                 type_value
+               )
+
+      assert :ok =
+               UmyaSpreadsheet.VmlDrawing.set_shape_filled(
+                 spreadsheet,
+                 "Sheet1",
+                 "test_shape",
+                 true
+               )
+
+      assert :ok =
+               UmyaSpreadsheet.VmlDrawing.set_shape_fill_color(
+                 spreadsheet,
+                 "Sheet1",
+                 "test_shape",
+                 fill_color_value
+               )
+
+      assert :ok =
+               UmyaSpreadsheet.VmlDrawing.set_shape_stroked(
+                 spreadsheet,
+                 "Sheet1",
+                 "test_shape",
+                 true
+               )
+
+      assert :ok =
+               UmyaSpreadsheet.VmlDrawing.set_shape_stroke_color(
+                 spreadsheet,
+                 "Sheet1",
+                 "test_shape",
+                 stroke_color_value
+               )
+
+      assert :ok =
+               UmyaSpreadsheet.VmlDrawing.set_shape_stroke_weight(
+                 spreadsheet,
+                 "Sheet1",
+                 "test_shape",
+                 stroke_weight_value
+               )
+
+      # Verify each property using getter functions
+      assert {:ok, ^style_value} =
+               UmyaSpreadsheet.VmlDrawing.get_shape_style(spreadsheet, "Sheet1", "test_shape")
+
+      assert {:ok, ^type_value} =
+               UmyaSpreadsheet.VmlDrawing.get_shape_type(spreadsheet, "Sheet1", "test_shape")
+
+      assert {:ok, true} =
+               UmyaSpreadsheet.VmlDrawing.get_shape_filled(spreadsheet, "Sheet1", "test_shape")
+
+      assert {:ok, ^fill_color_value} =
+               UmyaSpreadsheet.VmlDrawing.get_shape_fill_color(
+                 spreadsheet,
+                 "Sheet1",
+                 "test_shape"
+               )
+
+      assert {:ok, true} =
+               UmyaSpreadsheet.VmlDrawing.get_shape_stroked(spreadsheet, "Sheet1", "test_shape")
+
+      assert {:ok, ^stroke_color_value} =
+               UmyaSpreadsheet.VmlDrawing.get_shape_stroke_color(
+                 spreadsheet,
+                 "Sheet1",
+                 "test_shape"
+               )
+
+      assert {:ok, ^stroke_weight_value} =
+               UmyaSpreadsheet.VmlDrawing.get_shape_stroke_weight(
+                 spreadsheet,
+                 "Sheet1",
+                 "test_shape"
+               )
+
+      # Modify a property and verify the change is reflected
+      new_fill_color = "#9900FF"
+
+      assert :ok =
+               UmyaSpreadsheet.VmlDrawing.set_shape_fill_color(
+                 spreadsheet,
+                 "Sheet1",
+                 "test_shape",
+                 new_fill_color
+               )
+
+      assert {:ok, ^new_fill_color} =
+               UmyaSpreadsheet.VmlDrawing.get_shape_fill_color(
+                 spreadsheet,
+                 "Sheet1",
+                 "test_shape"
+               )
+    end
+
+    test "get_shape functions handle boolean values correctly", %{spreadsheet: spreadsheet} do
+      # Create a test shape
+      assert :ok = UmyaSpreadsheet.VmlDrawing.create_shape(spreadsheet, "Sheet1", "bool_shape")
+
+      # Test toggling filled property
+      assert :ok =
+               UmyaSpreadsheet.VmlDrawing.set_shape_filled(
+                 spreadsheet,
+                 "Sheet1",
+                 "bool_shape",
+                 true
+               )
+
+      assert {:ok, true} =
+               UmyaSpreadsheet.VmlDrawing.get_shape_filled(spreadsheet, "Sheet1", "bool_shape")
+
+      assert :ok =
+               UmyaSpreadsheet.VmlDrawing.set_shape_filled(
+                 spreadsheet,
+                 "Sheet1",
+                 "bool_shape",
+                 false
+               )
+
+      assert {:ok, false} =
+               UmyaSpreadsheet.VmlDrawing.get_shape_filled(spreadsheet, "Sheet1", "bool_shape")
+
+      # Test toggling stroked property
+      assert :ok =
+               UmyaSpreadsheet.VmlDrawing.set_shape_stroked(
+                 spreadsheet,
+                 "Sheet1",
+                 "bool_shape",
+                 true
+               )
+
+      assert {:ok, true} =
+               UmyaSpreadsheet.VmlDrawing.get_shape_stroked(spreadsheet, "Sheet1", "bool_shape")
+
+      assert :ok =
+               UmyaSpreadsheet.VmlDrawing.set_shape_stroked(
+                 spreadsheet,
+                 "Sheet1",
+                 "bool_shape",
+                 false
+               )
+
+      assert {:ok, false} =
+               UmyaSpreadsheet.VmlDrawing.get_shape_stroked(spreadsheet, "Sheet1", "bool_shape")
+    end
+
+    test "get_shape functions handle errors correctly", %{spreadsheet: spreadsheet} do
+      # Nonexistent sheet
+      assert {:error, _} =
+               UmyaSpreadsheet.VmlDrawing.get_shape_style(
+                 spreadsheet,
+                 "NonexistentSheet",
+                 "shape1"
+               )
+
+      # Nonexistent shape
+      assert {:error, _} =
+               UmyaSpreadsheet.VmlDrawing.get_shape_type(
+                 spreadsheet,
+                 "Sheet1",
+                 "nonexistent_shape"
+               )
+
+      # Empty shape ID
+      assert {:error, _} = UmyaSpreadsheet.VmlDrawing.get_shape_filled(spreadsheet, "Sheet1", "")
+    end
+
+    test "get_shape functions retrieve default values for new shapes", %{spreadsheet: spreadsheet} do
+      # Create a shape with default properties
+      assert :ok = UmyaSpreadsheet.VmlDrawing.create_shape(spreadsheet, "Sheet1", "default_shape")
+
+      # Verify default properties
+      assert {:ok, "rect"} =
+               UmyaSpreadsheet.VmlDrawing.get_shape_type(spreadsheet, "Sheet1", "default_shape")
+
+      assert {:ok, true} =
+               UmyaSpreadsheet.VmlDrawing.get_shape_filled(spreadsheet, "Sheet1", "default_shape")
+
+      assert {:ok, "#FFFFFF"} =
+               UmyaSpreadsheet.VmlDrawing.get_shape_fill_color(
+                 spreadsheet,
+                 "Sheet1",
+                 "default_shape"
+               )
+
+      assert {:ok, true} =
+               UmyaSpreadsheet.VmlDrawing.get_shape_stroked(
+                 spreadsheet,
+                 "Sheet1",
+                 "default_shape"
+               )
+
+      assert {:ok, "#000000"} =
+               UmyaSpreadsheet.VmlDrawing.get_shape_stroke_color(
+                 spreadsheet,
+                 "Sheet1",
+                 "default_shape"
+               )
+
+      assert {:ok, "1pt"} =
+               UmyaSpreadsheet.VmlDrawing.get_shape_stroke_weight(
+                 spreadsheet,
+                 "Sheet1",
+                 "default_shape"
+               )
+    end
+  end
 end

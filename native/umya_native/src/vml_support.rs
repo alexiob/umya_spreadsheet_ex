@@ -536,3 +536,445 @@ fn set_vml_shape_stroke_weight(
     drop(guard);
     result
 }
+
+// VML Shape getter functions
+#[rustler::nif]
+fn get_vml_shape_style(
+    resource: ResourceArc<UmyaSpreadsheet>,
+    sheet_name: String,
+    shape_id: String,
+) -> NifResult<(Atom, String)> {
+    let guard = match resource.spreadsheet.lock() {
+        Ok(guard) => guard,
+        Err(_) => {
+            return Err(rustler::Error::Term(Box::new((
+                atoms::error(),
+                "Failed to lock spreadsheet resource".to_string(),
+            ))))
+        }
+    };
+
+    // Validate shape ID
+    if shape_id.is_empty() {
+        drop(guard);
+        return Err(rustler::Error::Term(Box::new((
+            atoms::error(),
+            "Shape ID cannot be empty".to_string(),
+        ))));
+    }
+
+    // Find the worksheet by name
+    let worksheet = match guard.get_sheet_by_name(&sheet_name) {
+        Some(ws) => ws,
+        None => {
+            drop(guard);
+            return Err(rustler::Error::Term(Box::new((
+                atoms::error(),
+                format!("Worksheet '{}' not found", sheet_name),
+            ))));
+        }
+    };
+
+    // Find the OLE object with the specified shape ID
+    let shape_id_num = string_to_numeric_shape_id(&shape_id);
+    let ole_object = worksheet
+        .get_ole_objects()
+        .get_ole_object()
+        .iter()
+        .find(|ole_object| {
+            ole_object.get_embedded_object_properties().get_shape_id() == &shape_id_num
+        });
+
+    match ole_object {
+        Some(obj) => {
+            let style = obj.get_shape().get_style().to_string();
+            drop(guard);
+            Ok((atoms::ok(), style))
+        }
+        None => {
+            drop(guard);
+            Err(rustler::Error::Term(Box::new((
+                atoms::error(),
+                format!("Shape with ID '{}' not found", shape_id),
+            ))))
+        }
+    }
+}
+
+#[rustler::nif]
+fn get_vml_shape_type(
+    resource: ResourceArc<UmyaSpreadsheet>,
+    sheet_name: String,
+    shape_id: String,
+) -> NifResult<(Atom, String)> {
+    let guard = match resource.spreadsheet.lock() {
+        Ok(guard) => guard,
+        Err(_) => {
+            return Err(rustler::Error::Term(Box::new((
+                atoms::error(),
+                "Failed to lock spreadsheet resource".to_string(),
+            ))))
+        }
+    };
+
+    // Validate shape ID
+    if shape_id.is_empty() {
+        drop(guard);
+        return Err(rustler::Error::Term(Box::new((
+            atoms::error(),
+            "Shape ID cannot be empty".to_string(),
+        ))));
+    }
+
+    // Find the worksheet by name
+    let worksheet = match guard.get_sheet_by_name(&sheet_name) {
+        Some(ws) => ws,
+        None => {
+            drop(guard);
+            return Err(rustler::Error::Term(Box::new((
+                atoms::error(),
+                format!("Worksheet '{}' not found", sheet_name),
+            ))));
+        }
+    };
+
+    // Find the OLE object with the specified shape ID
+    let shape_id_num = string_to_numeric_shape_id(&shape_id);
+    let ole_object = worksheet
+        .get_ole_objects()
+        .get_ole_object()
+        .iter()
+        .find(|ole_object| {
+            ole_object.get_embedded_object_properties().get_shape_id() == &shape_id_num
+        });
+
+    match ole_object {
+        Some(obj) => {
+            let shape_type = obj.get_shape().get_type().to_string();
+            drop(guard);
+            Ok((atoms::ok(), shape_type))
+        }
+        None => {
+            drop(guard);
+            Err(rustler::Error::Term(Box::new((
+                atoms::error(),
+                format!("Shape with ID '{}' not found", shape_id),
+            ))))
+        }
+    }
+}
+
+#[rustler::nif]
+fn get_vml_shape_filled(
+    resource: ResourceArc<UmyaSpreadsheet>,
+    sheet_name: String,
+    shape_id: String,
+) -> NifResult<(Atom, bool)> {
+    let guard = match resource.spreadsheet.lock() {
+        Ok(guard) => guard,
+        Err(_) => {
+            return Err(rustler::Error::Term(Box::new((
+                atoms::error(),
+                "Failed to lock spreadsheet resource".to_string(),
+            ))))
+        }
+    };
+
+    // Validate shape ID
+    if shape_id.is_empty() {
+        drop(guard);
+        return Err(rustler::Error::Term(Box::new((
+            atoms::error(),
+            "Shape ID cannot be empty".to_string(),
+        ))));
+    }
+
+    // Find the worksheet by name
+    let worksheet = match guard.get_sheet_by_name(&sheet_name) {
+        Some(ws) => ws,
+        None => {
+            drop(guard);
+            return Err(rustler::Error::Term(Box::new((
+                atoms::error(),
+                format!("Worksheet '{}' not found", sheet_name),
+            ))));
+        }
+    };
+
+    // Find the OLE object with the specified shape ID
+    let shape_id_num = string_to_numeric_shape_id(&shape_id);
+    let ole_object = worksheet
+        .get_ole_objects()
+        .get_ole_object()
+        .iter()
+        .find(|ole_object| {
+            ole_object.get_embedded_object_properties().get_shape_id() == &shape_id_num
+        });
+
+    match ole_object {
+        Some(obj) => {
+            let filled = *obj.get_shape().get_filled();
+            drop(guard);
+            Ok((atoms::ok(), filled))
+        }
+        None => {
+            drop(guard);
+            Err(rustler::Error::Term(Box::new((
+                atoms::error(),
+                format!("Shape with ID '{}' not found", shape_id),
+            ))))
+        }
+    }
+}
+
+#[rustler::nif]
+fn get_vml_shape_fill_color(
+    resource: ResourceArc<UmyaSpreadsheet>,
+    sheet_name: String,
+    shape_id: String,
+) -> NifResult<(Atom, String)> {
+    let guard = match resource.spreadsheet.lock() {
+        Ok(guard) => guard,
+        Err(_) => {
+            return Err(rustler::Error::Term(Box::new((
+                atoms::error(),
+                "Failed to lock spreadsheet resource".to_string(),
+            ))))
+        }
+    };
+
+    // Validate shape ID
+    if shape_id.is_empty() {
+        drop(guard);
+        return Err(rustler::Error::Term(Box::new((
+            atoms::error(),
+            "Shape ID cannot be empty".to_string(),
+        ))));
+    }
+
+    // Find the worksheet by name
+    let worksheet = match guard.get_sheet_by_name(&sheet_name) {
+        Some(ws) => ws,
+        None => {
+            drop(guard);
+            return Err(rustler::Error::Term(Box::new((
+                atoms::error(),
+                format!("Worksheet '{}' not found", sheet_name),
+            ))));
+        }
+    };
+
+    // Find the OLE object with the specified shape ID
+    let shape_id_num = string_to_numeric_shape_id(&shape_id);
+    let ole_object = worksheet
+        .get_ole_objects()
+        .get_ole_object()
+        .iter()
+        .find(|ole_object| {
+            ole_object.get_embedded_object_properties().get_shape_id() == &shape_id_num
+        });
+
+    match ole_object {
+        Some(obj) => {
+            let fill_color = obj.get_shape().get_fill_color().to_string();
+            drop(guard);
+            Ok((atoms::ok(), fill_color))
+        }
+        None => {
+            drop(guard);
+            Err(rustler::Error::Term(Box::new((
+                atoms::error(),
+                format!("Shape with ID '{}' not found", shape_id),
+            ))))
+        }
+    }
+}
+
+#[rustler::nif]
+fn get_vml_shape_stroked(
+    resource: ResourceArc<UmyaSpreadsheet>,
+    sheet_name: String,
+    shape_id: String,
+) -> NifResult<(Atom, bool)> {
+    let guard = match resource.spreadsheet.lock() {
+        Ok(guard) => guard,
+        Err(_) => {
+            return Err(rustler::Error::Term(Box::new((
+                atoms::error(),
+                "Failed to lock spreadsheet resource".to_string(),
+            ))))
+        }
+    };
+
+    // Validate shape ID
+    if shape_id.is_empty() {
+        drop(guard);
+        return Err(rustler::Error::Term(Box::new((
+            atoms::error(),
+            "Shape ID cannot be empty".to_string(),
+        ))));
+    }
+
+    // Find the worksheet by name
+    let worksheet = match guard.get_sheet_by_name(&sheet_name) {
+        Some(ws) => ws,
+        None => {
+            drop(guard);
+            return Err(rustler::Error::Term(Box::new((
+                atoms::error(),
+                format!("Worksheet '{}' not found", sheet_name),
+            ))));
+        }
+    };
+
+    // Find the OLE object with the specified shape ID
+    let shape_id_num = string_to_numeric_shape_id(&shape_id);
+    let ole_object = worksheet
+        .get_ole_objects()
+        .get_ole_object()
+        .iter()
+        .find(|ole_object| {
+            ole_object.get_embedded_object_properties().get_shape_id() == &shape_id_num
+        });
+
+    match ole_object {
+        Some(obj) => {
+            let stroked = *obj.get_shape().get_stroked();
+            drop(guard);
+            Ok((atoms::ok(), stroked))
+        }
+        None => {
+            drop(guard);
+            Err(rustler::Error::Term(Box::new((
+                atoms::error(),
+                format!("Shape with ID '{}' not found", shape_id),
+            ))))
+        }
+    }
+}
+
+#[rustler::nif]
+fn get_vml_shape_stroke_color(
+    resource: ResourceArc<UmyaSpreadsheet>,
+    sheet_name: String,
+    shape_id: String,
+) -> NifResult<(Atom, String)> {
+    let guard = match resource.spreadsheet.lock() {
+        Ok(guard) => guard,
+        Err(_) => {
+            return Err(rustler::Error::Term(Box::new((
+                atoms::error(),
+                "Failed to lock spreadsheet resource".to_string(),
+            ))))
+        }
+    };
+
+    // Validate shape ID
+    if shape_id.is_empty() {
+        drop(guard);
+        return Err(rustler::Error::Term(Box::new((
+            atoms::error(),
+            "Shape ID cannot be empty".to_string(),
+        ))));
+    }
+
+    // Find the worksheet by name
+    let worksheet = match guard.get_sheet_by_name(&sheet_name) {
+        Some(ws) => ws,
+        None => {
+            drop(guard);
+            return Err(rustler::Error::Term(Box::new((
+                atoms::error(),
+                format!("Worksheet '{}' not found", sheet_name),
+            ))));
+        }
+    };
+
+    // Find the OLE object with the specified shape ID
+    let shape_id_num = string_to_numeric_shape_id(&shape_id);
+    let ole_object = worksheet
+        .get_ole_objects()
+        .get_ole_object()
+        .iter()
+        .find(|ole_object| {
+            ole_object.get_embedded_object_properties().get_shape_id() == &shape_id_num
+        });
+
+    match ole_object {
+        Some(obj) => {
+            let stroke_color = obj.get_shape().get_stroke_color().to_string();
+            drop(guard);
+            Ok((atoms::ok(), stroke_color))
+        }
+        None => {
+            drop(guard);
+            Err(rustler::Error::Term(Box::new((
+                atoms::error(),
+                format!("Shape with ID '{}' not found", shape_id),
+            ))))
+        }
+    }
+}
+
+#[rustler::nif]
+fn get_vml_shape_stroke_weight(
+    resource: ResourceArc<UmyaSpreadsheet>,
+    sheet_name: String,
+    shape_id: String,
+) -> NifResult<(Atom, String)> {
+    let guard = match resource.spreadsheet.lock() {
+        Ok(guard) => guard,
+        Err(_) => {
+            return Err(rustler::Error::Term(Box::new((
+                atoms::error(),
+                "Failed to lock spreadsheet resource".to_string(),
+            ))))
+        }
+    };
+
+    // Validate shape ID
+    if shape_id.is_empty() {
+        drop(guard);
+        return Err(rustler::Error::Term(Box::new((
+            atoms::error(),
+            "Shape ID cannot be empty".to_string(),
+        ))));
+    }
+
+    // Find the worksheet by name
+    let worksheet = match guard.get_sheet_by_name(&sheet_name) {
+        Some(ws) => ws,
+        None => {
+            drop(guard);
+            return Err(rustler::Error::Term(Box::new((
+                atoms::error(),
+                format!("Worksheet '{}' not found", sheet_name),
+            ))));
+        }
+    };
+
+    // Find the OLE object with the specified shape ID
+    let shape_id_num = string_to_numeric_shape_id(&shape_id);
+    let ole_object = worksheet
+        .get_ole_objects()
+        .get_ole_object()
+        .iter()
+        .find(|ole_object| {
+            ole_object.get_embedded_object_properties().get_shape_id() == &shape_id_num
+        });
+
+    match ole_object {
+        Some(obj) => {
+            let stroke_weight = obj.get_shape().get_stroke_weight().to_string();
+            drop(guard);
+            Ok((atoms::ok(), stroke_weight))
+        }
+        None => {
+            drop(guard);
+            Err(rustler::Error::Term(Box::new((
+                atoms::error(),
+                format!("Shape with ID '{}' not found", shape_id),
+            ))))
+        }
+    }
+}

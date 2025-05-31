@@ -252,4 +252,193 @@ defmodule UmyaSpreadsheet.VmlDrawing do
       {:error, reason} -> {:error, "Failed to set VML shape stroke weight: #{inspect(reason)}"}
     end
   end
+
+  @doc """
+  Gets the CSS style of a VML shape.
+
+  ## Parameters
+
+    * `spreadsheet` - A spreadsheet struct
+    * `sheet_name` - The name of the worksheet
+    * `shape_id` - Unique identifier for the shape
+
+  ## Returns
+
+    * `{:ok, style}` on success where style is a CSS style string
+    * `{:error, reason}` on failure
+  """
+  @spec get_shape_style(Spreadsheet.t(), String.t(), String.t()) ::
+          {:ok, String.t()} | {:error, String.t()}
+  def get_shape_style(%Spreadsheet{reference: ref}, sheet_name, shape_id) do
+    case UmyaNative.get_vml_shape_style(
+           UmyaSpreadsheet.unwrap_ref(ref),
+           sheet_name,
+           shape_id
+         ) do
+      {:ok, style} -> {:ok, style}
+      {:error, reason} -> {:error, "Failed to get VML shape style: #{inspect(reason)}"}
+    end
+  end
+
+  @doc """
+  Gets the type of a VML shape.
+
+  ## Parameters
+
+    * `spreadsheet` - A spreadsheet struct
+    * `sheet_name` - The name of the worksheet
+    * `shape_id` - Unique identifier for the shape
+
+  ## Returns
+
+    * `{:ok, shape_type}` on success where shape_type is the type (e.g. "rect", "oval", etc.)
+    * `{:error, reason}` on failure
+  """
+  @spec get_shape_type(Spreadsheet.t(), String.t(), String.t()) ::
+          {:ok, String.t()} | {:error, String.t()}
+  def get_shape_type(%Spreadsheet{reference: ref}, sheet_name, shape_id) do
+    case UmyaNative.get_vml_shape_type(
+           UmyaSpreadsheet.unwrap_ref(ref),
+           sheet_name,
+           shape_id
+         ) do
+      {:ok, shape_type} -> {:ok, shape_type}
+      {:error, reason} -> {:error, "Failed to get VML shape type: #{inspect(reason)}"}
+    end
+  end
+
+  @doc """
+  Gets whether a VML shape is filled.
+
+  ## Parameters
+
+    * `spreadsheet` - A spreadsheet struct
+    * `sheet_name` - The name of the worksheet
+    * `shape_id` - Unique identifier for the shape
+
+  ## Returns
+
+    * `{:ok, filled}` on success where filled is a boolean
+    * `{:error, reason}` on failure
+  """
+  @spec get_shape_filled(Spreadsheet.t(), String.t(), String.t()) ::
+          {:ok, boolean()} | {:error, String.t()}
+  def get_shape_filled(%Spreadsheet{reference: ref}, sheet_name, shape_id) do
+    case UmyaNative.get_vml_shape_filled(
+           UmyaSpreadsheet.unwrap_ref(ref),
+           sheet_name,
+           shape_id
+         ) do
+      {:ok, filled} -> {:ok, filled}
+      {:error, reason} -> {:error, "Failed to get VML shape filled property: #{inspect(reason)}"}
+    end
+  end
+
+  @doc """
+  Gets the fill color of a VML shape.
+
+  ## Parameters
+
+    * `spreadsheet` - A spreadsheet struct
+    * `sheet_name` - The name of the worksheet
+    * `shape_id` - Unique identifier for the shape
+
+  ## Returns
+
+    * `{:ok, fill_color}` on success where fill_color is a color string (e.g. "#FF0000")
+    * `{:error, reason}` on failure
+  """
+  @spec get_shape_fill_color(Spreadsheet.t(), String.t(), String.t()) ::
+          {:ok, String.t()} | {:error, String.t()}
+  def get_shape_fill_color(%Spreadsheet{reference: ref}, sheet_name, shape_id) do
+    case UmyaNative.get_vml_shape_fill_color(
+           UmyaSpreadsheet.unwrap_ref(ref),
+           sheet_name,
+           shape_id
+         ) do
+      {:ok, fill_color} -> {:ok, fill_color}
+      {:error, reason} -> {:error, "Failed to get VML shape fill color: #{inspect(reason)}"}
+    end
+  end
+
+  @doc """
+  Gets whether a VML shape has a stroke (outline).
+
+  ## Parameters
+
+    * `spreadsheet` - A spreadsheet struct
+    * `sheet_name` - The name of the worksheet
+    * `shape_id` - Unique identifier for the shape
+
+  ## Returns
+
+    * `{:ok, stroked}` on success where stroked is a boolean
+    * `{:error, reason}` on failure
+  """
+  @spec get_shape_stroked(Spreadsheet.t(), String.t(), String.t()) ::
+          {:ok, boolean()} | {:error, String.t()}
+  def get_shape_stroked(%Spreadsheet{reference: ref}, sheet_name, shape_id) do
+    case UmyaNative.get_vml_shape_stroked(
+           UmyaSpreadsheet.unwrap_ref(ref),
+           sheet_name,
+           shape_id
+         ) do
+      {:ok, stroked} -> {:ok, stroked}
+      {:error, reason} -> {:error, "Failed to get VML shape stroked property: #{inspect(reason)}"}
+    end
+  end
+
+  @doc """
+  Gets the stroke (outline) color of a VML shape.
+
+  ## Parameters
+
+    * `spreadsheet` - A spreadsheet struct
+    * `sheet_name` - The name of the worksheet
+    * `shape_id` - Unique identifier for the shape
+
+  ## Returns
+
+    * `{:ok, stroke_color}` on success where stroke_color is a color string (e.g. "#0000FF")
+    * `{:error, reason}` on failure
+  """
+  @spec get_shape_stroke_color(Spreadsheet.t(), String.t(), String.t()) ::
+          {:ok, String.t()} | {:error, String.t()}
+  def get_shape_stroke_color(%Spreadsheet{reference: ref}, sheet_name, shape_id) do
+    case UmyaNative.get_vml_shape_stroke_color(
+           UmyaSpreadsheet.unwrap_ref(ref),
+           sheet_name,
+           shape_id
+         ) do
+      {:ok, stroke_color} -> {:ok, stroke_color}
+      {:error, reason} -> {:error, "Failed to get VML shape stroke color: #{inspect(reason)}"}
+    end
+  end
+
+  @doc """
+  Gets the stroke (outline) weight/thickness of a VML shape.
+
+  ## Parameters
+
+    * `spreadsheet` - A spreadsheet struct
+    * `sheet_name` - The name of the worksheet
+    * `shape_id` - Unique identifier for the shape
+
+  ## Returns
+
+    * `{:ok, stroke_weight}` on success where stroke_weight is a string (e.g. "2pt")
+    * `{:error, reason}` on failure
+  """
+  @spec get_shape_stroke_weight(Spreadsheet.t(), String.t(), String.t()) ::
+          {:ok, String.t()} | {:error, String.t()}
+  def get_shape_stroke_weight(%Spreadsheet{reference: ref}, sheet_name, shape_id) do
+    case UmyaNative.get_vml_shape_stroke_weight(
+           UmyaSpreadsheet.unwrap_ref(ref),
+           sheet_name,
+           shape_id
+         ) do
+      {:ok, stroke_weight} -> {:ok, stroke_weight}
+      {:error, reason} -> {:error, "Failed to get VML shape stroke weight: #{inspect(reason)}"}
+    end
+  end
 end

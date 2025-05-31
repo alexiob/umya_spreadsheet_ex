@@ -4,6 +4,16 @@
 
 ### Added
 
+- **VML Drawing Getter Functions**:
+  - **Shape Property Retrieval** - Added comprehensive getter functions for VML shapes
+    - New function `UmyaSpreadsheet.VmlDrawing.get_shape_style/3` retrieves the CSS style string
+    - New function `UmyaSpreadsheet.VmlDrawing.get_shape_type/3` retrieves the shape type (rect, oval, etc.)
+    - New function `UmyaSpreadsheet.VmlDrawing.get_shape_filled/3` checks if a shape has fill enabled
+    - New function `UmyaSpreadsheet.VmlDrawing.get_shape_fill_color/3` gets the shape's fill color
+    - New function `UmyaSpreadsheet.VmlDrawing.get_shape_stroked/3` checks if a shape has stroke enabled
+    - New function `UmyaSpreadsheet.VmlDrawing.get_shape_stroke_color/3` gets the shape's stroke color
+    - New function `UmyaSpreadsheet.VmlDrawing.get_shape_stroke_weight/3` gets the shape's stroke weight
+
 - **File Format Options Getters**:
   - **Compression Level Information** - Added getter for default compression level
     - New function `UmyaSpreadsheet.FileFormatOptions.get_compression_level/1` returns the default compression level

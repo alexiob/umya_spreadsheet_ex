@@ -441,6 +441,7 @@ rustler::init!(
         document_properties::set_modified,
         // VML support functions
         vml_support::create_vml_shape,
+        // VML setter functions
         vml_support::set_vml_shape_style,
         vml_support::set_vml_shape_type,
         vml_support::set_vml_shape_filled,
@@ -448,6 +449,14 @@ rustler::init!(
         vml_support::set_vml_shape_stroked,
         vml_support::set_vml_shape_stroke_color,
         vml_support::set_vml_shape_stroke_weight,
+        // VML getter functions
+        vml_support::get_vml_shape_style,
+        vml_support::get_vml_shape_type,
+        vml_support::get_vml_shape_filled,
+        vml_support::get_vml_shape_fill_color,
+        vml_support::get_vml_shape_stroked,
+        vml_support::get_vml_shape_stroke_color,
+        vml_support::get_vml_shape_stroke_weight,
         // File Format Options functions
         file_format_options::write_with_compression,
         file_format_options::write_with_encryption_options,
