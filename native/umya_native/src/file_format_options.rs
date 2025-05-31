@@ -177,20 +177,16 @@ pub fn to_binary_xlsx<'a>(
 /// Get the default compression level for XLSX files
 /// This always returns 6 (standard compression) since it's the default in the underlying zip library
 #[rustler::nif]
-pub fn get_compression_level(
-    _resource: ResourceArc<UmyaSpreadsheet>,
-) -> NifResult<i64> {
+pub fn get_compression_level(_resource: ResourceArc<UmyaSpreadsheet>) -> NifResult<i64> {
     // Default compression level is 6 in the zip library
     Ok(6)
 }
 
 /// Check if a spreadsheet has encryption enabled
 #[rustler::nif]
-pub fn is_encrypted(
-    resource: ResourceArc<UmyaSpreadsheet>,
-) -> NifResult<bool> {
+pub fn is_encrypted(resource: ResourceArc<UmyaSpreadsheet>) -> NifResult<bool> {
     let guard = resource.spreadsheet.lock().unwrap();
-    
+
     // Check if workbook protection is enabled by checking if the password is non-empty
     let has_protection = match guard.get_workbook_protection() {
         Some(protection) => !protection.get_workbook_password_raw().is_empty(),
@@ -210,29 +206,29 @@ pub fn get_encryption_algorithm(
     resource: ResourceArc<UmyaSpreadsheet>,
 ) -> NifResult<Option<String>> {
     let guard = resource.spreadsheet.lock().unwrap();
-    
+
     // Check if a password is set
     if let Some(protection) = guard.get_workbook_protection() {
         if !protection.get_workbook_password_raw().is_empty() {
             // Get the algorithm name or use default
             let algorithm = protection.get_revisions_algorithm_name().to_string();
-            
+
             // Return default if empty
             let result = if algorithm.is_empty() {
                 "default".to_string()
             } else {
                 algorithm
             };
-            
+
             // Explicitly drop the guard before returning
             drop(guard);
-            
+
             return Ok(Some(result));
         }
     }
-    
+
     // Explicitly drop the guard before returning
     drop(guard);
-    
+
     Ok(None)
 }
