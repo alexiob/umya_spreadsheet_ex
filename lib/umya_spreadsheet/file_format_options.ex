@@ -159,4 +159,103 @@ defmodule UmyaSpreadsheet.FileFormatOptions do
       result -> result
     end
   end
+
+  @doc """
+  Gets the default compression level used for XLSX files.
+
+  This function returns the current default compression level that will be used when
+  writing XLSX files with the standard write function.
+
+  ## Parameters
+
+  * `spreadsheet` - The spreadsheet struct
+
+  ## Returns
+
+  * Integer from 0 to 9 representing the compression level (0 = no compression, 9 = maximum compression)
+
+  ## Examples
+
+      iex> {:ok, spreadsheet} = UmyaSpreadsheet.new()
+      iex> UmyaSpreadsheet.FileFormatOptions.get_compression_level(spreadsheet)
+      6
+
+  """
+  @spec get_compression_level(Spreadsheet.t()) :: integer() | {:error, atom()}
+  def get_compression_level(%Spreadsheet{reference: ref}) do
+    case UmyaNative.get_compression_level(ref) do
+      {:ok, level} -> level
+      {:error, reason} -> {:error, reason}
+      result -> result
+    end
+  end
+
+  @doc """
+  Checks if a spreadsheet has encryption enabled.
+
+  This function checks if the spreadsheet has any workbook protection or encryption
+  settings enabled.
+
+  ## Parameters
+
+  * `spreadsheet` - The spreadsheet struct
+
+  ## Returns
+
+  * Boolean indicating if encryption is enabled
+
+  ## Examples
+
+      iex> {:ok, spreadsheet} = UmyaSpreadsheet.new()
+      iex> UmyaSpreadsheet.FileFormatOptions.is_encrypted(spreadsheet)
+      false
+
+      iex> {:ok, spreadsheet} = UmyaSpreadsheet.read_xlsx_with_password("encrypted.xlsx", "secret123")
+      iex> UmyaSpreadsheet.FileFormatOptions.is_encrypted(spreadsheet)
+      true
+
+  """
+  @spec is_encrypted(Spreadsheet.t()) :: boolean() | {:error, atom()}
+  def is_encrypted(%Spreadsheet{reference: ref}) do
+    case UmyaNative.is_encrypted(ref) do
+      {:ok, encrypted} -> encrypted
+      {:error, reason} -> {:error, reason}
+      result -> result
+    end
+  end
+
+  @doc """
+  Gets the encryption algorithm used for a password-protected spreadsheet.
+
+  This function returns the encryption algorithm used to protect the spreadsheet,
+  or nil if the spreadsheet is not encrypted.
+
+  ## Parameters
+
+  * `spreadsheet` - The spreadsheet struct
+
+  ## Returns
+
+  * A string representing the encryption algorithm (e.g., "AES256") if the spreadsheet is encrypted
+  * `nil` if the spreadsheet is not encrypted
+  * `{:error, reason}` if the operation failed
+
+  ## Examples
+
+      iex> {:ok, spreadsheet} = UmyaSpreadsheet.new()
+      iex> UmyaSpreadsheet.FileFormatOptions.get_encryption_algorithm(spreadsheet)
+      nil
+
+      iex> {:ok, spreadsheet} = UmyaSpreadsheet.read("encrypted.xlsx", "password")
+      iex> UmyaSpreadsheet.FileFormatOptions.get_encryption_algorithm(spreadsheet)
+      "AES256"
+  """
+  @spec get_encryption_algorithm(Spreadsheet.t()) :: String.t() | nil | {:error, atom()}
+  def get_encryption_algorithm(%Spreadsheet{reference: ref}) do
+    case UmyaNative.get_encryption_algorithm(ref) do
+      {:ok, algorithm} -> algorithm
+      {:error, reason} -> {:error, reason}
+      result -> result
+    end
+  end
 end

@@ -28,7 +28,8 @@ defmodule UmyaSpreadsheet.MixProject do
       {:rustler_precompiled, "~> 0.4"},
       {:rustler, "~> 0.36.1", runtime: false, optional: true},
       {:ex_doc, "~> 0.29", only: :dev, runtime: false},
-      {:igniter, "~> 0.6", optional: true}
+      {:igniter, "~> 0.6", optional: true},
+      {:meck, "~> 0.9.2", only: :test}
     ]
   end
 

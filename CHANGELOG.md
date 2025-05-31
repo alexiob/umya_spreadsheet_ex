@@ -1,5 +1,34 @@
 # Changelog
 
+## 0.6.16 - 2025-05-31
+
+### Added
+
+- **File Format Options Getters**:
+  - **Compression Level Information** - Added getter for default compression level
+    - New function `UmyaSpreadsheet.FileFormatOptions.get_compression_level/1` returns the default compression level
+  - **Encryption Status Check** - Added functions to check encryption settings
+    - New function `UmyaSpreadsheet.FileFormatOptions.is_encrypted/1` checks if a spreadsheet has encryption enabled
+    - New function `UmyaSpreadsheet.FileFormatOptions.get_encryption_algorithm/1` returns the encryption algorithm used
+
+### Fixed
+
+- **NIF Function Registration**:
+  - **Missing NIF Exports** - Added previously missing NIF function exports for file format options
+    - Properly registered file format option functions (`write_with_compression`, `write_with_encryption_options`, `to_binary_xlsx`)
+    - Fixed issue where these functions were implemented but not properly exposed
+
+### Documentation
+
+- **File Format Options Documentation**:
+  - Enhanced documentation for file format options with getter function examples
+  - Added information about checking encryption status and retrieving compression settings
+
+### Technical Details
+
+- **Architecture** - Properly aligned Elixir wrapper functions with underlying NIF implementations
+- **Consistency** - Ensured all file format options have corresponding getter functions for inspection
+
 ## 0.6.15 - 2025-05-31
 
 ### Fixed

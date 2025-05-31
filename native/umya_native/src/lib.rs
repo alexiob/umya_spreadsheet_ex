@@ -448,5 +448,12 @@ rustler::init!(
         vml_support::set_vml_shape_stroked,
         vml_support::set_vml_shape_stroke_color,
         vml_support::set_vml_shape_stroke_weight,
+        // File Format Options functions
+        file_format_options::write_with_compression,
+        file_format_options::write_with_encryption_options,
+        file_format_options::to_binary_xlsx,
+        file_format_options::get_compression_level,
+        file_format_options::is_encrypted,
+        file_format_options::get_encryption_algorithm,
     ]
 );

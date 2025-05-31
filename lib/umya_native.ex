@@ -56,8 +56,8 @@ defmodule UmyaNative do
         _path,
         _password,
         _algorithm,
-        _salt_value \\ nil,
-        _spin_count \\ nil
+        _salt_value,
+        _spin_count
       ),
       do: error()
 
@@ -2167,6 +2167,26 @@ defmodule UmyaNative do
   """
   @spec set_modified(reference(), String.t()) :: :ok | {:error, atom()}
   def set_modified(_spreadsheet, _modified), do: error()
+
+  # File Format Options functions
+
+  @doc """
+  Gets the default compression level used for XLSX files.
+  """
+  @spec get_compression_level(reference()) :: {:ok, integer()} | {:error, atom()}
+  def get_compression_level(_spreadsheet), do: error()
+
+  @doc """
+  Checks if a spreadsheet has encryption enabled.
+  """
+  @spec is_encrypted(reference()) :: {:ok, boolean()} | {:error, atom()}
+  def is_encrypted(_spreadsheet), do: error()
+
+  @doc """
+  Gets the encryption algorithm currently set for the workbook.
+  """
+  @spec get_encryption_algorithm(reference()) :: {:ok, String.t() | nil} | {:error, atom()}
+  def get_encryption_algorithm(_spreadsheet), do: error()
 
   @spec test_simple_function() :: String.t()
   def test_simple_function(), do: error()

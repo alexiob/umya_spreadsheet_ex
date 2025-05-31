@@ -15,7 +15,20 @@ Compression levels range from 0 (no compression) to 9 (maximum compression):
 - **Level 4-6**: Balanced compression (Excel default is around level 6)
 - **Level 7-9**: Maximum compression, slower creation time, smallest file size
 
-### Examples
+### Getting the Default Compression Level
+
+You can check what compression level is being used by default:
+
+```elixir
+alias UmyaSpreadsheet
+
+{:ok, spreadsheet} = UmyaSpreadsheet.new()
+level = UmyaSpreadsheet.FileFormatOptions.get_compression_level(spreadsheet)
+IO.puts("Default compression level: #{level}")
+# => Default compression level: 6
+```
+
+### Setting Custom Compression
 
 ```elixir
 alias UmyaSpreadsheet
@@ -25,13 +38,13 @@ alias UmyaSpreadsheet
 # ... add data to the spreadsheet ...
 
 # Save with no compression - fastest creation, largest file size
-UmyaSpreadsheet.write_with_compression(spreadsheet, "uncompressed.xlsx", 0)
+UmyaSpreadsheet.FileFormatOptions.write_with_compression(spreadsheet, "uncompressed.xlsx", 0)
 
 # Save with default compression
 UmyaSpreadsheet.write(spreadsheet, "default_compression.xlsx")
 
 # Save with maximum compression - smallest file size, slower creation
-UmyaSpreadsheet.write_with_compression(spreadsheet, "max_compressed.xlsx", 9)
+UmyaSpreadsheet.FileFormatOptions.write_with_compression(spreadsheet, "max_compressed.xlsx", 9)
 ```
 
 ### When to Use Different Compression Levels
@@ -44,6 +57,27 @@ UmyaSpreadsheet.write_with_compression(spreadsheet, "max_compressed.xlsx", 9)
 ## Enhanced Encryption Options
 
 UmyaSpreadsheet provides advanced encryption options for securing Excel files with passwords.
+
+### Checking Encryption Status
+
+You can check if a spreadsheet has encryption enabled:
+
+```elixir
+alias UmyaSpreadsheet
+
+# Check if a spreadsheet is encrypted
+{:ok, spreadsheet} = UmyaSpreadsheet.read_xlsx("document.xlsx")
+if UmyaSpreadsheet.FileFormatOptions.is_encrypted(spreadsheet) do
+  IO.puts("The spreadsheet has encryption enabled")
+else
+  IO.puts("The spreadsheet is not encrypted")
+end
+
+# Get the encryption algorithm used
+algorithm = UmyaSpreadsheet.FileFormatOptions.get_encryption_algorithm(spreadsheet)
+IO.puts("Encryption algorithm: #{algorithm || "None"}")
+# => Encryption algorithm: AES256
+```
 
 ### Basic Password Protection
 
