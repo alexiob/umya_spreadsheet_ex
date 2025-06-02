@@ -328,17 +328,19 @@ defmodule UmyaSpreadsheet.DataValidation do
         prompt_message \\ nil
       ) do
     # Convert Date structs to ISO strings if needed
-    date1_str = case date1 do
-      %Date{} -> Date.to_iso8601(date1)
-      str when is_binary(str) -> str
-    end
-    
-    date2_str = case date2 do
-      %Date{} -> Date.to_iso8601(date2)
-      str when is_binary(str) -> str
-      nil -> nil
-    end
-    
+    date1_str =
+      case date1 do
+        %Date{} -> Date.to_iso8601(date1)
+        str when is_binary(str) -> str
+      end
+
+    date2_str =
+      case date2 do
+        %Date{} -> Date.to_iso8601(date2)
+        str when is_binary(str) -> str
+        nil -> nil
+      end
+
     case UmyaNative.add_date_validation(
            UmyaSpreadsheet.unwrap_ref(ref),
            sheet_name,

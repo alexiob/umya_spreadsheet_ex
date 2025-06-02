@@ -420,7 +420,7 @@ title = "Quarterly Sales"
 # Option 2: Using ISO string format
 today_string = Date.utc_today() |> Date.to_iso8601()
 :ok = UmyaSpreadsheet.add_date_validation(
-  spreadsheet, 
+  spreadsheet,
   "Sheet1",
   "D1:D10",
   "greaterThan",

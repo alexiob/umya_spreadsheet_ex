@@ -109,7 +109,7 @@ mod atoms {
         less_than,
         greater_than_or_equal,
         less_than_or_equal,
-        
+
         // Data validation getter atoms
         list,
         decimal,

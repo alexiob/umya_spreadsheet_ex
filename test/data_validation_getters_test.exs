@@ -41,7 +41,7 @@ defmodule UmyaSpreadsheet.DataValidationGettersTest do
 
       assert is_list(validations)
       assert length(validations) == 2
-      
+
       # Verify that both validation types are returned
       validation_types = Enum.map(validations, & &1.rule_type)
       assert :list in validation_types
@@ -83,8 +83,8 @@ defmodule UmyaSpreadsheet.DataValidationGettersTest do
       assert length(list_validations) == 1
 
       # Verify that only list validations are returned
-      assert Enum.all?(list_validations, & &1.rule_type == :list)
-      
+      assert Enum.all?(list_validations, &(&1.rule_type == :list))
+
       # Verify the list items are preserved
       list_validation = List.first(list_validations)
       assert list_validation.list_items == ["Red", "Green", "Blue"]
@@ -127,7 +127,7 @@ defmodule UmyaSpreadsheet.DataValidationGettersTest do
       # Verify that only number validations are returned
       number_validation = List.first(number_validations)
       assert number_validation.rule_type in [:decimal, :whole]
-      
+
       # Verify the number validation properties are preserved
       assert number_validation.value1 == "5.0"
       assert number_validation.value2 == "10.0"
@@ -170,8 +170,8 @@ defmodule UmyaSpreadsheet.DataValidationGettersTest do
       assert length(date_validations) == 1
 
       # Verify that only date validations are returned
-      assert Enum.all?(date_validations, & &1.rule_type == :date)
-      
+      assert Enum.all?(date_validations, &(&1.rule_type == :date))
+
       # Verify the date validation properties are preserved
       date_validation = List.first(date_validations)
       assert date_validation.date1 == "2023-01-01"
@@ -179,7 +179,9 @@ defmodule UmyaSpreadsheet.DataValidationGettersTest do
       assert date_validation.allow_blank == false
     end
 
-    test "get_text_length_validations returns only text length validations", %{spreadsheet: spreadsheet} do
+    test "get_text_length_validations returns only text length validations", %{
+      spreadsheet: spreadsheet
+    } do
       # Set up a sheet with different validation types
       DataValidation.add_text_length_validation(
         spreadsheet,
@@ -214,8 +216,8 @@ defmodule UmyaSpreadsheet.DataValidationGettersTest do
       assert length(text_validations) == 1
 
       # Verify that only text length validations are returned
-      assert Enum.all?(text_validations, & &1.rule_type == :text_length)
-      
+      assert Enum.all?(text_validations, &(&1.rule_type == :text_length))
+
       # Verify the text length properties are preserved
       text_validation = List.first(text_validations)
       assert text_validation.operator == :less_than_or_equal
@@ -223,7 +225,9 @@ defmodule UmyaSpreadsheet.DataValidationGettersTest do
       assert text_validation.allow_blank == true
     end
 
-    test "get_custom_validations returns only custom formula validations", %{spreadsheet: spreadsheet} do
+    test "get_custom_validations returns only custom formula validations", %{
+      spreadsheet: spreadsheet
+    } do
       # Set up a sheet with different validation types
       DataValidation.add_custom_validation(
         spreadsheet,
@@ -256,8 +260,8 @@ defmodule UmyaSpreadsheet.DataValidationGettersTest do
       assert length(custom_validations) == 1
 
       # Verify that only custom validations are returned
-      assert Enum.all?(custom_validations, & &1.rule_type == :custom)
-      
+      assert Enum.all?(custom_validations, &(&1.rule_type == :custom))
+
       # Verify the custom formula is preserved
       custom_validation = List.first(custom_validations)
       assert custom_validation.formula == "MOD(D1,3)=0"
@@ -329,7 +333,9 @@ defmodule UmyaSpreadsheet.DataValidationGettersTest do
       assert count == 2
     end
 
-    test "get_data_validations with cell_range parameter filters correctly if implemented", %{spreadsheet: spreadsheet} do
+    test "get_data_validations with cell_range parameter filters correctly if implemented", %{
+      spreadsheet: spreadsheet
+    } do
       # Add several validation rules in different ranges
       DataValidation.add_list_validation(
         spreadsheet,
@@ -375,13 +381,13 @@ defmodule UmyaSpreadsheet.DataValidationGettersTest do
       # Get all validations
       {:ok, all_validations} = DataValidation.get_data_validations(spreadsheet, "Sheet1")
       assert length(all_validations) == 3
-      
+
       # Verify all validations are returned when not filtering
       validation_ranges = Enum.map(all_validations, & &1.range)
       assert "A1:A5" in validation_ranges
       assert "B1:B5" in validation_ranges
       assert "C1:C5" in validation_ranges
-      
+
       # Test with cell_range parameter
       # Note: This test is conditionally verifying the behavior without failing
       # because filtering might not be implemented yet
@@ -390,6 +396,7 @@ defmodule UmyaSpreadsheet.DataValidationGettersTest do
           # If filtering is implemented correctly, we should only get A1:A5
           assert length(filtered_validations) >= 1
           assert Enum.any?(filtered_validations, &(&1.range == "A1:A5"))
+
         {:ok, []} ->
           # If filtering is not working or not implemented, this is acceptable for now
           :ok
