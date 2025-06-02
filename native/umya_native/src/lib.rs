@@ -13,6 +13,7 @@ pub mod conditional_formatting_additional;
 pub mod conditional_formatting_getters;
 pub mod custom_structs;
 mod data_validation;
+mod data_validation_getters;
 mod document_properties;
 mod drawing_functions;
 mod file_format_options;
@@ -108,6 +109,32 @@ mod atoms {
         less_than,
         greater_than_or_equal,
         less_than_or_equal,
+        
+        // Data validation getter atoms
+        list,
+        decimal,
+        whole,
+        date,
+        time,
+        text_length,
+        custom,
+        formula1,
+        formula2,
+        value1,
+        value2,
+        date1,
+        date2,
+        length1,
+        length2,
+        // formula is already defined above for conditional formatting
+        list_items,
+        show_error_message,
+        error_title,
+        error_message,
+        show_input_message,
+        prompt_title,
+        prompt_message,
+        allow_blank,
     }
 }
 
@@ -305,6 +332,15 @@ rustler::init!(
         data_validation::add_list_validation,
         data_validation::add_custom_validation,
         data_validation::remove_data_validation,
+        // Data validation getter functions
+        data_validation_getters::get_data_validations_nif,
+        data_validation_getters::get_list_validations_nif,
+        data_validation_getters::get_number_validations_nif,
+        data_validation_getters::get_date_validations_nif,
+        data_validation_getters::get_text_length_validations_nif,
+        data_validation_getters::get_custom_validations_nif,
+        data_validation_getters::has_data_validations_nif,
+        data_validation_getters::count_data_validations_nif,
         // Sheet view functions
         sheet_view_functions::set_show_grid_lines,
         sheet_view_functions::set_tab_selected,

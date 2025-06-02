@@ -404,17 +404,31 @@ title = "Quarterly Sales"
 )
 
 # Add date validation (future dates only)
-today = Date.utc_today() |> Date.to_iso8601()
+# Option 1: Using Date struct directly
 :ok = UmyaSpreadsheet.add_date_validation(
   spreadsheet,
   "Sheet1",
   "C1:C10",
   "greaterThan",  # Operator
-  today,  # Compare date
+  Date.utc_today(),  # Compare date as Date struct
   nil,  # Second date (for between operator)
   true,  # Allow blank values
   "Invalid Date",  # Error title
   "Please enter a future date"  # Error message
+)
+
+# Option 2: Using ISO string format
+today_string = Date.utc_today() |> Date.to_iso8601()
+:ok = UmyaSpreadsheet.add_date_validation(
+  spreadsheet, 
+  "Sheet1",
+  "D1:D10",
+  "greaterThan",
+  today_string,  # Compare date as string
+  nil,
+  true,
+  "Invalid Date",
+  "Please enter a future date"
 )
 
 # Add text length validation (max 10 characters)

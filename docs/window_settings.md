@@ -84,9 +84,15 @@ IO.puts("Window position: #{position[:x]}, #{position[:y]}")
 IO.puts("Window size: #{position[:width]} x #{position[:height]}")
 ```
 
+## Setting Active Sheet by Name
+
+If you know the sheet name rather than its index:
+
+```elixir
+# Find the index of a sheet by name
+sheet_names = UmyaSpreadsheet.get_sheet_names(spreadsheet)
 summary_index = Enum.find_index(sheet_names, fn name -> name == "Summary" end)
 UmyaSpreadsheet.set_active_tab(spreadsheet, summary_index)
-
 ```
 
 ## Workbook Window Position and Size
@@ -111,7 +117,7 @@ You can combine multiple window settings to create a specific user experience:
 
 ```elixir
 # Create a new spreadsheet with multiple sheets
-{:ok, spreadsheet} = UmyaSpreadsheet.new()
+spreadsheet = UmyaSpreadsheet.new()
 UmyaSpreadsheet.add_sheet(spreadsheet, "Data")
 UmyaSpreadsheet.add_sheet(spreadsheet, "Analysis")
 

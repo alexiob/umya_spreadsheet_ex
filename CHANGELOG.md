@@ -1,8 +1,21 @@
 # Changelog
 
-## 0.6.16 - 2025-05-31
+## 0.6.16 - 2025-06-02
 
 ### Added
+
+- **Data Validation Enhancements**:
+  - **Enhanced Date Validation** - `add_date_validation/11` now accepts both string dates and Elixir Date structs
+  - **Improved Documentation** - Merged and enhanced data validation documentation into a comprehensive guide
+  - **Rule Retrieval Capabilities** - Added comprehensive getter functions for data validation
+    - New function `UmyaSpreadsheet.DataValidation.get_data_validations/2-3` retrieves all data validation rules for a sheet or range
+    - New function `UmyaSpreadsheet.DataValidation.get_list_validations/2-3` retrieves dropdown list validation rules
+    - New function `UmyaSpreadsheet.DataValidation.get_number_validations/2-3` retrieves numeric constraint validation rules
+    - New function `UmyaSpreadsheet.DataValidation.get_date_validations/2-3` retrieves date constraint validation rules
+    - New function `UmyaSpreadsheet.DataValidation.get_text_length_validations/2-3` retrieves text length validation rules
+    - New function `UmyaSpreadsheet.DataValidation.get_custom_validations/2-3` retrieves custom formula validation rules
+    - New utility function `UmyaSpreadsheet.DataValidation.has_data_validations/2-3` checks if validations exist
+    - New utility function `UmyaSpreadsheet.DataValidation.count_data_validations/2-3` counts validation rules
 
 - **Conditional Formatting Getter Functions**:
   - **Rule Retrieval Capabilities** - Added comprehensive getter functions for conditional formatting rules
@@ -248,10 +261,10 @@
     - `UmyaSpreadsheet.get_cell_locked/3` - Get cell locked state (true/false)
     - `UmyaSpreadsheet.get_cell_hidden/3` - Get cell hidden state (true/false)
   - **Table Inspection API** - Comprehensive table property getters for Excel table analysis
-    - `UmyaSpreadsheet.get_table/4` - Get specific table information by name (structure, range, columns)
-    - `UmyaSpreadsheet.get_table_style/4` - Get table style properties (name, column/row highlights, banding)
-    - `UmyaSpreadsheet.get_table_columns/4` - Get table column definitions (names, IDs, totals functions)
-    - `UmyaSpreadsheet.get_table_totals_row/4` - Get totals row visibility status (true/false)
+    - Table information retrieval (structure, range, columns)
+    - Table style properties (name, column/row highlights, banding)
+    - Table column definitions (names, IDs, totals functions)
+    - Totals row visibility status (true/false)
   - **Background Functions Enhancement** - Added missing background property getters
     - `UmyaSpreadsheet.get_cell_background_color/3` - Get cell background color (hex codes)
     - `UmyaSpreadsheet.get_cell_foreground_color/3` - Get cell foreground/pattern color (hex codes)

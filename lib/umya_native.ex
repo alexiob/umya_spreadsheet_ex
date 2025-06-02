@@ -2268,5 +2268,38 @@ defmodule UmyaNative do
   def get_text_rules(_spreadsheet, _sheet_name, _range),
     do: error()
 
+  # Data validation getter functions
+  @spec get_data_validations(reference(), String.t(), String.t() | nil) :: list()
+  def get_data_validations(_spreadsheet, _sheet_name, _cell_range),
+    do: error()
+
+  @spec get_list_validations(reference(), String.t(), String.t() | nil) :: list()
+  def get_list_validations(_spreadsheet, _sheet_name, _cell_range),
+    do: error()
+
+  @spec get_number_validations(reference(), String.t(), String.t() | nil) :: list()
+  def get_number_validations(_spreadsheet, _sheet_name, _cell_range),
+    do: error()
+
+  @spec get_date_validations(reference(), String.t(), String.t() | nil) :: list()
+  def get_date_validations(_spreadsheet, _sheet_name, _cell_range),
+    do: error()
+
+  @spec get_text_length_validations(reference(), String.t(), String.t() | nil) :: list()
+  def get_text_length_validations(_spreadsheet, _sheet_name, _cell_range),
+    do: error()
+
+  @spec get_custom_validations(reference(), String.t(), String.t() | nil) :: list()
+  def get_custom_validations(_spreadsheet, _sheet_name, _cell_range),
+    do: error()
+
+  @spec has_data_validations(reference(), String.t(), String.t() | nil) :: boolean()
+  def has_data_validations(_spreadsheet, _sheet_name, _cell_range),
+    do: error()
+
+  @spec count_data_validations(reference(), String.t(), String.t() | nil) :: non_neg_integer()
+  def count_data_validations(_spreadsheet, _sheet_name, _cell_range),
+    do: error()
+
   defp error(), do: :erlang.nif_error(:nif_not_loaded)
 end

@@ -244,8 +244,8 @@ defmodule UmyaSpreadsheet.DataValidation do
       * "lessThan" - Before date
       * "greaterThanOrEqual" - On or after date
       * "lessThanOrEqual" - On or before date
-    * `date1` - First date for comparison in ISO format (YYYY-MM-DD)
-    * `date2` - Second date for comparison (only required for "between" and "notBetween")
+    * `date1` - First date for comparison as an ISO string (YYYY-MM-DD) or Elixir Date struct
+    * `date2` - Second date for comparison as an ISO string or Date struct (only required for "between" and "notBetween")
     * `allow_blank` - Whether to allow blank/empty values (default: true)
     * `error_title` - Optional title for error message when validation fails
     * `error_message` - Optional description for error message when validation fails
@@ -255,7 +255,7 @@ defmodule UmyaSpreadsheet.DataValidation do
   ## Examples
 
   ```elixir
-  # Allow only dates in 2023
+  # Allow only dates in 2023 (using string dates)
   DataValidation.add_date_validation(
     spreadsheet,
     "Sheet1",
@@ -270,13 +270,28 @@ defmodule UmyaSpreadsheet.DataValidation do
     "Enter a date in 2023"
   )
 
+  # Allow only dates in 2023 (using Date structs)
+  DataValidation.add_date_validation(
+    spreadsheet,
+    "Sheet1",
+    "A1:A10",
+    "between",
+    ~D[2023-01-01],
+    ~D[2023-12-31],
+    true,
+    "Invalid Date",
+    "Please enter a date in 2023",
+    "Date Input",
+    "Enter a date in 2023"
+  )
+
   # Allow only dates after today
   DataValidation.add_date_validation(
     spreadsheet,
     "Sheet1",
     "B1:B10",
     "greaterThan",
-    Date.utc_today() |> Date.to_iso8601(),
+    Date.utc_today(),  # Date struct works directly
     nil,
     true,
     "Invalid Date",
@@ -291,8 +306,8 @@ defmodule UmyaSpreadsheet.DataValidation do
           String.t(),
           String.t(),
           String.t(),
-          String.t(),
-          String.t() | nil,
+          String.t() | Date.t(),
+          (String.t() | Date.t()) | nil,
           boolean(),
           String.t() | nil,
           String.t() | nil,
@@ -312,13 +327,25 @@ defmodule UmyaSpreadsheet.DataValidation do
         prompt_title \\ nil,
         prompt_message \\ nil
       ) do
+    # Convert Date structs to ISO strings if needed
+    date1_str = case date1 do
+      %Date{} -> Date.to_iso8601(date1)
+      str when is_binary(str) -> str
+    end
+    
+    date2_str = case date2 do
+      %Date{} -> Date.to_iso8601(date2)
+      str when is_binary(str) -> str
+      nil -> nil
+    end
+    
     case UmyaNative.add_date_validation(
            UmyaSpreadsheet.unwrap_ref(ref),
            sheet_name,
            cell_range,
            operator,
-           date1,
-           date2,
+           date1_str,
+           date2_str,
            allow_blank,
            error_title,
            error_message,
@@ -549,5 +576,299 @@ defmodule UmyaSpreadsheet.DataValidation do
       {:ok, :ok} -> :ok
       {:error, reason} -> {:error, reason}
     end
+  end
+
+  @doc """
+  Gets all data validation rules for a sheet or range.
+
+  Returns a list of maps, each containing details about a data validation rule.
+  Each map includes the range it applies to and various other properties depending on the rule type.
+
+  ## Parameters
+
+    * `spreadsheet` - A spreadsheet struct
+    * `sheet_name` - Name of the sheet
+    * `cell_range` - Optional range of cells to filter rules by (e.g., "A1:B10")
+
+  ## Examples
+
+  ```elixir
+  # Get all validation rules in a sheet
+  rules = DataValidation.get_data_validations(spreadsheet, "Sheet1")
+  ```
+  """
+  @spec get_data_validations(
+          Spreadsheet.t(),
+          String.t(),
+          String.t() | nil
+        ) :: [map()]
+  def get_data_validations(
+        %Spreadsheet{reference: ref},
+        sheet_name,
+        cell_range \\ nil
+      ) do
+    UmyaNative.get_data_validations(
+      UmyaSpreadsheet.unwrap_ref(ref),
+      sheet_name,
+      cell_range
+    )
+  end
+
+  @doc """
+  Gets list validation rules for a sheet or range.
+
+  Returns list validation rules that restrict input to specified options.
+  Each map includes the range it applies to, the list items, and various other properties.
+
+  ## Parameters
+
+    * `spreadsheet` - A spreadsheet struct
+    * `sheet_name` - Name of the sheet
+    * `cell_range` - Optional range of cells to filter rules by (e.g., "A1:B10")
+
+  ## Examples
+
+  ```elixir
+  # Get list validation rules in a sheet
+  list_rules = DataValidation.get_list_validations(spreadsheet, "Sheet1")
+  ```
+  """
+  @spec get_list_validations(
+          Spreadsheet.t(),
+          String.t(),
+          String.t() | nil
+        ) :: [map()]
+  def get_list_validations(
+        %Spreadsheet{reference: ref},
+        sheet_name,
+        cell_range \\ nil
+      ) do
+    UmyaNative.get_list_validations(
+      UmyaSpreadsheet.unwrap_ref(ref),
+      sheet_name,
+      cell_range
+    )
+  end
+
+  @doc """
+  Gets number validation rules for a sheet or range.
+
+  Returns number validation rules that restrict input to numeric values.
+  Each map includes the range it applies to, operator, values, and various other properties.
+
+  ## Parameters
+
+    * `spreadsheet` - A spreadsheet struct
+    * `sheet_name` - Name of the sheet
+    * `cell_range` - Optional range of cells to filter rules by (e.g., "A1:B10")
+
+  ## Examples
+
+  ```elixir
+  # Get number validation rules in a sheet
+  number_rules = DataValidation.get_number_validations(spreadsheet, "Sheet1")
+  ```
+  """
+  @spec get_number_validations(
+          Spreadsheet.t(),
+          String.t(),
+          String.t() | nil
+        ) :: [map()]
+  def get_number_validations(
+        %Spreadsheet{reference: ref},
+        sheet_name,
+        cell_range \\ nil
+      ) do
+    UmyaNative.get_number_validations(
+      UmyaSpreadsheet.unwrap_ref(ref),
+      sheet_name,
+      cell_range
+    )
+  end
+
+  @doc """
+  Gets date validation rules for a sheet or range.
+
+  Returns date validation rules that restrict input to date values.
+  Each map includes the range it applies to, operator, date values, and various other properties.
+
+  ## Parameters
+
+    * `spreadsheet` - A spreadsheet struct
+    * `sheet_name` - Name of the sheet
+    * `cell_range` - Optional range of cells to filter rules by (e.g., "A1:B10")
+
+  ## Examples
+
+  ```elixir
+  # Get date validation rules in a sheet
+  date_rules = DataValidation.get_date_validations(spreadsheet, "Sheet1")
+  ```
+  """
+  @spec get_date_validations(
+          Spreadsheet.t(),
+          String.t(),
+          String.t() | nil
+        ) :: [map()]
+  def get_date_validations(
+        %Spreadsheet{reference: ref},
+        sheet_name,
+        cell_range \\ nil
+      ) do
+    UmyaNative.get_date_validations(
+      UmyaSpreadsheet.unwrap_ref(ref),
+      sheet_name,
+      cell_range
+    )
+  end
+
+  @doc """
+  Gets text length validation rules for a sheet or range.
+
+  Returns text length validation rules that restrict input based on text length.
+  Each map includes the range it applies to, operator, length values, and various other properties.
+
+  ## Parameters
+
+    * `spreadsheet` - A spreadsheet struct
+    * `sheet_name` - Name of the sheet
+    * `cell_range` - Optional range of cells to filter rules by (e.g., "A1:B10")
+
+  ## Examples
+
+  ```elixir
+  # Get text length validation rules in a sheet
+  text_length_rules = DataValidation.get_text_length_validations(spreadsheet, "Sheet1")
+  ```
+  """
+  @spec get_text_length_validations(
+          Spreadsheet.t(),
+          String.t(),
+          String.t() | nil
+        ) :: [map()]
+  def get_text_length_validations(
+        %Spreadsheet{reference: ref},
+        sheet_name,
+        cell_range \\ nil
+      ) do
+    UmyaNative.get_text_length_validations(
+      UmyaSpreadsheet.unwrap_ref(ref),
+      sheet_name,
+      cell_range
+    )
+  end
+
+  @doc """
+  Gets custom formula validation rules for a sheet or range.
+
+  Returns custom formula validation rules that restrict input based on a custom formula.
+  Each map includes the range it applies to, formula, and various other properties.
+
+  ## Parameters
+
+    * `spreadsheet` - A spreadsheet struct
+    * `sheet_name` - Name of the sheet
+    * `cell_range` - Optional range of cells to filter rules by (e.g., "A1:B10")
+
+  ## Examples
+
+  ```elixir
+  # Get custom formula validation rules in a sheet
+  custom_rules = DataValidation.get_custom_validations(spreadsheet, "Sheet1")
+  ```
+  """
+  @spec get_custom_validations(
+          Spreadsheet.t(),
+          String.t(),
+          String.t() | nil
+        ) :: [map()]
+  def get_custom_validations(
+        %Spreadsheet{reference: ref},
+        sheet_name,
+        cell_range \\ nil
+      ) do
+    UmyaNative.get_custom_validations(
+      UmyaSpreadsheet.unwrap_ref(ref),
+      sheet_name,
+      cell_range
+    )
+  end
+
+  @doc """
+  Checks if a sheet has any data validation rules.
+
+  Returns `true` if the sheet has any validation rules, `false` otherwise.
+  If a cell range is provided, only checks for rules applying to that range.
+
+  ## Parameters
+
+    * `spreadsheet` - A spreadsheet struct
+    * `sheet_name` - Name of the sheet
+    * `cell_range` - Optional range of cells to check (e.g., "A1:B10")
+
+  ## Examples
+
+  ```elixir
+  # Check if a sheet has any validation rules
+  has_rules = DataValidation.has_data_validations(spreadsheet, "Sheet1")
+
+  # Check if a specific range has validation rules
+  has_rules_in_range = DataValidation.has_data_validations(spreadsheet, "Sheet1", "A1:A10")
+  ```
+  """
+  @spec has_data_validations(
+          Spreadsheet.t(),
+          String.t(),
+          String.t() | nil
+        ) :: boolean()
+  def has_data_validations(
+        %Spreadsheet{reference: ref},
+        sheet_name,
+        cell_range \\ nil
+      ) do
+    UmyaNative.has_data_validations(
+      UmyaSpreadsheet.unwrap_ref(ref),
+      sheet_name,
+      cell_range
+    )
+  end
+
+  @doc """
+  Counts the number of data validation rules in a sheet.
+
+  Returns the count of validation rules in the sheet.
+  If a cell range is provided, only counts rules applying to that range.
+
+  ## Parameters
+
+    * `spreadsheet` - A spreadsheet struct
+    * `sheet_name` - Name of the sheet
+    * `cell_range` - Optional range of cells to count rules for (e.g., "A1:B10")
+
+  ## Examples
+
+  ```elixir
+  # Count all validation rules in a sheet
+  rule_count = DataValidation.count_data_validations(spreadsheet, "Sheet1")
+
+  # Count validation rules in a specific range
+  range_rule_count = DataValidation.count_data_validations(spreadsheet, "Sheet1", "A1:A10")
+  ```
+  """
+  @spec count_data_validations(
+          Spreadsheet.t(),
+          String.t(),
+          String.t() | nil
+        ) :: non_neg_integer()
+  def count_data_validations(
+        %Spreadsheet{reference: ref},
+        sheet_name,
+        cell_range \\ nil
+      ) do
+    UmyaNative.count_data_validations(
+      UmyaSpreadsheet.unwrap_ref(ref),
+      sheet_name,
+      cell_range
+    )
   end
 end
