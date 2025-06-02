@@ -10,6 +10,7 @@ mod chart_functions;
 mod comment_functions;
 pub mod conditional_formatting;
 pub mod conditional_formatting_additional;
+pub mod conditional_formatting_getters;
 pub mod custom_structs;
 mod data_validation;
 mod document_properties;
@@ -47,6 +48,37 @@ mod atoms {
         not_found,
         invalid_path,
         unknown_error,
+
+        // Conditional formatting atoms
+        cell_is,
+        color_scale,
+        data_bar,
+        icon_set,
+        top_bottom,
+        above_below_average,
+        text_rule,
+        rule_type,
+        rule_type_value,
+        operator,
+        formula,
+        format_style,
+        range,
+        min_type,
+        min_value,
+        min_color,
+        mid_type,
+        mid_value,
+        mid_color,
+        max_type,
+        max_value,
+        max_color,
+        color,
+        icon_style,
+        thresholds,
+        rank,
+        percent,
+        std_dev,
+        text,
 
         // Chart function atoms
         position,
@@ -250,6 +282,15 @@ rustler::init!(
         conditional_formatting_additional::add_text_rule,
         conditional_formatting_additional::add_icon_set,
         conditional_formatting_additional::add_above_below_average_rule,
+        // Conditional formatting getter functions
+        conditional_formatting_getters::get_conditional_formatting_rules_nif,
+        conditional_formatting_getters::get_cell_value_rules_nif,
+        conditional_formatting_getters::get_color_scales_nif,
+        conditional_formatting_getters::get_data_bars_nif,
+        conditional_formatting_getters::get_icon_sets_nif,
+        conditional_formatting_getters::get_top_bottom_rules_nif,
+        conditional_formatting_getters::get_above_below_average_rules_nif,
+        conditional_formatting_getters::get_text_rules_nif,
         // CSV functions
         write_csv_with_options::write_csv,
         write_csv_with_options::write_csv_with_options,

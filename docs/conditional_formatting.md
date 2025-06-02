@@ -9,7 +9,9 @@ Conditional formatting is a powerful way to visualize data by automatically form
 - **Cell Value Rules**: Format cells based on comparison with values (greater than, less than, equal to, etc.)
 - **Color Scales**: Apply color gradients based on cell values
 - **Data Bars**: Show horizontal bars in cells proportional to their values
+- **Icon Sets**: Display different icons based on cell values for visual data representation
 - **Top/Bottom Rules**: Highlight top or bottom values/percentages in a range
+- **Above/Below Average Rules**: Highlight cells above or below the average value of a range
 - **Text Rules**: Format cells based on text content (contains, begins with, etc.)
 
 All conditional formatting functionality is available through the `UmyaSpreadsheet.ConditionalFormatting` module.
@@ -124,6 +126,39 @@ ConditionalFormatting.add_data_bar(
 )
 ```
 
+## Icon Sets
+
+Icon sets display different icons in cells based on their values, providing a visual cue for data analysis.
+
+```elixir
+# Basic icon set (3 icons)
+ConditionalFormatting.add_icon_set(
+  spreadsheet,
+  "Sheet1",
+  "A1:A10",
+  "3Symbols",  # Icon set type
+  nil,          # No specific value range
+  nil           # Default icon style
+)
+
+# Custom icon set with specific values
+ConditionalFormatting.add_icon_set(
+  spreadsheet,
+  "Sheet1",
+  "A1:A10",
+  "3TrafficLights",  # Icon set type
+  {"number", "0"},   # Minimum value for red light
+  {"number", "100"}, # Maximum value for green light
+  nil                 # Default icon style
+)
+```
+
+### Available Icon Set Types
+
+- `"3Symbols"` - Three symbols (e.g., up/down arrows)
+- `"3TrafficLights"` - Traffic light icons (red, yellow, green)
+- `"4Ratings"` - Four rating icons (e.g., star ratings)
+
 ## Top/Bottom Rules
 
 Top/bottom rules highlight cells with values that rank at the top or bottom of a range, either by count or percentage.
@@ -149,6 +184,32 @@ ConditionalFormatting.add_top_bottom_rule(
   20,       # Bottom 20%
   true,     # Is a percentage
   "#FFFF00" # Yellow highlight
+)
+```
+
+## Above/Below Average Rules
+
+Above/below average rules highlight cells that are above or below the average value of a range, helping to identify outliers.
+
+```elixir
+# Highlight cells above average in green
+ConditionalFormatting.add_above_below_average_rule(
+  spreadsheet,
+  "Sheet1",
+  "A1:A10",
+  "aboveAverage",  # Rule type
+  nil,              # No specific value
+  "#00FF00"        # Green highlight
+)
+
+# Highlight cells below average in red
+ConditionalFormatting.add_above_below_average_rule(
+  spreadsheet,
+  "Sheet1",
+  "A1:A10",
+  "belowAverage",  # Rule type
+  nil,              # No specific value
+  "#FF0000"        # Red highlight
 )
 ```
 
@@ -184,6 +245,310 @@ ConditionalFormatting.add_text_rule(
 - `"notContains"` - Cell does not contain the text
 - `"beginsWith"` - Cell begins with the text
 - `"endsWith"` - Cell ends with the text
+
+## Getting Conditional Formatting Rules
+
+UmyaSpreadsheet provides a set of functions to retrieve conditional formatting rules from a spreadsheet. These getter functions allow you to examine the rules applied to specific sheets or ranges.
+
+```elixir
+alias UmyaSpreadsheet.ConditionalFormatting
+
+# Get all conditional formatting rules in a sheet
+rules = ConditionalFormatting.get_conditional_formatting_rules(spreadsheet, "Sheet1")
+
+# Get conditional formatting rules for a specific range
+rules = ConditionalFormatting.get_conditional_formatting_rules(spreadsheet, "Sheet1", "A1:A10")
+
+# Get rules of specific types
+cell_value_rules = ConditionalFormatting.get_cell_value_rules(spreadsheet, "Sheet1")
+color_scales = ConditionalFormatting.get_color_scales(spreadsheet, "Sheet1")
+data_bars = ConditionalFormatting.get_data_bars(spreadsheet, "Sheet1")
+icon_sets = ConditionalFormatting.get_icon_sets(spreadsheet, "Sheet1")
+top_bottom_rules = ConditionalFormatting.get_top_bottom_rules(spreadsheet, "Sheet1")
+above_below_average_rules = ConditionalFormatting.get_above_below_average_rules(spreadsheet, "Sheet1")
+text_rules = ConditionalFormatting.get_text_rules(spreadsheet, "Sheet1")
+```
+
+### Getter Response Schemas
+
+Each of the getter functions returns a list of maps, with each map representing a conditional formatting rule. The structure of these maps depends on the type of rule. Below are the detailed schemas for each rule type.
+
+#### Cell Value Rules
+
+`get_cell_value_rules/2` and `get_cell_value_rules/3` return a list of maps with the following structure:
+
+```elixir
+%{
+  range: String.t(),           # The cell range to which the rule applies, e.g., "A1:A10"
+  rule_type: :cell_is,         # Always :cell_is for cell value rules
+  operator: atom(),            # One of: :equal, :not_equal, :greater_than, :less_than,
+                              # :greater_than_or_equal, :less_than_or_equal, :between, :not_between
+  formula: String.t(),         # The formula or value to compare against
+  format_style: String.t()     # The color applied as formatting (ARGB format, e.g., "FFFF0000" for red)
+}
+```
+
+Example:
+
+```elixir
+%{
+  range: "A1:A10",
+  rule_type: :cell_is,
+  operator: :greater_than,
+  formula: "50",
+  format_style: "FFFF0000"
+}
+```
+
+#### Color Scale Rules
+
+`get_color_scales/2` and `get_color_scales/3` return a list of maps with the following structure:
+
+```elixir
+%{
+  range: String.t(),             # The cell range to which the rule applies
+  rule_type: :color_scale,       # Always :color_scale for color scale rules
+  min_type: atom(),              # The type of the minimum value
+  min_value: String.t(),         # The minimum value (if applicable)
+  min_color: %{argb: String.t()}, # The color for minimum values (ARGB format)
+
+  # For three-color scales only:
+  mid_type: atom(),              # The type of the mid-point value
+  mid_value: String.t(),         # The mid-point value (if applicable)
+  mid_color: %{argb: String.t()}, # The color for mid-point values (ARGB format)
+
+  max_type: atom(),              # The type of the maximum value
+  max_value: String.t(),         # The maximum value (if applicable)
+  max_color: %{argb: String.t()}  # The color for maximum values (ARGB format)
+}
+```
+
+Value type atoms can be: `:min`, `:max`, `:number`, `:percent`, `:percentile`, or `:formula`
+
+Example (two-color scale):
+
+```elixir
+%{
+  range: "A1:A10",
+  rule_type: :color_scale,
+  min_type: :min,
+  min_value: "",
+  min_color: %{argb: "FF0000FF"},  # Blue
+  max_type: :max,
+  max_value: "",
+  max_color: %{argb: "FF00FF00"}   # Green
+}
+```
+
+Example (three-color scale):
+
+```elixir
+%{
+  range: "A1:A10",
+  rule_type: :color_scale,
+  min_type: :min,
+  min_value: "",
+  min_color: %{argb: "FFFF0000"},  # Red
+  mid_type: :percentile,
+  mid_value: "50",
+  mid_color: %{argb: "FFFFFF00"},  # Yellow
+  max_type: :max,
+  max_value: "",
+  max_color: %{argb: "FF00FF00"}   # Green
+}
+```
+
+#### Data Bar Rules
+
+`get_data_bars/2` and `get_data_bars/3` return a list of maps with the following structure:
+
+```elixir
+%{
+  range: String.t(),    # The cell range to which the rule applies
+  rule_type: :data_bar, # Always :data_bar for data bar rules
+  min_value: term(),    # The minimum value as a tuple like {type, value} or nil
+  max_value: term(),    # The maximum value as a tuple like {type, value} or nil
+  color: String.t()     # The color of the data bar (ARGB format)
+}
+```
+
+The `min_value` and `max_value` can be:
+
+- A tuple like `{:min, ""}` or `{:number, "20"}`
+- `nil` when using default values
+
+Example:
+
+```elixir
+%{
+  range: "C1:C10",
+  rule_type: :data_bar,
+  min_value: nil,  # Using default min (lowest value in range)
+  max_value: nil,  # Using default max (highest value in range)
+  color: "FF638EC6"  # Blue data bar
+}
+```
+
+#### Icon Set Rules
+
+`get_icon_sets/2` and `get_icon_sets/3` return a list of maps with the following structure:
+
+```elixir
+%{
+  range: String.t(),       # The cell range to which the rule applies
+  rule_type: :icon_set,    # Always :icon_set for icon set rules
+  icon_style: String.t(),  # The icon set type, e.g., "3arrows", "4arrows", "5arrows"
+  thresholds: [{String.t(), String.t()}]  # List of threshold values as {type, value} tuples
+}
+```
+
+Example:
+
+```elixir
+%{
+  range: "A1:A10",
+  rule_type: :icon_set,
+  icon_style: "3arrows",
+  thresholds: [
+    {"percent", "0"},
+    {"percent", "33"},
+    {"percent", "67"}
+  ]
+}
+```
+
+#### Top/Bottom Rules
+
+`get_top_bottom_rules/2` and `get_top_bottom_rules/3` return a list of maps with the following structure:
+
+```elixir
+%{
+  range: String.t(),          # The cell range to which the rule applies
+  rule_type: :top_bottom,     # Always :top_bottom for top/bottom rules
+  rule_type_value: atom(),    # Either :top or :bottom
+  rank: integer(),            # The number of values or percentage to highlight
+  percent: boolean(),         # Whether rank is a percentage or count
+  format_style: String.t()    # The color applied as formatting (ARGB format)
+}
+```
+
+Example:
+
+```elixir
+%{
+  range: "A1:A10",
+  rule_type: :top_bottom,
+  rule_type_value: :top,
+  rank: 3,
+  percent: false,  # Top 3 values, not percentile
+  format_style: "FFFFFF00"  # Yellow highlight
+}
+```
+
+#### Above/Below Average Rules
+
+`get_above_below_average_rules/2` and `get_above_below_average_rules/3` return a list of maps with the following structure:
+
+```elixir
+%{
+  range: String.t(),              # The cell range to which the rule applies
+  rule_type: :above_below_average, # Always :above_below_average for these rules
+  rule_type_value: atom(),        # One of: :above, :below, :above_equal, :below_equal
+  std_dev: integer(),             # Standard deviation value (0 for regular above/below)
+  format_style: String.t()        # The color applied as formatting (ARGB format)
+}
+```
+
+Example:
+
+```elixir
+%{
+  range: "C1:C10",
+  rule_type: :above_below_average,
+  rule_type_value: :above,
+  std_dev: 0,  # 0 means standard above average, not standard deviation based
+  format_style: "FF00FF00"  # Green highlight
+}
+```
+
+#### Text Rules
+
+`get_text_rules/2` and `get_text_rules/3` return a list of maps with the following structure:
+
+```elixir
+%{
+  range: String.t(),      # The cell range to which the rule applies
+  rule_type: :text_rule,  # Always :text_rule for text rules
+  operator: atom(),       # One of: :contains, :not_contains, :begins_with, :ends_with
+  text: String.t(),       # The text to search for
+  format_style: String.t() # The color applied as formatting (ARGB format)
+}
+```
+
+Example:
+
+```elixir
+%{
+  range: "B1:B10",
+  rule_type: :text_rule,
+  operator: :begins_with,
+  text: "Value 1",
+  format_style: "FFFFC000"  # Orange highlight
+}
+```
+
+#### All Rules
+
+When using `get_conditional_formatting_rules/2` or `get_conditional_formatting_rules/3`, you'll get a list containing any of the above rule types, each with their respective structure. You can identify the rule type by checking the `:rule_type` field in each map.
+
+### Working with Rule Results
+
+The getter functions return a list of rule maps, each containing information about a conditional formatting rule:
+
+```elixir
+# Example: Getting cell value rules
+cell_value_rules = ConditionalFormatting.get_cell_value_rules(spreadsheet, "Sheet1")
+
+# Each rule contains details about the formatting condition
+Enum.each(cell_value_rules, fn rule ->
+  IO.puts("Range: #{rule.range}")
+  IO.puts("Operator: #{rule.operator}")
+  IO.puts("Formula: #{rule.formula}")
+  IO.puts("Format style: #{rule.format_style}")
+end)
+```
+
+### Example: Analyzing Conditional Formatting Rules
+
+```elixir
+alias UmyaSpreadsheet.ConditionalFormatting
+
+# Read a spreadsheet with conditional formatting
+{:ok, spreadsheet} = UmyaSpreadsheet.read("formatted_data.xlsx")
+
+# Get all conditional formatting rules
+all_rules = ConditionalFormatting.get_conditional_formatting_rules(spreadsheet, "Sheet1")
+
+# Count rules by type
+rule_counts = Enum.reduce(all_rules, %{}, fn rule, acc ->
+  Map.update(acc, rule.type, 1, &(&1 + 1))
+end)
+
+IO.puts("Rule counts by type:")
+Enum.each(rule_counts, fn {type, count} ->
+  IO.puts("#{type}: #{count}")
+end)
+
+# Find all red formatting
+red_rules = Enum.filter(all_rules, fn rule ->
+  rule.format["bgColor"] in ["#FF0000", "rgb(255,0,0)"]
+end)
+
+IO.puts("\nRed formatting rules:")
+Enum.each(red_rules, fn rule ->
+  IO.puts("#{rule.type} rule on range #{rule.range}")
+end)
+```
 
 ## Format Styles
 
@@ -237,6 +602,12 @@ ConditionalFormatting.add_color_scale(
 
 # Save the spreadsheet
 UmyaSpreadsheet.write(spreadsheet, "conditional_formatting_example.xlsx")
+
+# Read back and analyze the rules
+{:ok, read_spreadsheet} = UmyaSpreadsheet.read("conditional_formatting_example.xlsx")
+rules = ConditionalFormatting.get_conditional_formatting_rules(read_spreadsheet, "Sheet1")
+
+IO.puts("Found #{length(rules)} conditional formatting rules in Sheet1")
 ```
 
 ## Notes
@@ -245,3 +616,4 @@ UmyaSpreadsheet.write(spreadsheet, "conditional_formatting_example.xlsx")
 - Multiple rules can be applied to the same range, and they will be evaluated in the order they were added
 - The formatting is applied when opening the file in Excel, not in the Elixir code itself
 - For complex formatting needs, consider using multiple rules to achieve the desired effect
+- Use the getter functions to inspect and analyze conditional formatting rules in existing spreadsheets

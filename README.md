@@ -7,7 +7,9 @@
 
 ![UmyaSpreadsheetEx Logo](/docs/logo.png)
 
-An Elixir NIF wrapper for the [umya-spreadsheet](https://github.com/MathNya/umya-spreadsheet) Rust library, providing comprehensive Excel file (.xlsx, .xlsm) manipulation capabilities with the performance benefits of Rust.
+Everything you ever needed (and probably more) to work with Excel files in Elixir, powered by Rust!
+
+An Elixir NIF wrapper for the amazing [umya-spreadsheet](https://github.com/MathNya/umya-spreadsheet) Rust library, providing comprehensive Excel file (.xlsx, .xlsm) manipulation capabilities with the performance benefits of Rust.
 
 ## Features
 

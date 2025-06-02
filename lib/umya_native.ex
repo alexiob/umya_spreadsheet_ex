@@ -2227,5 +2227,46 @@ defmodule UmyaNative do
   def get_vml_shape_stroke_weight(_spreadsheet, _sheet_name, _shape_id),
     do: error()
 
+  # Conditional formatting getter functions
+  @spec get_conditional_formatting_rules(reference(), String.t(), String.t() | nil) ::
+          {:ok, list()} | {:error, atom()}
+  def get_conditional_formatting_rules(_spreadsheet, _sheet_name, _range),
+    do: error()
+
+  @spec get_cell_value_rules(reference(), String.t(), String.t() | nil) ::
+          {:ok, list()} | {:error, atom()}
+  def get_cell_value_rules(_spreadsheet, _sheet_name, _range),
+    do: error()
+
+  @spec get_color_scales(reference(), String.t(), String.t() | nil) ::
+          {:ok, list()} | {:error, atom()}
+  def get_color_scales(_spreadsheet, _sheet_name, _range),
+    do: error()
+
+  @spec get_data_bars(reference(), String.t(), String.t() | nil) ::
+          {:ok, list()} | {:error, atom()}
+  def get_data_bars(_spreadsheet, _sheet_name, _range),
+    do: error()
+
+  @spec get_icon_sets(reference(), String.t(), String.t() | nil) ::
+          {:ok, list()} | {:error, atom()}
+  def get_icon_sets(_spreadsheet, _sheet_name, _range),
+    do: error()
+
+  @spec get_top_bottom_rules(reference(), String.t(), String.t() | nil) ::
+          {:ok, list()} | {:error, atom()}
+  def get_top_bottom_rules(_spreadsheet, _sheet_name, _range),
+    do: error()
+
+  @spec get_above_below_average_rules(reference(), String.t(), String.t() | nil) ::
+          {:ok, list()} | {:error, atom()}
+  def get_above_below_average_rules(_spreadsheet, _sheet_name, _range),
+    do: error()
+
+  @spec get_text_rules(reference(), String.t(), String.t() | nil) ::
+          {:ok, list()} | {:error, atom()}
+  def get_text_rules(_spreadsheet, _sheet_name, _range),
+    do: error()
+
   defp error(), do: :erlang.nif_error(:nif_not_loaded)
 end

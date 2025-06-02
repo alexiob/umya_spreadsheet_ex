@@ -4,6 +4,17 @@
 
 ### Added
 
+- **Conditional Formatting Getter Functions**:
+  - **Rule Retrieval Capabilities** - Added comprehensive getter functions for conditional formatting rules
+    - New function `UmyaSpreadsheet.ConditionalFormatting.get_conditional_formatting_rules/2-3` retrieves all conditional formatting rules for a sheet or range
+    - New function `UmyaSpreadsheet.ConditionalFormatting.get_cell_value_rules/2-3` retrieves cell value conditional formatting rules
+    - New function `UmyaSpreadsheet.ConditionalFormatting.get_color_scales/2-3` retrieves color scale conditional formatting rules
+    - New function `UmyaSpreadsheet.ConditionalFormatting.get_data_bars/2-3` retrieves data bar conditional formatting rules
+    - New function `UmyaSpreadsheet.ConditionalFormatting.get_icon_sets/2-3` retrieves icon set conditional formatting rules
+    - New function `UmyaSpreadsheet.ConditionalFormatting.get_top_bottom_rules/2-3` retrieves top/bottom conditional formatting rules
+    - New function `UmyaSpreadsheet.ConditionalFormatting.get_above_below_average_rules/2-3` retrieves above/below average conditional formatting rules
+    - New function `UmyaSpreadsheet.ConditionalFormatting.get_text_rules/2-3` retrieves text conditional formatting rules
+
 - **VML Drawing Getter Functions**:
   - **Shape Property Retrieval** - Added comprehensive getter functions for VML shapes
     - New function `UmyaSpreadsheet.VmlDrawing.get_shape_style/3` retrieves the CSS style string

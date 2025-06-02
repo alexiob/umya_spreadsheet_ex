@@ -55,23 +55,23 @@ pub fn add_cell_value_rule(
     let operator_str = operator.as_str();
     let op_val = match operator_str {
         "equal" => ConditionalFormattingOperatorValues::Equal,
-        "not_equal" => ConditionalFormattingOperatorValues::NotEqual,
-        "greater_than" => ConditionalFormattingOperatorValues::GreaterThan,
-        "greater_than_or_equal" => ConditionalFormattingOperatorValues::GreaterThanOrEqual,
-        "less_than" => ConditionalFormattingOperatorValues::LessThan,
-        "less_than_or_equal" => ConditionalFormattingOperatorValues::LessThanOrEqual,
+        "notEqual" => ConditionalFormattingOperatorValues::NotEqual,
+        "greaterThan" => ConditionalFormattingOperatorValues::GreaterThan,
+        "greaterThanOrEqual" => ConditionalFormattingOperatorValues::GreaterThanOrEqual,
+        "lessThan" => ConditionalFormattingOperatorValues::LessThan,
+        "lessThanOrEqual" => ConditionalFormattingOperatorValues::LessThanOrEqual,
         "between" => ConditionalFormattingOperatorValues::Between,
-        "not_between" => ConditionalFormattingOperatorValues::NotBetween,
-        "containing" | "containstext" => ConditionalFormattingOperatorValues::ContainsText,
-        "not_containing" | "notcontains" => ConditionalFormattingOperatorValues::NotContains,
-        "beginning_with" | "beginswith" => ConditionalFormattingOperatorValues::BeginsWith,
-        "ending_with" | "endswith" => ConditionalFormattingOperatorValues::EndsWith,
+        "notBetween" => ConditionalFormattingOperatorValues::NotBetween,
+        "containsText" => ConditionalFormattingOperatorValues::ContainsText,
+        "notContains" => ConditionalFormattingOperatorValues::NotContains,
+        "beginsWith" => ConditionalFormattingOperatorValues::BeginsWith,
+        "endsWith" => ConditionalFormattingOperatorValues::EndsWith,
         _ => return Err(format!("Unsupported operator: {}", operator)),
     };
     rule.set_operator(op_val);
 
     // Handle formula value(s) based on operator
-    if operator.as_str() == "between" || operator.as_str() == "not_between" {
+    if operator.as_str() == "between" || operator.as_str() == "notBetween" {
         // Two formulas needed for between/not between
         if let Some(val2) = &value2 {
             // First value
