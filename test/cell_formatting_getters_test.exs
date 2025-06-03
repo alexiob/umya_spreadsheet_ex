@@ -19,8 +19,8 @@ defmodule CellFormattingGettersTest do
 
       # Set alignment properties using existing setter functions
       UmyaSpreadsheet.set_cell_alignment(spreadsheet, "Sheet1", "A1", "center", "middle")
-      # Note: We need to check if these functions exist for wrap_text and text_rotation
-      # For now, test with default values
+      UmyaSpreadsheet.set_wrap_text(spreadsheet, "Sheet1", "A1", true)
+      UmyaSpreadsheet.set_cell_rotation(spreadsheet, "Sheet1", "A1", 45)
 
       # Test alignment getters
       {:ok, h_align} = UmyaSpreadsheet.get_cell_horizontal_alignment(spreadsheet, "Sheet1", "A1")
@@ -30,10 +30,8 @@ defmodule CellFormattingGettersTest do
 
       assert h_align == "center"
       assert v_align == "middle"
-      # Default value
-      assert wrap_text == false
-      # Default value
-      assert rotation == 0
+      assert wrap_text == true
+      assert rotation == 45
 
       # Test on a cell that doesn't exist (should return defaults)
       {:ok, default_h_align} =

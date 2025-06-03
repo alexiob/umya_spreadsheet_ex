@@ -2,8 +2,6 @@ defmodule UmyaSpreadsheetTest.WorkbookProtectionTest do
   use ExUnit.Case, async: true
   doctest UmyaSpreadsheet
 
-  @temp_file "test/result_files/workbook_protection_test.xlsx"
-
   setup do
     # Create a new spreadsheet for each test
     {:ok, spreadsheet} = UmyaSpreadsheet.new()
@@ -31,20 +29,43 @@ defmodule UmyaSpreadsheetTest.WorkbookProtectionTest do
                {:error, "Workbook is not protected"}
     end
 
-    # Since we don't have a protect_workbook function or read_with_password function,
-    # we'll modify these tests to focus on the implementation we have
-    test "protect workbook API exploration", %{spreadsheet: spreadsheet} do
+    test "set workbook protection", %{spreadsheet: spreadsheet} do
       # Check initial state - workbook should not be protected
       assert UmyaSpreadsheet.is_workbook_protected(spreadsheet) == {:ok, false}
 
-      # Write the file to disk
-      :ok = UmyaSpreadsheet.write(spreadsheet, @temp_file)
+      # Set workbook protection with password
+      password = "test123"
+      :ok = UmyaSpreadsheet.set_workbook_protection(spreadsheet, password)
 
-      # Read it back
-      {:ok, reloaded} = UmyaSpreadsheet.read(@temp_file)
+      # Verify workbook is now protected
+      assert UmyaSpreadsheet.is_workbook_protected(spreadsheet) == {:ok, true}
 
-      # Verify it's still not protected
-      assert UmyaSpreadsheet.is_workbook_protected(reloaded) == {:ok, false}
+      # Get protection details
+      {:ok, protection_details} = UmyaSpreadsheet.get_workbook_protection_details(spreadsheet)
+      assert is_map(protection_details)
+    end
+
+    test "write password-protected workbook", %{spreadsheet: spreadsheet} do
+      # Set workbook protection
+      password = "test456"
+      :ok = UmyaSpreadsheet.set_workbook_protection(spreadsheet, password)
+
+      # Write password-protected file
+      protected_file = "test/result_files/protected_workbook.xlsx"
+      :ok = UmyaSpreadsheet.write_with_password(spreadsheet, protected_file, password)
+
+      # Verify file was created
+      assert File.exists?(protected_file)
+
+      # Verify file size is reasonable
+      file_size = File.stat!(protected_file).size
+      assert file_size > 1000, "File size is too small for an Excel file"
+
+      # Attempting to read password-protected file without password should fail
+      result = UmyaSpreadsheet.read(protected_file)
+
+      assert match?({:error, _}, result),
+             "Should not be able to read password-protected file without password"
     end
 
     test "workbook protection details API shape", %{spreadsheet: spreadsheet} do

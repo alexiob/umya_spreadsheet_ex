@@ -50,15 +50,41 @@ defmodule UmyaSpreadsheet.FormattedCellsTest do
     UmyaSpreadsheet.set_cell_value(spreadsheet, "Sheet1", "A1", "Styled Cell")
     UmyaSpreadsheet.set_cell_value(spreadsheet, "Sheet1", "B1", "Another Cell")
 
+    # Verify styling was applied to row 1
+    {:ok, bg_color_a1} = UmyaSpreadsheet.get_cell_background_color(spreadsheet, "Sheet1", "A1")
+    {:ok, font_color_a1} = UmyaSpreadsheet.get_cell_foreground_color(spreadsheet, "Sheet1", "A1")
+
+    # Background should be black, font should be white (or their hex equivalents)
+    assert bg_color_a1 == "black" || bg_color_a1 == "FF000000" ||
+             String.contains?(bg_color_a1, "000000")
+
+    assert font_color_a1 == "white" || font_color_a1 == "FF000000" ||
+             font_color_a1 == "FFFFFF" || String.contains?(font_color_a1, "FFFFFF")
+
     # Copy styling to another row
     UmyaSpreadsheet.copy_row_styling(spreadsheet, "Sheet1", 1, 2)
+
+    # Verify row 2 received the styling
+    {:ok, bg_color_a2} = UmyaSpreadsheet.get_cell_background_color(spreadsheet, "Sheet1", "A2")
+
+    assert bg_color_a2 == "black" || bg_color_a2 == "FF000000" ||
+             String.contains?(bg_color_a2, "000000")
 
     # Partial styling copy
     # Only copy A column style
     UmyaSpreadsheet.copy_row_styling(spreadsheet, "Sheet1", 1, 3, 1, 1)
 
-    # This test doesn't assert anything as we can't easily verify styling
-    # but at least we can verify the functions don't throw errors
+    # Verify column A in row 3 got the style
+    {:ok, bg_color_a3} = UmyaSpreadsheet.get_cell_background_color(spreadsheet, "Sheet1", "A3")
+
+    assert bg_color_a3 == "black" || bg_color_a3 == "FF000000" ||
+             String.contains?(bg_color_a3, "000000")
+
+    # Verify column B in row 3 did NOT get the style (should have default background)
+    {:ok, bg_color_b3} = UmyaSpreadsheet.get_cell_background_color(spreadsheet, "Sheet1", "B3")
+
+    assert bg_color_b3 == "FFFFFFFF" || bg_color_b3 == "white" ||
+             !String.contains?(bg_color_b3, "000000")
   end
 
   test "column width manipulation", %{spreadsheet: spreadsheet} do

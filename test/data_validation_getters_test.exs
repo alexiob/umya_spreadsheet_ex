@@ -388,19 +388,30 @@ defmodule UmyaSpreadsheet.DataValidationGettersTest do
       assert "B1:B5" in validation_ranges
       assert "C1:C5" in validation_ranges
 
-      # Test with cell_range parameter
-      # Note: This test is conditionally verifying the behavior without failing
-      # because filtering might not be implemented yet
-      case DataValidation.get_data_validations(spreadsheet, "Sheet1", "A1") do
-        {:ok, [_ | _] = filtered_validations} ->
-          # If filtering is implemented correctly, we should only get A1:A5
-          assert length(filtered_validations) >= 1
-          assert Enum.any?(filtered_validations, &(&1.range == "A1:A5"))
+      # Test with cell_range parameter - filtering by exact range match
+      # The current implementation filters by exact range match, not cell intersection
+      {:ok, filtered_validations} =
+        DataValidation.get_data_validations(spreadsheet, "Sheet1", "A1:A5")
 
-        {:ok, []} ->
-          # If filtering is not working or not implemented, this is acceptable for now
-          :ok
-      end
+      # Should return only the validation that exactly matches "A1:A5"
+      assert is_list(filtered_validations)
+      assert length(filtered_validations) == 1
+      assert List.first(filtered_validations).range == "A1:A5"
+      assert List.first(filtered_validations).rule_type == :list
+
+      # Test with a range that doesn't match any validation
+      {:ok, no_match_validations} =
+        DataValidation.get_data_validations(spreadsheet, "Sheet1", "Z1:Z5")
+
+      assert length(no_match_validations) == 0
+
+      # Test with another exact range match
+      {:ok, number_validations} =
+        DataValidation.get_data_validations(spreadsheet, "Sheet1", "B1:B5")
+
+      assert length(number_validations) == 1
+      assert List.first(number_validations).range == "B1:B5"
+      assert List.first(number_validations).rule_type in [:decimal, :whole]
     end
   end
 end

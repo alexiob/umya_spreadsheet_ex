@@ -193,11 +193,37 @@ defmodule UmyaSpreadsheetTest.DataValidationTest do
     UmyaSpreadsheet.set_cell_value(spreadsheet, "Sheet1", "D1", "Test text")
     UmyaSpreadsheet.set_cell_value(spreadsheet, "Sheet1", "E1", "9")
 
-    # Note: In a real test, you would save the file and manually verify the validation works in Excel
-    # For the purposes of this test, we'll just check that the operations complete successfully
-    assert {:ok, "Red"} = UmyaSpreadsheet.get_cell_value(spreadsheet, "Sheet1", "A1")
-    assert {:ok, "50"} = UmyaSpreadsheet.get_cell_value(spreadsheet, "Sheet1", "B1")
-    assert {:ok, "Test text"} = UmyaSpreadsheet.get_cell_value(spreadsheet, "Sheet1", "D1")
-    assert {:ok, "9"} = UmyaSpreadsheet.get_cell_value(spreadsheet, "Sheet1", "E1")
+    # Save the file to verify validations persist
+    output_path = "test/result_files/data_validation_full_example.xlsx"
+    File.mkdir_p!("test/result_files")
+    assert :ok = UmyaSpreadsheet.write(spreadsheet, output_path)
+    assert File.exists?(output_path)
+
+    # Read the file back to verify validations and values were saved correctly
+    {:ok, loaded_spreadsheet} = UmyaSpreadsheet.read(output_path)
+
+    # Verify the cell values were preserved
+    assert {:ok, "Red"} = UmyaSpreadsheet.get_cell_value(loaded_spreadsheet, "Sheet1", "A1")
+    assert {:ok, "50"} = UmyaSpreadsheet.get_cell_value(loaded_spreadsheet, "Sheet1", "B1")
+    assert {:ok, "Test text"} = UmyaSpreadsheet.get_cell_value(loaded_spreadsheet, "Sheet1", "D1")
+    assert {:ok, "9"} = UmyaSpreadsheet.get_cell_value(loaded_spreadsheet, "Sheet1", "E1")
+
+    # Verify that the validations were saved by checking they exist
+    {:ok, validations} =
+      UmyaSpreadsheet.DataValidation.get_data_validations(loaded_spreadsheet, "Sheet1")
+
+    assert is_list(validations)
+    assert length(validations) == 5
+
+    # Verify each validation type is present
+    validation_types = Enum.map(validations, & &1.rule_type)
+    assert :list in validation_types
+    assert :decimal in validation_types or :whole in validation_types
+    assert :date in validation_types
+    assert :textLength in validation_types
+    assert :custom in validation_types
+
+    # Clean up the test file
+    File.rm(output_path)
   end
 end
