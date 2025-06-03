@@ -1,8 +1,8 @@
 use rustler::{Atom, Error as NifError, NifResult, ResourceArc};
 
 use crate::atoms;
-use crate::UmyaSpreadsheet;
 use crate::helpers::style_helpers;
+use crate::UmyaSpreadsheet;
 
 /// Set the font color for a cell
 #[rustler::nif]

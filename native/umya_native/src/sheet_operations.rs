@@ -96,18 +96,36 @@ pub fn get_sheet_protection(
                 protection_map.insert("objects".to_string(), *protection.get_objects());
                 protection_map.insert("scenarios".to_string(), *protection.get_scenarios());
                 protection_map.insert("format_cells".to_string(), *protection.get_format_cells());
-                protection_map.insert("format_columns".to_string(), *protection.get_format_columns());
+                protection_map.insert(
+                    "format_columns".to_string(),
+                    *protection.get_format_columns(),
+                );
                 protection_map.insert("format_rows".to_string(), *protection.get_format_rows());
-                protection_map.insert("insert_columns".to_string(), *protection.get_insert_columns());
+                protection_map.insert(
+                    "insert_columns".to_string(),
+                    *protection.get_insert_columns(),
+                );
                 protection_map.insert("insert_rows".to_string(), *protection.get_insert_rows());
-                protection_map.insert("insert_hyperlinks".to_string(), *protection.get_insert_hyperlinks());
-                protection_map.insert("delete_columns".to_string(), *protection.get_delete_columns());
+                protection_map.insert(
+                    "insert_hyperlinks".to_string(),
+                    *protection.get_insert_hyperlinks(),
+                );
+                protection_map.insert(
+                    "delete_columns".to_string(),
+                    *protection.get_delete_columns(),
+                );
                 protection_map.insert("delete_rows".to_string(), *protection.get_delete_rows());
-                protection_map.insert("select_locked_cells".to_string(), *protection.get_select_locked_cells());
+                protection_map.insert(
+                    "select_locked_cells".to_string(),
+                    *protection.get_select_locked_cells(),
+                );
                 protection_map.insert("sort".to_string(), *protection.get_sort());
                 protection_map.insert("auto_filter".to_string(), *protection.get_auto_filter());
                 protection_map.insert("pivot_tables".to_string(), *protection.get_pivot_tables());
-                protection_map.insert("select_unlocked_cells".to_string(), *protection.get_select_unlocked_cells());
+                protection_map.insert(
+                    "select_unlocked_cells".to_string(),
+                    *protection.get_select_unlocked_cells(),
+                );
             } else {
                 // Return default protection settings if none exist
                 protection_map.insert("sheet".to_string(), false);
@@ -148,10 +166,7 @@ pub fn get_merge_cells(
     match guard.get_sheet_by_name_mut(&sheet_name) {
         Some(sheet) => {
             let merge_cells = sheet.get_merge_cells();
-            let ranges: Vec<String> = merge_cells
-                .iter()
-                .map(|mc| mc.get_range())
-                .collect();
+            let ranges: Vec<String> = merge_cells.iter().map(|mc| mc.get_range()).collect();
             Ok(ranges)
         }
         None => Err(NifError::Term(Box::new((
@@ -163,10 +178,7 @@ pub fn get_merge_cells(
 
 /// Add a new sheet to the spreadsheet
 #[rustler::nif]
-pub fn add_sheet(
-    resource: ResourceArc<UmyaSpreadsheet>,
-    sheet_name: String,
-) -> NifResult<Atom> {
+pub fn add_sheet(resource: ResourceArc<UmyaSpreadsheet>, sheet_name: String) -> NifResult<Atom> {
     let mut guard = resource.spreadsheet.lock().unwrap();
 
     // Check if a sheet with this name already exists
@@ -265,10 +277,7 @@ pub fn clone_sheet(
 
 /// Remove a sheet from the spreadsheet
 #[rustler::nif]
-pub fn remove_sheet(
-    resource: ResourceArc<UmyaSpreadsheet>,
-    sheet_name: String,
-) -> NifResult<Atom> {
+pub fn remove_sheet(resource: ResourceArc<UmyaSpreadsheet>, sheet_name: String) -> NifResult<Atom> {
     let mut guard = resource.spreadsheet.lock().unwrap();
 
     match guard.remove_sheet_by_name(&sheet_name) {

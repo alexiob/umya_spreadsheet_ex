@@ -1,16 +1,12 @@
 use rustler::{Atom, Error as NifError, NifResult};
-use umya_spreadsheet;
 use std::path::Path;
+use umya_spreadsheet;
 
 use crate::atoms;
 
 /// Set password protection on an Excel file
 #[rustler::nif]
-pub fn set_password(
-    input_path: String,
-    output_path: String,
-    password: String,
-) -> NifResult<Atom> {
+pub fn set_password(input_path: String, output_path: String, password: String) -> NifResult<Atom> {
     let input = Path::new(&input_path);
     let output = Path::new(&output_path);
 

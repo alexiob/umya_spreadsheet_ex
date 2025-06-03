@@ -139,12 +139,11 @@ pub fn add_shape(
 
     match result {
         Ok(Ok(atom)) => Ok(atom),
-        Ok(Err(msg)) => {
-            Err(NifError::Term(Box::new((error(), msg.to_string()))))
-        }
-        Err(_) => {
-            Err(NifError::Term(Box::new((error(), "Error occurred in add_shape".to_string()))))
-        }
+        Ok(Err(msg)) => Err(NifError::Term(Box::new((error(), msg.to_string())))),
+        Err(_) => Err(NifError::Term(Box::new((
+            error(),
+            "Error occurred in add_shape".to_string(),
+        )))),
     }
 }
 
@@ -223,12 +222,11 @@ pub fn add_text_box(
 
     match result {
         Ok(Ok(atom)) => Ok(atom),
-        Ok(Err(msg)) => {
-            Err(NifError::Term(Box::new((error(), msg.to_string()))))
-        }
-        Err(_) => {
-            Err(NifError::Term(Box::new((error(), "Error occurred in add_text_box".to_string()))))
-        }
+        Ok(Err(msg)) => Err(NifError::Term(Box::new((error(), msg.to_string())))),
+        Err(_) => Err(NifError::Term(Box::new((
+            error(),
+            "Error occurred in add_text_box".to_string(),
+        )))),
     }
 }
 
@@ -266,12 +264,11 @@ pub fn add_connector(
 
     match result {
         Ok(Ok(atom)) => Ok(atom),
-        Ok(Err(msg)) => {
-            Err(NifError::Term(Box::new((error(), msg.to_string()))))
-        }
-        Err(_) => {
-            Err(NifError::Term(Box::new((error(), "Error occurred in add_connector".to_string()))))
-        }
+        Ok(Err(msg)) => Err(NifError::Term(Box::new((error(), msg.to_string())))),
+        Err(_) => Err(NifError::Term(Box::new((
+            error(),
+            "Error occurred in add_connector".to_string(),
+        )))),
     }
 }
 
@@ -310,7 +307,7 @@ fn create_shape(
     outline_fill.set_rgb_color_model_hex(rgb_outline);
     outline.set_solid_fill(outline_fill);
 
-    outline.set_width(outline_width as u32); // Convert f64 to u32 for width
+    outline.set_width((outline_width * 12700.0) as u32); // Convert points to EMU for width
     shape_props.set_outline(outline);
 
     // Create transformation matrix
@@ -370,7 +367,7 @@ fn create_connector(
     outline_fill.set_rgb_color_model_hex(rgb_line);
     outline.set_solid_fill(outline_fill);
 
-    outline.set_width(line_width as u32); // Convert f64 to u32
+    outline.set_width((line_width * 12700.0) as u32); // Convert points to EMU
     shape_props.set_outline(outline);
 
     // No fill for connector
@@ -419,6 +416,9 @@ fn parse_color(color: &str) -> RgbColorModelHex {
         }
         "white" => {
             rgb.set_val("FFFFFF");
+        }
+        "gray" | "grey" => {
+            rgb.set_val("808080");
         }
         hex if hex.starts_with("#") => {
             rgb.set_val(&hex[1..]);

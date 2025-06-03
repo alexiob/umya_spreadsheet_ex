@@ -4,6 +4,15 @@
 
 ### Added
 
+- **Drawing and Shape Features**:
+  - **Drawing Getter Functions** - Added comprehensive getter functions for shapes, text boxes, and connectors
+    - New function `UmyaSpreadsheet.Drawing.get_shapes/2-3` retrieves all shapes in a worksheet
+    - New function `UmyaSpreadsheet.Drawing.get_text_boxes/2-3` retrieves all text boxes in a worksheet
+    - New function `UmyaSpreadsheet.Drawing.get_connectors/2-3` retrieves all connector lines in a worksheet
+    - New utility function `UmyaSpreadsheet.Drawing.has_drawing_objects/2-3` checks if a worksheet contains drawing objects
+    - New utility function `UmyaSpreadsheet.Drawing.count_drawing_objects/2-3` counts drawing objects in a worksheet
+  - **Enhanced Documentation** - Added comprehensive guide for drawing functions with examples
+
 - **Data Validation Enhancements**:
   - **Enhanced Date Validation** - `add_date_validation/11` now accepts both string dates and Elixir Date structs
   - **Improved Documentation** - Merged and enhanced data validation documentation into a comprehensive guide

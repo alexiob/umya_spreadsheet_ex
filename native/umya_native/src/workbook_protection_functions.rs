@@ -74,7 +74,8 @@ pub fn set_workbook_protection(
     spreadsheet_resource: rustler::ResourceArc<UmyaSpreadsheet>,
     password: String,
 ) -> rustler::NifResult<rustler::Atom> {
-    let result = panic::catch_unwind(AssertUnwindSafe(|| {        let mut spreadsheet = spreadsheet_resource.spreadsheet.lock().unwrap();
+    let result = panic::catch_unwind(AssertUnwindSafe(|| {
+        let mut spreadsheet = spreadsheet_resource.spreadsheet.lock().unwrap();
 
         // Create workbook protection with password
         let mut protection = umya_spreadsheet::WorkbookProtection::default();

@@ -10,7 +10,9 @@ pub fn set_auto_filter(
     range: String,
 ) -> NifResult<Atom> {
     let result = panic::catch_unwind(AssertUnwindSafe(|| -> Result<(), String> {
-        let mut spreadsheet = spreadsheet_resource.spreadsheet.lock()
+        let mut spreadsheet = spreadsheet_resource
+            .spreadsheet
+            .lock()
             .map_err(|_| "Failed to acquire spreadsheet lock".to_string())?;
 
         // Validate inputs
@@ -19,7 +21,8 @@ pub fn set_auto_filter(
         }
 
         // Get sheet by name
-        let sheet = spreadsheet.get_sheet_by_name_mut(&sheet_name)
+        let sheet = spreadsheet
+            .get_sheet_by_name_mut(&sheet_name)
             .ok_or_else(|| format!("Sheet '{}' not found", sheet_name))?;
 
         // Set auto filter for the specified range
@@ -30,7 +33,10 @@ pub fn set_auto_filter(
     match result {
         Ok(Ok(())) => Ok(atoms::ok()),
         Ok(Err(err_msg)) => Err(NifError::Term(Box::new((atoms::error(), err_msg)))),
-        Err(_) => Err(NifError::Term(Box::new((atoms::error(), "Error occurred in set_auto_filter operation".to_string())))),
+        Err(_) => Err(NifError::Term(Box::new((
+            atoms::error(),
+            "Error occurred in set_auto_filter operation".to_string(),
+        )))),
     }
 }
 
@@ -40,11 +46,14 @@ pub fn remove_auto_filter(
     sheet_name: String,
 ) -> NifResult<Atom> {
     let result = panic::catch_unwind(AssertUnwindSafe(|| -> Result<(), String> {
-        let mut spreadsheet = spreadsheet_resource.spreadsheet.lock()
+        let mut spreadsheet = spreadsheet_resource
+            .spreadsheet
+            .lock()
             .map_err(|_| "Failed to acquire spreadsheet lock".to_string())?;
 
         // Get sheet by name
-        let sheet = spreadsheet.get_sheet_by_name_mut(&sheet_name)
+        let sheet = spreadsheet
+            .get_sheet_by_name_mut(&sheet_name)
             .ok_or_else(|| format!("Sheet '{}' not found", sheet_name))?;
 
         // Remove auto filter
@@ -55,7 +64,10 @@ pub fn remove_auto_filter(
     match result {
         Ok(Ok(())) => Ok(atoms::ok()),
         Ok(Err(err_msg)) => Err(NifError::Term(Box::new((atoms::error(), err_msg)))),
-        Err(_) => Err(NifError::Term(Box::new((atoms::error(), "Error occurred in remove_auto_filter operation".to_string())))),
+        Err(_) => Err(NifError::Term(Box::new((
+            atoms::error(),
+            "Error occurred in remove_auto_filter operation".to_string(),
+        )))),
     }
 }
 

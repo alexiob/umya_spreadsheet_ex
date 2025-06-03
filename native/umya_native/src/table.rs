@@ -453,6 +453,63 @@ pub fn set_table_totals_row(
 // ============================================================================
 
 /// Get a specific table by name from a worksheet
+///
+/// Retrieves detailed information about a table from the specified worksheet.
+/// This function returns comprehensive table metadata including basic properties,
+/// area coverage, column definitions, totals row status, and styling information.
+///
+/// # Parameters
+///
+/// * `env` - The Rustler environment for encoding terms
+/// * `resource` - A resource arc containing the spreadsheet reference
+/// * `sheet_name` - Name of the worksheet containing the table
+/// * `table_name` - Internal name of the table to retrieve
+///
+/// # Returns
+///
+/// Returns a tuple in one of the following formats:
+/// - `{:ok, table_map}` - On success, returns a map containing:
+///   - `"name"` - Internal table name (String)
+///   - `"display_name"` - User-visible display name (String)
+///   - `"start_cell"` - Top-left cell reference (e.g., "A1") (String)
+///   - `"end_cell"` - Bottom-right cell reference (e.g., "D10") (String)
+///   - `"columns"` - List of column names (Vec<String>)
+///   - `"has_totals_row"` - Whether totals row is enabled (bool)
+///   - `"style_info"` - Optional style information map containing:
+///     - `"name"` - Style name (String)
+///     - `"show_first_col"` - First column highlighting (bool)
+///     - `"show_last_col"` - Last column highlighting (bool)
+///     - `"show_row_stripes"` - Row banding enabled (bool)
+///     - `"show_col_stripes"` - Column banding enabled (bool)
+/// - `{:error, "Table not found"}` - When the specified table doesn't exist
+/// - `{:error, "Sheet not found"}` - When the specified worksheet doesn't exist
+///
+/// # Examples
+///
+/// ```rust
+/// // In Elixir context:
+/// // {:ok, table} = Table.get_table(spreadsheet, "Sheet1", "SalesTable")
+/// // table = %{
+/// //   "name" => "SalesTable",
+/// //   "display_name" => "Sales Data",
+/// //   "start_cell" => "A1",
+/// //   "end_cell" => "D10",
+/// //   "columns" => ["Region", "Product", "Sales", "Date"],
+/// //   "has_totals_row" => true,
+/// //   "style_info" => %{
+/// //     "name" => "TableStyleLight1",
+/// //     "show_first_col" => true,
+/// //     "show_last_col" => false,
+/// //     "show_row_stripes" => true,
+/// //     "show_col_stripes" => false
+/// //   }
+/// // }
+/// ```
+///
+/// # Note
+///
+/// The returned style_info map is only present if the table has custom styling applied.
+/// If no styling is set, the style_info key will not be included in the response.
 #[rustler::nif]
 pub fn get_table(
     env: Env,
@@ -465,22 +522,20 @@ pub fn get_table(
     match guard.get_sheet_by_name(&sheet_name) {
         Some(sheet) => {
             let tables = sheet.get_tables();
-
             if let Some(table) = tables.iter().find(|t| t.get_name() == table_name) {
-                let mut table_map = HashMap::new();
-
-                table_map.insert("name".to_string(), table.get_name().to_string());
+                let mut table_map: HashMap<String, Term> = HashMap::new();
+                table_map.insert("name".to_string(), table.get_name().to_string().encode(env));
                 table_map.insert(
                     "display_name".to_string(),
-                    table.get_display_name().to_string(),
+                    table.get_display_name().to_string().encode(env),
                 );
 
                 // Convert area coordinates to cell references
                 let (start_coord, end_coord) = table.get_area();
                 let start_cell = coordinate_to_cell_reference(start_coord);
                 let end_cell = coordinate_to_cell_reference(end_coord);
-                table_map.insert("start_cell".to_string(), start_cell);
-                table_map.insert("end_cell".to_string(), end_cell);
+                table_map.insert("start_cell".to_string(), start_cell.encode(env));
+                table_map.insert("end_cell".to_string(), end_cell.encode(env));
 
                 // Get column information
                 let columns: Vec<String> = table
@@ -488,34 +543,37 @@ pub fn get_table(
                     .iter()
                     .map(|col| col.get_name().to_string())
                     .collect();
-                table_map.insert("columns".to_string(), format!("{:?}", columns));
+                table_map.insert("columns".to_string(), columns.encode(env));
 
                 table_map.insert(
                     "has_totals_row".to_string(),
-                    table.get_totals_row_shown().to_string(),
+                    table.get_totals_row_shown().encode(env),
                 );
 
                 // Get style info if available
                 if let Some(style_info) = table.get_style_info() {
-                    let mut style_map = HashMap::new();
-                    style_map.insert("name".to_string(), style_info.get_name().to_string());
+                    let mut style_map: HashMap<String, Term> = HashMap::new();
+                    style_map.insert(
+                        "name".to_string(),
+                        style_info.get_name().to_string().encode(env),
+                    );
                     style_map.insert(
                         "show_first_col".to_string(),
-                        style_info.is_show_first_col().to_string(),
+                        style_info.is_show_first_col().encode(env),
                     );
                     style_map.insert(
                         "show_last_col".to_string(),
-                        style_info.is_show_last_col().to_string(),
+                        style_info.is_show_last_col().encode(env),
                     );
                     style_map.insert(
                         "show_row_stripes".to_string(),
-                        style_info.is_show_row_stripes().to_string(),
+                        style_info.is_show_row_stripes().encode(env),
                     );
                     style_map.insert(
                         "show_col_stripes".to_string(),
-                        style_info.is_show_col_stripes().to_string(),
+                        style_info.is_show_col_stripes().encode(env),
                     );
-                    table_map.insert("style_info".to_string(), format!("{:?}", style_map));
+                    table_map.insert("style_info".to_string(), style_map.encode(env));
                 }
 
                 (atoms::ok(), table_map).encode(env)

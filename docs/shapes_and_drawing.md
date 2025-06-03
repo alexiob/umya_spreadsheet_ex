@@ -1,14 +1,18 @@
-# Shapes and Drawing
+# Drawing and Shape Management
 
-This guide demonstrates how to add shapes, text boxes, and connectors to your Excel spreadsheets using the UmyaSpreadsheet library.
+This guide explains how to add and retrieve shapes, text boxes, and connectors in Excel spreadsheets using UmyaSpreadsheet.
 
-## Overview
+## Introduction to Drawings
 
-UmyaSpreadsheet provides functions to add various drawing elements to your spreadsheets:
+Excel supports various drawing objects such as shapes, text boxes, and connector lines that help create visual elements and diagrams in spreadsheets. UmyaSpreadsheet provides functions to both add and retrieve these objects.
 
-- Basic shapes (rectangles, ellipses, triangles, etc.)
-- Text boxes for adding annotated text
-- Connectors for linking cells or shapes together
+### Supported Drawing Types
+
+UmyaSpreadsheet supports these drawing types:
+
+- **Shapes**: Various geometric shapes including rectangles, ellipses, triangles, diamonds, etc.
+- **Text Boxes**: Text containers with customizable appearance
+- **Connectors**: Lines connecting cells or shapes for creating flowcharts and diagrams
 
 These features are useful for:
 
@@ -17,42 +21,25 @@ These features are useful for:
 - Building dashboards with visual elements
 - Emphasizing important information
 
-## Adding Basic Shapes
+## Adding Drawing Objects
 
-UmyaSpreadsheet supports a variety of shapes that can be added to your spreadsheets:
+### Adding Shapes
 
 ```elixir
-# Create a new spreadsheet
-{:ok, spreadsheet} = UmyaSpreadsheet.new()
+alias UmyaSpreadsheet.Drawing
 
 # Add a blue rectangle at cell A1
-UmyaSpreadsheet.add_shape(
+Drawing.add_shape(
   spreadsheet,
   "Sheet1",
-  "A1",                # Cell position
+  "A1",                # Cell address where shape will be placed
   "rectangle",         # Shape type
-  200,                 # Width in pixels
-  100,                 # Height in pixels
+  200.0,               # Width in pixels
+  100.0,               # Height in pixels
   "blue",              # Fill color
   "black",             # Outline color
   1.0                  # Outline width in points
 )
-
-# Add a red circle at cell B5
-UmyaSpreadsheet.add_shape(
-  spreadsheet,
-  "Sheet1",
-  "B5",
-  "ellipse",           # Use "ellipse" for circles and ovals
-  150,                 # Equal width and height creates a circle
-  150,
-  "red",
-  "black",
-  1.0
-)
-
-# Save the spreadsheet
-UmyaSpreadsheet.write(spreadsheet, "spreadsheet_with_shapes.xlsx")
 ```
 
 ### Supported Shape Types
@@ -74,40 +61,151 @@ UmyaSpreadsheet supports the following shape types:
 | `"arrow"`          | Arrow shape                           |
 | `"line"`           | Line shape                            |
 
-## Adding Text Boxes
-
-Text boxes are special shapes that can contain text, useful for adding annotations or callouts:
+### Adding Text Boxes
 
 ```elixir
-# Add a text box with white background and black text at cell D10
-UmyaSpreadsheet.add_text_box(
+# Add a white text box with black text at cell B2
+Drawing.add_text_box(
   spreadsheet,
   "Sheet1",
-  "D10",               # Cell position
-  "Important Note",    # Text content
-  200,                 # Width in pixels
-  100,                 # Height in pixels
+  "B2",                # Cell address where text box will be placed
+  "Hello World",       # Text content
+  150.0,               # Width in pixels
+  75.0,                # Height in pixels
   "white",             # Background color
   "black",             # Text color
-  "#888888",           # Border color (using hex code)
+  "gray",              # Border color
   1.0                  # Border width in points
 )
 ```
 
-## Adding Connectors
-
-Connectors are lines that connect two cells, useful for creating flowcharts and diagrams:
+### Adding Connectors
 
 ```elixir
-# Add a connector line from cell A1 to cell C3
-UmyaSpreadsheet.add_connector(
+# Add a red connector line from cell C3 to cell D5
+Drawing.add_connector(
   spreadsheet,
   "Sheet1",
-  "A1",                # Starting cell
-  "C3",                # Ending cell
+  "C3",                # Starting cell
+  "D5",                # Ending cell
   "red",               # Line color
   1.5                  # Line width in points
 )
+```
+
+## Retrieving Drawing Objects
+
+UmyaSpreadsheet provides getter functions to retrieve and analyze drawing objects in a spreadsheet.
+
+### Getting All Shapes
+
+```elixir
+# Get all shapes in a sheet
+{:ok, shapes} = Drawing.get_shapes(spreadsheet, "Sheet1")
+
+# Get shapes in a specific range
+{:ok, shapes_in_range} = Drawing.get_shapes(spreadsheet, "Sheet1", "A1:E10")
+
+# Each shape in the result contains these properties:
+# - type: The shape type ("rectangle", "ellipse", etc.)
+# - cell: The cell address where the shape is placed
+# - width: The width of the shape in pixels
+# - height: The height of the shape in pixels
+# - fill_color: The fill color of the shape as a hex code
+# - outline_color: The outline color as a hex code
+# - outline_width: The width of the outline in points
+```
+
+### Getting Text Boxes
+
+```elixir
+# Get all text boxes in a sheet
+{:ok, text_boxes} = Drawing.get_text_boxes(spreadsheet, "Sheet1")
+
+# Get text boxes in a specific range
+{:ok, text_boxes_in_range} = Drawing.get_text_boxes(spreadsheet, "Sheet1", "B2:C5")
+
+# Each text box in the result contains these properties:
+# - cell: The cell address where the text box is placed
+# - text: The text content of the text box
+# - width: The width of the text box in pixels
+# - height: The height of the text box in pixels
+# - fill_color: The background color as a hex code
+# - text_color: The text color as a hex code
+# - outline_color: The border color as a hex code
+# - outline_width: The width of the border in points
+```
+
+### Getting Connectors
+
+```elixir
+# Get all connectors in a sheet
+{:ok, connectors} = Drawing.get_connectors(spreadsheet, "Sheet1")
+
+# Get connectors in a specific range (matches if either end is in range)
+{:ok, connectors_in_range} = Drawing.get_connectors(spreadsheet, "Sheet1", "C3:D5")
+
+# Each connector in the result contains these properties:
+# - from_cell: The starting cell address
+# - to_cell: The ending cell address
+# - line_color: The connector color as a hex code
+# - line_width: The width of the line in points
+```
+
+### Utility Functions
+
+```elixir
+# Check if a sheet has any drawing objects
+{:ok, has_drawings} = Drawing.has_drawing_objects(spreadsheet, "Sheet1")
+
+# Count drawing objects in a sheet
+{:ok, count} = Drawing.count_drawing_objects(spreadsheet, "Sheet1")
+
+# Count drawing objects in a specific range
+{:ok, count_in_range} = Drawing.count_drawing_objects(spreadsheet, "Sheet1", "A1:E10")
+```
+
+## Complete Example
+
+Here's a complete example showing how to create and analyze a diagram with shapes and connectors:
+
+```elixir
+alias UmyaSpreadsheet.Drawing
+
+# Create a new spreadsheet
+{:ok, spreadsheet} = UmyaSpreadsheet.new()
+
+# Add title
+UmyaSpreadsheet.set_cell_value(spreadsheet, "Sheet1", "A1", "Process Diagram")
+UmyaSpreadsheet.set_font_bold(spreadsheet, "Sheet1", "A1", true)
+UmyaSpreadsheet.set_font_size(spreadsheet, "Sheet1", "A1", 14)
+
+# Add shapes for a flowchart
+Drawing.add_text_box(spreadsheet, "Sheet1", "B3", "Start", 100, 40, "#D9EAD3", "black", "#274E13", 1.0)
+Drawing.add_text_box(spreadsheet, "Sheet1", "B5", "Process 1", 100, 40, "#FCE5CD", "black", "#B45F06", 1.0)
+Drawing.add_shape(spreadsheet, "Sheet1", "B7", "diamond", 100, 80, "#CFE2F3", "black", 1.0)
+Drawing.add_text_box(spreadsheet, "Sheet1", "E7", "Process 2", 100, 40, "#FCE5CD", "black", "#B45F06", 1.0)
+Drawing.add_text_box(spreadsheet, "Sheet1", "B9", "End", 100, 40, "#F4CCCC", "black", "#990000", 1.0)
+
+# Add connectors to create a flowchart
+Drawing.add_connector(spreadsheet, "Sheet1", "B3", "B5", "black", 1.0)
+Drawing.add_connector(spreadsheet, "Sheet1", "B5", "B7", "black", 1.0)
+Drawing.add_connector(spreadsheet, "Sheet1", "B7", "E7", "black", 1.0)
+Drawing.add_connector(spreadsheet, "Sheet1", "B7", "B9", "black", 1.0)
+Drawing.add_connector(spreadsheet, "Sheet1", "E7", "B9", "black", 1.0)
+
+# Save the spreadsheet
+UmyaSpreadsheet.write_file(spreadsheet, "flowchart.xlsx")
+
+# Analyze the drawing objects
+{:ok, shape_count} = Drawing.count_drawing_objects(spreadsheet, "Sheet1")
+IO.puts("Total number of drawing objects: #{shape_count}")
+
+{:ok, connectors} = Drawing.get_connectors(spreadsheet, "Sheet1")
+IO.puts("Number of connector lines: #{length(connectors)}")
+
+{:ok, text_boxes} = Drawing.get_text_boxes(spreadsheet, "Sheet1")
+IO.puts("Number of text boxes: #{length(text_boxes)}")
 ```
 
 ## Color Specification
@@ -117,43 +215,23 @@ All shape functions accept colors specified in two formats:
 1. **Named colors**: Common color names like "red", "blue", "green", "white", "black", etc.
 2. **Hex codes**: Standard hex color codes, with or without the # prefix (e.g., "#FF0000" or "FF0000" for red)
 
-## Creating Diagrams
+## Tips for Working with Drawing Objects
 
-You can combine shapes, text boxes, and connectors to create diagrams and flowcharts:
+1. **Cell Positioning**: Drawing objects are anchored to cells but can extend beyond them
 
-```elixir
-# Create a simple flowchart
-{:ok, spreadsheet} = UmyaSpreadsheet.new()
+2. **Color Values**: Colors can be specified as named colors ("red", "blue") or hex codes ("#FF0000")
 
-# Add shapes for the flowchart nodes
-UmyaSpreadsheet.add_shape(spreadsheet, "Sheet1", "B2", "rectangle", 150, 80, "#E6F2FF", "black", 1.0)
-UmyaSpreadsheet.add_shape(spreadsheet, "Sheet1", "B6", "diamond", 150, 100, "#FFE6E6", "black", 1.0)
-UmyaSpreadsheet.add_shape(spreadsheet, "Sheet1", "B10", "rectangle", 150, 80, "#E6FFE6", "black", 1.0)
+3. **Sizing**: Width and height are specified in pixels. Excel uses a resolution of approximately 96 pixels per inch.
 
-# Add text boxes for the node labels
-UmyaSpreadsheet.add_text_box(spreadsheet, "Sheet1", "B2", "Start", 150, 80, "transparent", "black", "transparent", 0.0)
-UmyaSpreadsheet.add_text_box(spreadsheet, "Sheet1", "B6", "Decision", 150, 100, "transparent", "black", "transparent", 0.0)
-UmyaSpreadsheet.add_text_box(spreadsheet, "Sheet1", "B10", "End", 150, 80, "transparent", "black", "transparent", 0.0)
+4. **Layering**: Shapes are added in the order they are created. Later shapes appear on top of earlier shapes.
 
-# Add connectors between the nodes
-UmyaSpreadsheet.add_connector(spreadsheet, "Sheet1", "B4", "B6", "black", 1.0)
-UmyaSpreadsheet.add_connector(spreadsheet, "Sheet1", "B8", "B10", "black", 1.0)
+5. **Transparency**: You can use "transparent" as a color value to create shapes without fill or outline.
 
-# Save the flowchart
-UmyaSpreadsheet.write(spreadsheet, "flowchart.xlsx")
-```
+6. **Text Boxes**: For multi-line text in text boxes, use the newline character ("\n") to create line breaks.
 
-## Tips for Working with Shapes
+7. **Filtering**: Use the optional cell range parameter in getter functions to focus on specific areas of a sheet
 
-1. **Positioning**: Cell coordinates determine where shapes are positioned. The shape will be anchored to the top-left corner of the specified cell.
-
-2. **Sizing**: Width and height are specified in pixels. Excel uses a resolution of approximately 96 pixels per inch.
-
-3. **Layering**: Shapes are added in the order they are created. Later shapes appear on top of earlier shapes.
-
-4. **Transparency**: You can use "transparent" as a color value to create shapes without fill or outline.
-
-5. **Text Boxes**: For multi-line text in text boxes, use the newline character ("\n") to create line breaks.
+8. **Optimization**: For large sheets with many drawings, filter by range to improve performance
 
 ## See Also
 

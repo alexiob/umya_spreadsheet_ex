@@ -1116,6 +1116,27 @@ defmodule UmyaNative do
           :ok | {:error, atom()}
   def add_connector(_spreadsheet, _sheet_name, _from_cell, _to_cell, _color, _width), do: error()
 
+  # Drawing getter functions
+  @spec get_shapes_nif(reference(), String.t(), String.t() | nil) ::
+          {:ok, list()} | {:error, atom()}
+  def get_shapes_nif(_spreadsheet, _sheet_name, _cell_range), do: error()
+
+  @spec get_text_boxes_nif(reference(), String.t(), String.t() | nil) ::
+          {:ok, list()} | {:error, atom()}
+  def get_text_boxes_nif(_spreadsheet, _sheet_name, _cell_range), do: error()
+
+  @spec get_connectors_nif(reference(), String.t(), String.t() | nil) ::
+          {:ok, list()} | {:error, atom()}
+  def get_connectors_nif(_spreadsheet, _sheet_name, _cell_range), do: error()
+
+  @spec has_drawing_objects_nif(reference(), String.t(), String.t() | nil) ::
+          {:ok, boolean()} | {:error, atom()}
+  def has_drawing_objects_nif(_spreadsheet, _sheet_name, _cell_range), do: error()
+
+  @spec count_drawing_objects_nif(reference(), String.t(), String.t() | nil) ::
+          {:ok, non_neg_integer()} | {:error, atom()}
+  def count_drawing_objects_nif(_spreadsheet, _sheet_name, _cell_range), do: error()
+
   # Print settings functions
   @spec set_page_orientation(reference(), String.t(), String.t()) :: :ok | {:error, atom()}
   def set_page_orientation(_spreadsheet, _sheet_name, _orientation), do: error()

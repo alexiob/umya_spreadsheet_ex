@@ -1,6 +1,6 @@
 use rustler::{Atom, ResourceArc};
-use umya_spreadsheet::{DataValidationOperatorValues, DataValidationValues};
 use std::panic::{self, AssertUnwindSafe};
+use umya_spreadsheet::{DataValidationOperatorValues, DataValidationValues};
 
 use crate::atoms;
 use crate::UmyaSpreadsheet;
@@ -19,7 +19,9 @@ pub fn add_list_validation(
     prompt_message: Option<String>,
 ) -> Result<Atom, (Atom, String)> {
     let result = panic::catch_unwind(AssertUnwindSafe(|| -> Result<Atom, String> {
-        let mut guard = resource.spreadsheet.lock()
+        let mut guard = resource
+            .spreadsheet
+            .lock()
             .map_err(|_| "Failed to acquire spreadsheet lock".to_string())?;
 
         // Validate inputs
@@ -30,7 +32,8 @@ pub fn add_list_validation(
             return Err("List items cannot be empty".to_string());
         }
 
-        let sheet = guard.get_sheet_by_name_mut(&sheet_name)
+        let sheet = guard
+            .get_sheet_by_name_mut(&sheet_name)
             .ok_or_else(|| format!("Sheet '{}' not found", sheet_name))?;
 
         // Create the data validation
@@ -83,8 +86,11 @@ pub fn add_list_validation(
 
     match result {
         Ok(Ok(atom)) => Ok(atom),
-                Ok(Err(err_msg)) => Err((atoms::error(), err_msg)),
-        Err(_) => Err((atoms::error(), "Error occurred in add_list_validation operation".to_string())),
+        Ok(Err(err_msg)) => Err((atoms::error(), err_msg)),
+        Err(_) => Err((
+            atoms::error(),
+            "Error occurred in add_list_validation operation".to_string(),
+        )),
     }
 }
 
@@ -104,7 +110,9 @@ pub fn add_number_validation(
     prompt_message: Option<String>,
 ) -> Result<Atom, (Atom, String)> {
     let result = panic::catch_unwind(AssertUnwindSafe(|| -> Result<Atom, String> {
-        let mut guard = resource.spreadsheet.lock()
+        let mut guard = resource
+            .spreadsheet
+            .lock()
             .map_err(|_| "Failed to acquire spreadsheet lock".to_string())?;
 
         // Validate inputs
@@ -123,11 +131,14 @@ pub fn add_number_validation(
             "greaterThanOrEqual" | "greater_than_or_equal" => {
                 DataValidationOperatorValues::GreaterThanOrEqual
             }
-            "lessThanOrEqual" | "less_than_or_equal" => DataValidationOperatorValues::LessThanOrEqual,
+            "lessThanOrEqual" | "less_than_or_equal" => {
+                DataValidationOperatorValues::LessThanOrEqual
+            }
             _ => return Err(format!("Invalid operator: {}", operator)),
         };
 
-        let sheet = guard.get_sheet_by_name_mut(&sheet_name)
+        let sheet = guard
+            .get_sheet_by_name_mut(&sheet_name)
             .ok_or_else(|| format!("Sheet '{}' not found", sheet_name))?;
 
         // Create the data validation
@@ -184,7 +195,10 @@ pub fn add_number_validation(
     match result {
         Ok(Ok(atom)) => Ok(atom),
         Ok(Err(err_msg)) => Err((atoms::error(), err_msg)),
-        Err(_) => Err((atoms::error(), "Error occurred in add_number_validation operation".to_string())),
+        Err(_) => Err((
+            atoms::error(),
+            "Error occurred in add_number_validation operation".to_string(),
+        )),
     }
 }
 
@@ -204,7 +218,9 @@ pub fn add_date_validation(
     prompt_message: Option<String>,
 ) -> Result<Atom, (Atom, String)> {
     let result = panic::catch_unwind(AssertUnwindSafe(|| -> Result<Atom, String> {
-        let mut guard = resource.spreadsheet.lock()
+        let mut guard = resource
+            .spreadsheet
+            .lock()
             .map_err(|_| "Failed to acquire spreadsheet lock".to_string())?;
 
         // Validate inputs
@@ -223,11 +239,14 @@ pub fn add_date_validation(
             "greaterThanOrEqual" | "greater_than_or_equal" => {
                 DataValidationOperatorValues::GreaterThanOrEqual
             }
-            "lessThanOrEqual" | "less_than_or_equal" => DataValidationOperatorValues::LessThanOrEqual,
+            "lessThanOrEqual" | "less_than_or_equal" => {
+                DataValidationOperatorValues::LessThanOrEqual
+            }
             _ => return Err(format!("Invalid operator: {}", operator)),
         };
 
-        let sheet = guard.get_sheet_by_name_mut(&sheet_name)
+        let sheet = guard
+            .get_sheet_by_name_mut(&sheet_name)
             .ok_or_else(|| format!("Sheet '{}' not found", sheet_name))?;
 
         // Create the data validation
@@ -284,7 +303,10 @@ pub fn add_date_validation(
     match result {
         Ok(Ok(atom)) => Ok(atom),
         Ok(Err(err_msg)) => Err((atoms::error(), err_msg)),
-        Err(_) => Err((atoms::error(), "Error occurred in add_date_validation operation".to_string())),
+        Err(_) => Err((
+            atoms::error(),
+            "Error occurred in add_date_validation operation".to_string(),
+        )),
     }
 }
 
@@ -304,7 +326,9 @@ pub fn add_text_length_validation(
     prompt_message: Option<String>,
 ) -> Result<Atom, (Atom, String)> {
     let result = panic::catch_unwind(AssertUnwindSafe(|| -> Result<Atom, String> {
-        let mut guard = resource.spreadsheet.lock()
+        let mut guard = resource
+            .spreadsheet
+            .lock()
             .map_err(|_| "Failed to acquire spreadsheet lock".to_string())?;
 
         // Validate inputs
@@ -333,11 +357,14 @@ pub fn add_text_length_validation(
             "greaterThanOrEqual" | "greater_than_or_equal" => {
                 DataValidationOperatorValues::GreaterThanOrEqual
             }
-            "lessThanOrEqual" | "less_than_or_equal" => DataValidationOperatorValues::LessThanOrEqual,
+            "lessThanOrEqual" | "less_than_or_equal" => {
+                DataValidationOperatorValues::LessThanOrEqual
+            }
             _ => return Err(format!("Invalid operator: {}", operator)),
         };
 
-        let sheet = guard.get_sheet_by_name_mut(&sheet_name)
+        let sheet = guard
+            .get_sheet_by_name_mut(&sheet_name)
             .ok_or_else(|| format!("Sheet '{}' not found", sheet_name))?;
 
         // Create the data validation
@@ -394,7 +421,10 @@ pub fn add_text_length_validation(
     match result {
         Ok(Ok(atom)) => Ok(atom),
         Ok(Err(err_msg)) => Err((atoms::error(), err_msg)),
-        Err(_) => Err((atoms::error(), "Error occurred in add_text_length_validation operation".to_string())),
+        Err(_) => Err((
+            atoms::error(),
+            "Error occurred in add_text_length_validation operation".to_string(),
+        )),
     }
 }
 
@@ -412,7 +442,9 @@ pub fn add_custom_validation(
     prompt_message: Option<String>,
 ) -> Result<Atom, (Atom, String)> {
     let result = panic::catch_unwind(AssertUnwindSafe(|| -> Result<Atom, String> {
-        let mut guard = resource.spreadsheet.lock()
+        let mut guard = resource
+            .spreadsheet
+            .lock()
             .map_err(|_| "Failed to acquire spreadsheet lock".to_string())?;
 
         // Validate inputs
@@ -424,7 +456,8 @@ pub fn add_custom_validation(
             return Err("Formula cannot be empty".to_string());
         }
 
-        let sheet = guard.get_sheet_by_name_mut(&sheet_name)
+        let sheet = guard
+            .get_sheet_by_name_mut(&sheet_name)
             .ok_or_else(|| format!("Sheet '{}' not found", sheet_name))?;
 
         // Create the data validation
@@ -477,7 +510,10 @@ pub fn add_custom_validation(
     match result {
         Ok(Ok(atom)) => Ok(atom),
         Ok(Err(err_msg)) => Err((atoms::error(), err_msg)),
-        Err(_) => Err((atoms::error(), "Error occurred in add_custom_validation operation".to_string())),
+        Err(_) => Err((
+            atoms::error(),
+            "Error occurred in add_custom_validation operation".to_string(),
+        )),
     }
 }
 
@@ -489,7 +525,9 @@ pub fn remove_data_validation(
     cell_range: String,
 ) -> Result<Atom, (Atom, String)> {
     let result = panic::catch_unwind(AssertUnwindSafe(|| -> Result<Atom, String> {
-        let mut guard = resource.spreadsheet.lock()
+        let mut guard = resource
+            .spreadsheet
+            .lock()
             .map_err(|_| "Failed to acquire spreadsheet lock".to_string())?;
 
         // Validate inputs
@@ -497,7 +535,8 @@ pub fn remove_data_validation(
             return Err("Cell range cannot be empty".to_string());
         }
 
-        let sheet = guard.get_sheet_by_name_mut(&sheet_name)
+        let sheet = guard
+            .get_sheet_by_name_mut(&sheet_name)
             .ok_or_else(|| format!("Sheet '{}' not found", sheet_name))?;
 
         // Get current validations
@@ -528,6 +567,9 @@ pub fn remove_data_validation(
     match result {
         Ok(Ok(atom)) => Ok(atom),
         Ok(Err(err_msg)) => Err((atoms::error(), err_msg)),
-        Err(_) => Err((atoms::error(), "Error occurred in remove_data_validation operation".to_string())),
+        Err(_) => Err((
+            atoms::error(),
+            "Error occurred in remove_data_validation operation".to_string(),
+        )),
     }
 }

@@ -16,6 +16,7 @@ mod data_validation;
 mod data_validation_getters;
 mod document_properties;
 mod drawing_functions;
+mod drawing_getters;
 mod file_format_options;
 mod file_operations;
 mod formula_functions;
@@ -49,6 +50,20 @@ mod atoms {
         not_found,
         invalid_path,
         unknown_error,
+
+        // Drawing getters atoms
+        cell,
+        width,
+        height,
+        fill_color,
+        text_color,
+        outline_color,
+        outline_width,
+        type_ = "type",
+        from_cell,
+        to_cell,
+        line_color,
+        line_width,
 
         // Conditional formatting atoms
         cell_is,
@@ -237,6 +252,12 @@ rustler::init!(
         drawing_functions::add_shape,
         drawing_functions::add_text_box,
         drawing_functions::add_connector,
+        // Drawing getter functions
+        drawing_getters::get_shapes_nif,
+        drawing_getters::get_text_boxes_nif,
+        drawing_getters::get_connectors_nif,
+        drawing_getters::has_drawing_objects_nif,
+        drawing_getters::count_drawing_objects_nif,
         // Cell formatting functions
         cell_formatting::set_font_italic,
         cell_formatting::set_font_underline,

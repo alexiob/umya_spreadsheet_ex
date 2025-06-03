@@ -15,10 +15,12 @@ fn set_background_color(
             // Use the color helper to create a Color object
             let color_obj = match helpers::color_helper::create_color_object(&color) {
                 Ok(color) => color,
-                Err(_) => return Err(NifError::Term(Box::new((
-                    atoms::error(),
-                    "Invalid color format".to_string(),
-                )))),
+                Err(_) => {
+                    return Err(NifError::Term(Box::new((
+                        atoms::error(),
+                        "Invalid color format".to_string(),
+                    ))))
+                }
             };
 
             // Apply the background color using the style helper

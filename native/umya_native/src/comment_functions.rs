@@ -13,11 +13,14 @@ pub fn add_comment(
     author: String,
 ) -> NifResult<Atom> {
     let result = panic::catch_unwind(AssertUnwindSafe(|| -> Result<(), String> {
-        let mut spreadsheet = spreadsheet_resource.spreadsheet.lock()
+        let mut spreadsheet = spreadsheet_resource
+            .spreadsheet
+            .lock()
             .map_err(|_| "Failed to acquire spreadsheet lock".to_string())?;
 
         // Get sheet by name
-        let sheet = spreadsheet.get_sheet_by_name_mut(&sheet_name)
+        let sheet = spreadsheet
+            .get_sheet_by_name_mut(&sheet_name)
             .ok_or_else(|| format!("Sheet '{}' not found", sheet_name))?;
 
         // Validate cell address format
@@ -42,7 +45,10 @@ pub fn add_comment(
     match result {
         Ok(Ok(())) => Ok(atoms::ok()),
         Ok(Err(err_msg)) => Err(NifError::Term(Box::new((atoms::error(), err_msg)))),
-        Err(_) => Err(NifError::Term(Box::new((atoms::error(), "Error occurred in add_comment operation".to_string())))),
+        Err(_) => Err(NifError::Term(Box::new((
+            atoms::error(),
+            "Error occurred in add_comment operation".to_string(),
+        )))),
     }
 }
 
@@ -53,11 +59,14 @@ pub fn get_comment(
     cell_address: String,
 ) -> NifResult<(Atom, String, String)> {
     let result = panic::catch_unwind(AssertUnwindSafe(|| -> Result<(String, String), String> {
-        let spreadsheet = spreadsheet_resource.spreadsheet.lock()
+        let spreadsheet = spreadsheet_resource
+            .spreadsheet
+            .lock()
             .map_err(|_| "Failed to acquire spreadsheet lock".to_string())?;
 
         // Get sheet by name
-        let sheet = spreadsheet.get_sheet_by_name(&sheet_name)
+        let sheet = spreadsheet
+            .get_sheet_by_name(&sheet_name)
             .ok_or_else(|| format!("Sheet '{}' not found", sheet_name))?;
 
         // Validate cell address format
@@ -69,7 +78,8 @@ pub fn get_comment(
         let comments = sheet.get_comments_to_hashmap();
 
         // Find comment for the specified cell address
-        let comment = comments.get(&cell_address)
+        let comment = comments
+            .get(&cell_address)
             .ok_or_else(|| format!("No comment found at cell '{}'", cell_address))?;
 
         // Return comment text and author (without the nested ok atom)
@@ -82,7 +92,10 @@ pub fn get_comment(
     match result {
         Ok(Ok((text, author))) => Ok((atoms::ok(), text, author)),
         Ok(Err(err_msg)) => Err(NifError::Term(Box::new((atoms::error(), err_msg)))),
-        Err(_) => Err(NifError::Term(Box::new((atoms::error(), "Error occurred in get_comment operation".to_string())))),
+        Err(_) => Err(NifError::Term(Box::new((
+            atoms::error(),
+            "Error occurred in get_comment operation".to_string(),
+        )))),
     }
 }
 
@@ -95,11 +108,14 @@ pub fn update_comment(
     author: Option<String>,
 ) -> NifResult<Atom> {
     let result = panic::catch_unwind(AssertUnwindSafe(|| -> Result<(), String> {
-        let mut spreadsheet = spreadsheet_resource.spreadsheet.lock()
+        let mut spreadsheet = spreadsheet_resource
+            .spreadsheet
+            .lock()
             .map_err(|_| "Failed to acquire spreadsheet lock".to_string())?;
 
         // Get sheet by name
-        let sheet = spreadsheet.get_sheet_by_name_mut(&sheet_name)
+        let sheet = spreadsheet
+            .get_sheet_by_name_mut(&sheet_name)
             .ok_or_else(|| format!("Sheet '{}' not found", sheet_name))?;
 
         // Validate cell address format
@@ -136,7 +152,10 @@ pub fn update_comment(
     match result {
         Ok(Ok(())) => Ok(atoms::ok()),
         Ok(Err(err_msg)) => Err(NifError::Term(Box::new((atoms::error(), err_msg)))),
-        Err(_) => Err(NifError::Term(Box::new((atoms::error(), "Error occurred in update_comment operation".to_string())))),
+        Err(_) => Err(NifError::Term(Box::new((
+            atoms::error(),
+            "Error occurred in update_comment operation".to_string(),
+        )))),
     }
 }
 
@@ -147,11 +166,14 @@ pub fn remove_comment(
     cell_address: String,
 ) -> NifResult<Atom> {
     let result = panic::catch_unwind(AssertUnwindSafe(|| -> Result<(), String> {
-        let mut spreadsheet = spreadsheet_resource.spreadsheet.lock()
+        let mut spreadsheet = spreadsheet_resource
+            .spreadsheet
+            .lock()
             .map_err(|_| "Failed to acquire spreadsheet lock".to_string())?;
 
         // Get sheet by name
-        let sheet = spreadsheet.get_sheet_by_name_mut(&sheet_name)
+        let sheet = spreadsheet
+            .get_sheet_by_name_mut(&sheet_name)
             .ok_or_else(|| format!("Sheet '{}' not found", sheet_name))?;
 
         // Validate cell address format
@@ -183,7 +205,10 @@ pub fn remove_comment(
     match result {
         Ok(Ok(())) => Ok(atoms::ok()),
         Ok(Err(err_msg)) => Err(NifError::Term(Box::new((atoms::error(), err_msg)))),
-        Err(_) => Err(NifError::Term(Box::new((atoms::error(), "Error occurred in remove_comment operation".to_string())))),
+        Err(_) => Err(NifError::Term(Box::new((
+            atoms::error(),
+            "Error occurred in remove_comment operation".to_string(),
+        )))),
     }
 }
 

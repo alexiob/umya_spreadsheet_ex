@@ -56,10 +56,11 @@ defmodule UmyaSpreadsheet.TableGettersTest do
       assert is_map(table)
       assert table["name"] == "TestTable"
       assert table["display_name"] == "Test Sales Data"
-      assert table["has_totals_row"] == "true"
-      # Columns are returned as a string representation, not an actual list
-      assert is_binary(table["columns"])
-      # Skip the length check as we can't easily count elements in the string representation
+      assert table["has_totals_row"] == true
+      # Columns are now returned as an actual list
+      assert is_list(table["columns"])
+      assert length(table["columns"]) == 4
+      assert table["columns"] == ["Region", "Product", "Sales", "Date"]
     end
 
     test "returns error for non-existent table", %{spreadsheet: spreadsheet} do

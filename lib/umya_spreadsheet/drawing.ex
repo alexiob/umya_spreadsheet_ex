@@ -151,22 +151,22 @@ defmodule UmyaSpreadsheet.Drawing do
         outline_color,
         outline_width
       ) do
-        case UmyaNative.add_text_box(
-               ref,
-               sheet_name,
-               cell_address,
-               text,
-               width,
-               height,
-               fill_color,
-               text_color,
-               outline_color,
-               outline_width
-             ) do
-          {:ok, :ok} -> :ok
-          :ok -> :ok
-          result -> result
-        end
+    case UmyaNative.add_text_box(
+           ref,
+           sheet_name,
+           cell_address,
+           text,
+           width,
+           height,
+           fill_color,
+           text_color,
+           outline_color,
+           outline_width
+         ) do
+      {:ok, :ok} -> :ok
+      :ok -> :ok
+      result -> result
+    end
   end
 
   @doc """
@@ -210,17 +210,199 @@ defmodule UmyaSpreadsheet.Drawing do
         line_color,
         line_width
       ) do
-        case UmyaNative.add_connector(
-               ref,
-               sheet_name,
-               from_cell,
-               to_cell,
-               line_color,
-               line_width
-             ) do
-          {:ok, :ok} -> :ok
-          :ok -> :ok
-          result -> result
-        end
+    case UmyaNative.add_connector(
+           ref,
+           sheet_name,
+           from_cell,
+           to_cell,
+           line_color,
+           line_width
+         ) do
+      {:ok, :ok} -> :ok
+      :ok -> :ok
+      result -> result
+    end
+  end
+
+  @doc """
+  Gets all shapes in a worksheet.
+
+  This function retrieves all shapes (rectangles, ellipses, etc.) from the specified worksheet.
+
+  ## Parameters
+
+  * `spreadsheet` - A spreadsheet struct
+  * `sheet_name` - The name of the sheet to get shapes from
+  * `cell_range` - Optional cell range to filter shapes by position (e.g., "A1:C10")
+
+  ## Returns
+
+  * `{:ok, shapes}` - List of shape maps, each containing:
+    * `:type` - The type of shape ("rectangle", "ellipse", etc.)
+    * `:cell` - The cell address where the shape is placed
+    * `:width` - The width of the shape in pixels
+    * `:height` - The height of the shape in pixels
+    * `:fill_color` - The fill color for the shape (hex code)
+    * `:outline_color` - The outline/border color for the shape (hex code)
+    * `:outline_width` - The width of the outline/border in points
+  * `{:error, :not_found}` - Sheet was not found
+  * `{:error, :error}` - Failed to get shapes for another reason
+
+  ## Examples
+
+      # Get all shapes in Sheet1
+      {:ok, shapes} = UmyaSpreadsheet.Drawing.get_shapes(spreadsheet, "Sheet1")
+
+      # Get shapes in cells A1 through C10
+      {:ok, shapes} = UmyaSpreadsheet.Drawing.get_shapes(spreadsheet, "Sheet1", "A1:C10")
+  """
+  @spec get_shapes(
+          Spreadsheet.t(),
+          String.t(),
+          String.t() | nil
+        ) :: {:ok, [map()]} | {:error, atom()}
+  def get_shapes(%Spreadsheet{reference: ref}, sheet_name, cell_range \\ nil) do
+    UmyaNative.get_shapes_nif(ref, sheet_name, cell_range)
+  end
+
+  @doc """
+  Gets all text boxes in a worksheet.
+
+  This function retrieves all text boxes from the specified worksheet.
+
+  ## Parameters
+
+  * `spreadsheet` - A spreadsheet struct
+  * `sheet_name` - The name of the sheet to get text boxes from
+  * `cell_range` - Optional cell range to filter text boxes by position (e.g., "A1:C10")
+
+  ## Returns
+
+  * `{:ok, text_boxes}` - List of text box maps, each containing:
+    * `:cell` - The cell address where the text box is placed
+    * `:text` - The text content of the text box
+    * `:width` - The width of the text box in pixels
+    * `:height` - The height of the text box in pixels
+    * `:fill_color` - The background color for the text box (hex code)
+    * `:text_color` - The color of the text (hex code)
+    * `:outline_color` - The border color for the text box (hex code)
+    * `:outline_width` - The width of the border in points
+  * `{:error, :not_found}` - Sheet was not found
+  * `{:error, :error}` - Failed to get text boxes for another reason
+
+  ## Examples
+
+      # Get all text boxes in Sheet1
+      {:ok, text_boxes} = UmyaSpreadsheet.Drawing.get_text_boxes(spreadsheet, "Sheet1")
+
+      # Get text boxes in cells A1 through C10
+      {:ok, text_boxes} = UmyaSpreadsheet.Drawing.get_text_boxes(spreadsheet, "Sheet1", "A1:C10")
+  """
+  @spec get_text_boxes(
+          Spreadsheet.t(),
+          String.t(),
+          String.t() | nil
+        ) :: {:ok, [map()]} | {:error, atom()}
+  def get_text_boxes(%Spreadsheet{reference: ref}, sheet_name, cell_range \\ nil) do
+    UmyaNative.get_text_boxes_nif(ref, sheet_name, cell_range)
+  end
+
+  @doc """
+  Gets all connectors in a worksheet.
+
+  This function retrieves all connector lines from the specified worksheet.
+
+  ## Parameters
+
+  * `spreadsheet` - A spreadsheet struct
+  * `sheet_name` - The name of the sheet to get connectors from
+  * `cell_range` - Optional cell range to filter connectors by position (e.g., "A1:C10")
+
+  ## Returns
+
+  * `{:ok, connectors}` - List of connector maps, each containing:
+    * `:from_cell` - The starting cell address for the connector
+    * `:to_cell` - The ending cell address for the connector
+    * `:line_color` - The color of the connector line (hex code)
+    * `:line_width` - The width of the connector line in points
+  * `{:error, :not_found}` - Sheet was not found
+  * `{:error, :error}` - Failed to get connectors for another reason
+
+  ## Examples
+
+      # Get all connectors in Sheet1
+      {:ok, connectors} = UmyaSpreadsheet.Drawing.get_connectors(spreadsheet, "Sheet1")
+
+      # Get connectors in cells A1 through C10
+      {:ok, connectors} = UmyaSpreadsheet.Drawing.get_connectors(spreadsheet, "Sheet1", "A1:C10")
+  """
+  @spec get_connectors(
+          Spreadsheet.t(),
+          String.t(),
+          String.t() | nil
+        ) :: {:ok, [map()]} | {:error, atom()}
+  def get_connectors(%Spreadsheet{reference: ref}, sheet_name, cell_range \\ nil) do
+    UmyaNative.get_connectors_nif(ref, sheet_name, cell_range)
+  end
+
+  @doc """
+  Checks if a worksheet has any drawing objects (shapes, text boxes, connectors).
+
+  ## Parameters
+
+  * `spreadsheet` - A spreadsheet struct
+  * `sheet_name` - The name of the sheet to check
+  * `cell_range` - Optional cell range to filter by position (e.g., "A1:C10")
+
+  ## Returns
+
+  * `{:ok, has_objects}` - Boolean indicating whether the sheet has drawing objects
+  * `{:error, :not_found}` - Sheet was not found
+  * `{:error, :error}` - Failed to check for drawing objects for another reason
+
+  ## Examples
+
+      # Check if Sheet1 has any drawing objects
+      {:ok, has_objects} = UmyaSpreadsheet.Drawing.has_drawing_objects(spreadsheet, "Sheet1")
+  """
+  @spec has_drawing_objects(
+          Spreadsheet.t(),
+          String.t(),
+          String.t() | nil
+        ) :: {:ok, boolean()} | {:error, atom()}
+  def has_drawing_objects(%Spreadsheet{reference: ref}, sheet_name, cell_range \\ nil) do
+    UmyaNative.has_drawing_objects_nif(ref, sheet_name, cell_range)
+  end
+
+  @doc """
+  Counts drawing objects (shapes, text boxes, connectors) in a worksheet.
+
+  ## Parameters
+
+  * `spreadsheet` - A spreadsheet struct
+  * `sheet_name` - The name of the sheet to count objects in
+  * `cell_range` - Optional cell range to filter by position (e.g., "A1:C10")
+
+  ## Returns
+
+  * `{:ok, count}` - The number of drawing objects found
+  * `{:error, :not_found}` - Sheet was not found
+  * `{:error, :error}` - Failed to count drawing objects for another reason
+
+  ## Examples
+
+      # Count all drawing objects in Sheet1
+      {:ok, count} = UmyaSpreadsheet.Drawing.count_drawing_objects(spreadsheet, "Sheet1")
+
+      # Count drawing objects in cells A1 through C10
+      {:ok, count} = UmyaSpreadsheet.Drawing.count_drawing_objects(spreadsheet, "Sheet1", "A1:C10")
+  """
+  @spec count_drawing_objects(
+          Spreadsheet.t(),
+          String.t(),
+          String.t() | nil
+        ) :: {:ok, non_neg_integer()} | {:error, atom()}
+  def count_drawing_objects(%Spreadsheet{reference: ref}, sheet_name, cell_range \\ nil) do
+    UmyaNative.count_drawing_objects_nif(ref, sheet_name, cell_range)
   end
 end

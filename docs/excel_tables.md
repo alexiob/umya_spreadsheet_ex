@@ -10,6 +10,7 @@ Excel tables provide a powerful way to organize, format, and analyze data in str
 - [Table Styling](#table-styling)
 - [Column Management](#column-management)
 - [Totals Row](#totals-row)
+- [Table Getter Functions Reference](#table-getter-functions-reference)
 - [Complete Examples](#complete-examples)
 - [Best Practices](#best-practices)
 - [Error Handling](#error-handling)
@@ -106,9 +107,10 @@ UmyaSpreadsheet.set_cell_value(spreadsheet, "Sheet1", "D3", "2019-03-20")
 [table | _] = tables
 table["name"]         # => "EmployeeTable"
 table["display_name"] # => "Employee Data"
-table["columns"]      # => [list of column definitions]
-table["ref"]          # => "A1:D3" (table range)
-table["totals_row_shown"] # => true/false
+table["columns"]      # => ["Name", "Department", "Salary", "Start Date"]
+table["start_cell"]   # => "A1" (top-left corner)
+table["end_cell"]     # => "D3" (bottom-right corner)
+table["has_totals_row"] # => true/false
 ```
 
 ### Table Column Information
@@ -134,12 +136,22 @@ UmyaSpreadsheet provides dedicated getter functions for inspecting specific tabl
 # Get detailed information about a specific table
 {:ok, table_info} = UmyaSpreadsheet.get_table(spreadsheet, "Sheet1", "EmployeeTable")
 # => {:ok, %{
-#      "name" => "EmployeeTable",
-#      "display_name" => "Employee Data",
-#      "ref" => "A1:D3",
-#      "totals_row_shown" => true,
-#      "columns" => [...]
+#      "name" => "EmployeeTable",                    # Internal table name
+#      "display_name" => "Employee Data",            # User-visible display name
+#      "start_cell" => "A1",                         # Top-left cell reference
+#      "end_cell" => "D3",                           # Bottom-right cell reference
+#      "columns" => ["Name", "Department", "Salary", "Start Date"], # Column names list
+#      "has_totals_row" => true,                     # Whether totals row is enabled
+#      "style_info" => %{                            # Style information (optional)
+#        "name" => "TableStyleMedium9",              # Style name
+#        "show_first_col" => true,                   # First column highlighting
+#        "show_last_col" => false,                   # Last column highlighting
+#        "show_row_stripes" => true,                 # Row striping
+#        "show_col_stripes" => false                 # Column striping
+#      }
 #    }}
+
+**Note:** The `style_info` map is only included if the table has custom styling applied. If no styling is set, this key will not be present in the response.
 
 # Get just the table style information
 {:ok, style_info} = UmyaSpreadsheet.get_table_style(spreadsheet, "Sheet1", "EmployeeTable")
@@ -169,26 +181,29 @@ UmyaSpreadsheet provides dedicated getter functions for inspecting specific tabl
 ```elixir
 def inspect_table_details(spreadsheet, sheet_name, table_name) do
   with {:ok, table} <- UmyaSpreadsheet.get_table(spreadsheet, sheet_name, table_name),
-       {:ok, style} <- UmyaSpreadsheet.get_table_style(spreadsheet, sheet_name, table_name),
-       {:ok, columns} <- UmyaSpreadsheet.get_table_columns(spreadsheet, sheet_name, table_name),
-       {:ok, has_totals} <- UmyaSpreadsheet.get_table_totals_row(spreadsheet, sheet_name, table_name) do
+       {:ok, columns} <- UmyaSpreadsheet.get_table_columns(spreadsheet, sheet_name, table_name) do
 
     IO.puts("=== Table Details ===")
     IO.puts("Name: #{table["name"]}")
     IO.puts("Display Name: #{table["display_name"]}")
-    IO.puts("Range: #{table["ref"]}")
-    IO.puts("Has Totals Row: #{has_totals}")
+    IO.puts("Range: #{table["start_cell"]}:#{table["end_cell"]}")
+    IO.puts("Has Totals Row: #{table["has_totals_row"]}")
 
     IO.puts("\n=== Style Information ===")
-    IO.puts("Style: #{style["name"]}")
-    IO.puts("First Column Highlighted: #{style["show_first_column"]}")
-    IO.puts("Last Column Highlighted: #{style["show_last_column"]}")
-    IO.puts("Row Stripes: #{style["show_row_stripes"]}")
-    IO.puts("Column Stripes: #{style["show_column_stripes"]}")
+    if table["style_info"] do
+      style_info = table["style_info"]
+      IO.puts("Style: #{style_info["name"]}")
+      IO.puts("First Column Highlighted: #{style_info["show_first_col"]}")
+      IO.puts("Last Column Highlighted: #{style_info["show_last_col"]}")
+      IO.puts("Row Stripes: #{style_info["show_row_stripes"]}")
+      IO.puts("Column Stripes: #{style_info["show_col_stripes"]}")
+    else
+      IO.puts("No custom styling applied")
+    end
 
     IO.puts("\n=== Columns ===")
     Enum.each(columns, fn column ->
-      IO.puts("- #{column["name"]} (ID: #{column["id"]}, Function: #{column["totals_row_function"]})")
+      IO.puts("- #{column["name"]} (Function: #{column["totals_row_function"]})")
     end)
 
     {:ok, :inspection_complete}
@@ -202,6 +217,25 @@ end
 # Usage
 inspect_table_details(spreadsheet, "Sheet1", "EmployeeTable")
 ```
+
+### Choosing Between Comprehensive and Specific Getters
+
+The `get_table/3` function provides comprehensive information about a table in a single call, including optional style information when available. Use this when you need multiple pieces of information about a table.
+
+For specific use cases, you can also use individual getter functions:
+
+```elixir
+# When you only need style information
+{:ok, style_info} = UmyaSpreadsheet.get_table_style(spreadsheet, "Sheet1", "EmployeeTable")
+
+# When you only need column definitions
+{:ok, columns} = UmyaSpreadsheet.get_table_columns(spreadsheet, "Sheet1", "EmployeeTable")
+
+# When you only need to check totals row status
+{:ok, has_totals} = UmyaSpreadsheet.get_table_totals_row(spreadsheet, "Sheet1", "EmployeeTable")
+```
+
+**Performance Tip:** Use `get_table/3` when you need multiple pieces of information, as it's more efficient than making multiple separate API calls.
 
 ### Removing Tables
 
@@ -332,6 +366,105 @@ Excel provides many built-in table styles. Common styles include:
 ```
 
 The totals row automatically calculates values based on the functions assigned to each column when you create or modify the table.
+
+## Table Getter Functions Reference
+
+This section provides a comprehensive reference for all table inspection functions and their return values.
+
+### get_table/3 - Comprehensive Table Information
+
+Returns detailed information about a specific table in a single call.
+
+```elixir
+{:ok, table_info} = UmyaSpreadsheet.get_table(spreadsheet, sheet_name, table_name)
+```
+
+**Return Structure:**
+
+```elixir
+%{
+  "name" => "TableName",           # Internal table name (String)
+  "display_name" => "Display Name", # User-visible display name (String)
+  "start_cell" => "A1",            # Top-left cell reference (String)
+  "end_cell" => "D10",             # Bottom-right cell reference (String)
+  "columns" => ["Col1", "Col2"],   # List of column names (List of Strings)
+  "has_totals_row" => true,        # Whether totals row is enabled (Boolean)
+  "style_info" => %{               # Style information (Optional Map)
+    "name" => "TableStyleLight1",  # Style name (String)
+    "show_first_col" => true,      # First column highlighting (Boolean)
+    "show_last_col" => false,      # Last column highlighting (Boolean)
+    "show_row_stripes" => true,    # Row striping (Boolean)
+    "show_col_stripes" => false    # Column striping (Boolean)
+  }
+}
+```
+
+**Note:** The `style_info` key is only present if the table has custom styling applied.
+
+### get_table_style/3 - Style Information Only
+
+Returns only the styling information for a table.
+
+```elixir
+{:ok, style_info} = UmyaSpreadsheet.get_table_style(spreadsheet, sheet_name, table_name)
+```
+
+**Return Structure:**
+
+```elixir
+%{
+  "name" => "TableStyleMedium9",         # Style name (String)
+  "show_first_column" => true,           # First column highlighting (Boolean)
+  "show_last_column" => false,           # Last column highlighting (Boolean)
+  "show_row_stripes" => true,            # Row striping (Boolean)
+  "show_column_stripes" => false         # Column striping (Boolean)
+}
+```
+
+### get_table_columns/3 - Column Definitions
+
+Returns detailed information about all columns in a table.
+
+```elixir
+{:ok, columns} = UmyaSpreadsheet.get_table_columns(spreadsheet, sheet_name, table_name)
+```
+
+**Return Structure:**
+
+```elixir
+[
+  %{
+    "name" => "Name",                    # Column name (String)
+    "totals_row_function" => "none",     # Totals function (String)
+    "totals_row_label" => "Total"        # Totals label (String, optional)
+  },
+  %{
+    "name" => "Salary",
+    "totals_row_function" => "sum",
+    "totals_row_label" => "Total Salary"
+  }
+]
+```
+
+### get_table_totals_row/3 - Totals Row Status
+
+Returns whether the totals row is currently visible.
+
+```elixir
+{:ok, has_totals} = UmyaSpreadsheet.get_table_totals_row(spreadsheet, sheet_name, table_name)
+```
+
+**Return Value:** Boolean (`true` or `false`)
+
+### get_tables/2 - All Tables in Worksheet
+
+Returns information about all tables in a worksheet.
+
+```elixir
+{:ok, tables} = UmyaSpreadsheet.get_tables(spreadsheet, sheet_name)
+```
+
+**Return Structure:** List of table maps (same structure as `get_table/3`)
 
 ## Complete Examples
 
@@ -500,7 +633,7 @@ end)
 
 Enum.each(tables, fn table ->
   IO.puts("Table: #{table["display_name"]} (#{table["name"]})")
-  IO.puts("Range: #{table["ref"]}")
+  IO.puts("Range: #{table["start_cell"]}:#{table["end_cell"]}")
   IO.puts("Columns: #{length(table["columns"])}")
 end)
 
