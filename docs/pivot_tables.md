@@ -141,6 +141,164 @@ You can remove a specific pivot table by its name:
 UmyaSpreadsheet.remove_pivot_table(spreadsheet, "PivotSheet", "Sales Analysis")
 ```
 
+## Enhanced Pivot Table Features
+
+UmyaSpreadsheet provides enhanced pivot table functionality that allows you to inspect and modify existing pivot tables in detail.
+
+### Working with Cache Fields
+
+Cache fields represent the original columns from your source data and define how the data is categorized and processed within the pivot table.
+
+#### Getting All Cache Fields
+
+```elixir
+# Get all cache fields for a pivot table
+{:ok, cache_fields} = UmyaSpreadsheet.PivotTable.get_cache_fields(
+  spreadsheet,
+  "PivotSheet",
+  "Sales Analysis"
+)
+
+# The cache_fields list contains information about each source column
+# Each field includes name, data type, and other metadata
+IO.inspect(cache_fields)
+```
+
+#### Getting Specific Cache Field Information
+
+```elixir
+# Get detailed information about a specific cache field
+{:ok, cache_field} = UmyaSpreadsheet.PivotTable.get_cache_field(
+  spreadsheet,
+  "PivotSheet",
+  "Sales Analysis",
+  0  # Field index (0-based)
+)
+
+# The cache_field contains detailed information about the field
+# including its name, data type, and unique values
+IO.inspect(cache_field)
+```
+
+### Working with Data Fields
+
+Data fields are the calculated fields that appear in the body of the pivot table. They specify which source columns to aggregate and how to aggregate them.
+
+#### Getting All Data Fields
+
+```elixir
+# Get all data fields for a pivot table
+{:ok, data_fields} = UmyaSpreadsheet.PivotTable.get_data_fields(
+  spreadsheet,
+  "PivotSheet",
+  "Sales Analysis"
+)
+
+# Each data field contains information about:
+# - Which source field it references
+# - The aggregation function used
+# - The display name
+# - Number formatting options
+IO.inspect(data_fields)
+```
+
+#### Adding New Data Fields
+
+```elixir
+# Add a new data field to an existing pivot table
+{:ok, _} = UmyaSpreadsheet.PivotTable.add_data_field(
+  spreadsheet,
+  "PivotSheet",
+  "Sales Analysis",
+  2,          # Source field index (0-based)
+  "average",  # Aggregation function
+  "Avg Sales" # Display name
+)
+
+# This adds a new data field that shows the average of the Sales column
+# alongside any existing data fields
+```
+
+### Working with Cache Source
+
+The cache source defines where the pivot table gets its data from, including the source range and refresh settings.
+
+#### Getting Cache Source Information
+
+```elixir
+# Get cache source configuration for a pivot table
+{:ok, cache_source} = UmyaSpreadsheet.PivotTable.get_cache_source(
+  spreadsheet,
+  "PivotSheet",
+  "Sales Analysis"
+)
+
+# The cache_source contains:
+# - Source sheet and range information
+# - Refresh settings
+# - Connection details
+IO.inspect(cache_source)
+```
+
+#### Updating Cache Source
+
+```elixir
+# Update the cache source to point to a different range
+{:ok, _} = UmyaSpreadsheet.PivotTable.update_cache(
+  spreadsheet,
+  "PivotSheet",
+  "Sales Analysis",
+  "Sheet1",    # New source sheet
+  "A1:D100"    # New source range
+)
+
+# This updates the pivot table to use data from the new range
+# You should refresh the pivot table after updating the cache
+```
+
+### Advanced Pivot Table Workflow
+
+Here's an example of how to use the enhanced features to analyze and modify an existing pivot table:
+
+```elixir
+# First, inspect the current structure
+{:ok, cache_fields} = UmyaSpreadsheet.PivotTable.get_cache_fields(
+  spreadsheet, "PivotSheet", "Sales Analysis"
+)
+
+{:ok, data_fields} = UmyaSpreadsheet.PivotTable.get_data_fields(
+  spreadsheet, "PivotSheet", "Sales Analysis"
+)
+
+{:ok, cache_source} = UmyaSpreadsheet.PivotTable.get_cache_source(
+  spreadsheet, "PivotSheet", "Sales Analysis"
+)
+
+IO.puts("Cache Fields: #{length(cache_fields)}")
+IO.puts("Data Fields: #{length(data_fields)}")
+IO.puts("Source: #{inspect(cache_source)}")
+
+# Add additional analysis fields
+UmyaSpreadsheet.PivotTable.add_data_field(
+  spreadsheet, "PivotSheet", "Sales Analysis",
+  2, "max", "Highest Sale"
+)
+
+UmyaSpreadsheet.PivotTable.add_data_field(
+  spreadsheet, "PivotSheet", "Sales Analysis",
+  2, "min", "Lowest Sale"
+)
+
+# Update to use a larger data range
+UmyaSpreadsheet.PivotTable.update_cache(
+  spreadsheet, "PivotSheet", "Sales Analysis",
+  "Sheet1", "A1:D200"
+)
+
+# Refresh to apply changes
+UmyaSpreadsheet.refresh_all_pivot_tables(spreadsheet)
+```
+
 ## Complete Example
 
 Here's a complete example showing how to create a spreadsheet with both source data and a pivot table:
@@ -216,6 +374,17 @@ UmyaSpreadsheet.write(spreadsheet, "sales_analysis.xlsx")
 - The `refresh_all_pivot_tables/1` function currently has limited functionality in the backend implementation and may not fully refresh the pivot table data in all cases
 - For best results, re-create pivot tables after significant source data changes, or ensure you call `refresh_all_pivot_tables/1` before saving the spreadsheet
 - The pivot tables will be properly displayed and functional when the file is opened in Excel or other compatible applications
+
+## Enhanced Features
+
+With the recent enhancements, UmyaSpreadsheet now provides:
+
+- **Complete Cache Field Access**: Inspect all source fields and their properties
+- **Data Field Management**: View and add new calculated fields to existing pivot tables
+- **Cache Source Control**: Update the source data range and refresh settings
+- **Detailed Introspection**: Get comprehensive information about pivot table structure
+
+These enhanced features make it possible to programmatically analyze and modify existing pivot tables, providing greater flexibility for data analysis workflows.
 
 ## Excel Compatibility
 

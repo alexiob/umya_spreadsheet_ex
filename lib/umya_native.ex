@@ -2438,5 +2438,59 @@ defmodule UmyaNative do
   def clear_fill(_spreadsheet, _sheet_name, _cell_address),
     do: error()
 
+  # Enhanced pivot table operations
+  @spec get_pivot_table_cache_fields(reference(), String.t(), String.t()) ::
+          {:ok, list({String.t(), non_neg_integer(), boolean()})} | {:error, atom()}
+  def get_pivot_table_cache_fields(_spreadsheet, _sheet_name, _pivot_table_name),
+    do: error()
+
+  @spec get_pivot_table_cache_field(reference(), String.t(), String.t(), non_neg_integer()) ::
+          {:ok, {String.t(), non_neg_integer(), list(String.t())}} | {:error, atom()}
+  def get_pivot_table_cache_field(_spreadsheet, _sheet_name, _pivot_table_name, _field_index),
+    do: error()
+
+  @spec get_pivot_table_data_fields(reference(), String.t(), String.t()) ::
+          {:ok, list({String.t(), non_neg_integer(), integer(), non_neg_integer()})}
+          | {:error, atom()}
+  def get_pivot_table_data_fields(_spreadsheet, _sheet_name, _pivot_table_name),
+    do: error()
+
+  @spec get_pivot_table_cache_source(reference(), String.t(), String.t()) ::
+          {:ok, {String.t(), {String.t(), String.t()} | nil}} | {:error, atom()}
+  def get_pivot_table_cache_source(_spreadsheet, _sheet_name, _pivot_table_name),
+    do: error()
+
+  @spec add_pivot_table_data_field(
+          reference(),
+          String.t(),
+          String.t(),
+          String.t(),
+          non_neg_integer(),
+          integer() | nil,
+          non_neg_integer() | nil
+        ) ::
+          :ok | {:error, atom()}
+  def add_pivot_table_data_field(
+        _spreadsheet,
+        _sheet_name,
+        _pivot_table_name,
+        _field_name,
+        _field_id,
+        _base_field_id,
+        _base_item
+      ),
+      do: error()
+
+  @spec update_pivot_table_cache(reference(), String.t(), String.t(), String.t(), String.t()) ::
+          :ok | {:error, atom()}
+  def update_pivot_table_cache(
+        _spreadsheet,
+        _sheet_name,
+        _pivot_table_name,
+        _source_sheet,
+        _source_range
+      ),
+      do: error()
+
   defp error(), do: :erlang.nif_error(:nif_not_loaded)
 end

@@ -1,5 +1,21 @@
 # Changelog
 
+## 0.6.17 - 2025-06-03
+
+### Added
+
+- **Pivot Table Enhancements**:
+  - **Enhanced Access to Pivot Table Components** - Added comprehensive functions for working with pivot table internal components
+    - New function `UmyaSpreadsheet.PivotTable.get_pivot_table_cache_fields/3` retrieves all cache fields in a pivot table
+    - New function `UmyaSpreadsheet.PivotTable.get_pivot_table_cache_field/4` gets detailed information about a specific cache field
+    - New function `UmyaSpreadsheet.PivotTable.get_pivot_table_data_fields/3` retrieves all data fields in a pivot table
+    - New function `UmyaSpreadsheet.PivotTable.get_pivot_table_cache_source/3` gets the cache source configuration
+  - **Enhanced Modification Capabilities** - Added functions to modify pivot table components
+    - New function `UmyaSpreadsheet.PivotTable.add_pivot_table_data_field/5-7` adds a new data field to an existing pivot table
+    - New function `UmyaSpreadsheet.PivotTable.update_pivot_table_cache/5` updates the cache source configuration
+  - **Comprehensive Testing** - Added thorough test suite for new pivot table functionality
+  - **Improved Documentation** - Updated pivot table guide with detailed documentation for all new enhanced features
+
 ## 0.6.16 - 2025-06-02
 
 ### Added

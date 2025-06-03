@@ -259,6 +259,13 @@ rustler::init!(
         pivot_table::get_pivot_table_source_range,
         pivot_table::get_pivot_table_target_cell,
         pivot_table::get_pivot_table_fields,
+        // Enhanced pivot table operations
+        pivot_table::get_pivot_table_cache_fields,
+        pivot_table::get_pivot_table_cache_field,
+        pivot_table::get_pivot_table_data_fields,
+        pivot_table::get_pivot_table_cache_source,
+        pivot_table::add_pivot_table_data_field,
+        pivot_table::update_pivot_table_cache,
         // Drawing and shape functions
         drawing_functions::add_shape,
         drawing_functions::add_text_box,

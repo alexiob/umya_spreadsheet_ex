@@ -6,13 +6,6 @@ Based on comprehensive analysis of the Rust structs vs. implemented NIF function
 
 ### Lower Priority Features
 
-#### 9. Advanced Fills
-
-- **Gradient Patterns**: Complex fill patterns
-  - `GradientFill` struct: Gradient fill definitions
-  - `GradientStop` struct: Gradient stop points
-  - Advanced pattern fills
-
 #### 10. Pivot Table Enhancements
 
 - **Extended Pivot Support**: Additional pivot table features

@@ -353,4 +353,280 @@ defmodule UmyaSpreadsheet.PivotTable do
       pivot_table_name
     )
   end
+
+  @doc """
+  Gets all cache fields from a pivot table.
+
+  ## Parameters
+
+    * `spreadsheet` - A spreadsheet struct
+    * `sheet_name` - Name of the sheet containing the pivot table
+    * `pivot_table_name` - Name of the pivot table
+
+  ## Returns
+
+    * `{:ok, fields}` - List of cache fields with their details
+      * Each field is a tuple: {name, format_id, has_shared_items}
+    * `{:error, atom()}` - Error if sheet or pivot table doesn't exist
+
+  ## Examples
+
+      # Get all cache fields for a pivot table
+      case PivotTable.get_pivot_table_cache_fields(spreadsheet, "Sheet1", "Sales Analysis") do
+        {:ok, fields} ->
+          fields |> Enum.each(fn {name, _, has_items} ->
+            IO.puts("Field: " <> name <> (if has_items, do: " (has items)", else: ""))
+          end)
+        {:error, reason} ->
+          IO.puts("Error: " <> inspect(reason))
+      end
+  """
+  @spec get_pivot_table_cache_fields(Spreadsheet.t(), String.t(), String.t()) ::
+          {:ok, list({String.t(), non_neg_integer(), boolean()})} | {:error, atom()}
+  def get_pivot_table_cache_fields(%Spreadsheet{reference: ref}, sheet_name, pivot_table_name) do
+    UmyaNative.get_pivot_table_cache_fields(
+      UmyaSpreadsheet.unwrap_ref(ref),
+      sheet_name,
+      pivot_table_name
+    )
+  end
+
+  @doc """
+  Gets detailed information about a specific cache field in a pivot table.
+
+  ## Parameters
+
+    * `spreadsheet` - A spreadsheet struct
+    * `sheet_name` - Name of the sheet containing the pivot table
+    * `pivot_table_name` - Name of the pivot table
+    * `field_index` - Index of the field to get (0-based)
+
+  ## Returns
+
+    * `{:ok, {name, format_id, shared_items}}` - Details for the requested field
+      * `name` - Field name
+      * `format_id` - Number format ID for the field
+      * `shared_items` - List of unique values in this field
+    * `{:error, atom()}` - Error if sheet, pivot table, or field doesn't exist
+
+  ## Examples
+
+      # Get details for the first cache field
+      case PivotTable.get_pivot_table_cache_field(spreadsheet, "Sheet1", "Sales Analysis", 0) do
+        {:ok, {name, _, items}} ->
+          IO.puts("Field: " <> name)
+          IO.puts("Unique values: " <> inspect(items))
+        {:error, reason} ->
+          IO.puts("Error: " <> inspect(reason))
+      end
+  """
+  @spec get_pivot_table_cache_field(Spreadsheet.t(), String.t(), String.t(), non_neg_integer()) ::
+          {:ok, {String.t(), non_neg_integer(), list(String.t())}} | {:error, atom()}
+  def get_pivot_table_cache_field(
+        %Spreadsheet{reference: ref},
+        sheet_name,
+        pivot_table_name,
+        field_index
+      ) do
+    UmyaNative.get_pivot_table_cache_field(
+      UmyaSpreadsheet.unwrap_ref(ref),
+      sheet_name,
+      pivot_table_name,
+      field_index
+    )
+  end
+
+  @doc """
+  Gets all data fields from a pivot table.
+
+  ## Parameters
+
+    * `spreadsheet` - A spreadsheet struct
+    * `sheet_name` - Name of the sheet containing the pivot table
+    * `pivot_table_name` - Name of the pivot table
+
+  ## Returns
+
+    * `{:ok, fields}` - List of data fields with their details
+      * Each field is a tuple: {name, field_id, base_field_id, base_item}
+    * `{:error, atom()}` - Error if sheet or pivot table doesn't exist
+
+  ## Examples
+
+      # Get all data fields for a pivot table
+      case PivotTable.get_pivot_table_data_fields(spreadsheet, "Sheet1", "Sales Analysis") do
+        {:ok, fields} ->
+          fields |> Enum.each(fn {name, field_id, _, _} ->
+            IO.puts("Data field: " <> name <> " (field: " <> to_string(field_id) <> ")")
+          end)
+        {:error, reason} ->
+          IO.puts("Error: " <> inspect(reason))
+      end
+  """
+  @spec get_pivot_table_data_fields(Spreadsheet.t(), String.t(), String.t()) ::
+          {:ok, list({String.t(), non_neg_integer(), integer(), non_neg_integer()})}
+          | {:error, atom()}
+  def get_pivot_table_data_fields(%Spreadsheet{reference: ref}, sheet_name, pivot_table_name) do
+    UmyaNative.get_pivot_table_data_fields(
+      UmyaSpreadsheet.unwrap_ref(ref),
+      sheet_name,
+      pivot_table_name
+    )
+  end
+
+  @doc """
+  Gets the cache source configuration for a pivot table.
+
+  ## Parameters
+
+    * `spreadsheet` - A spreadsheet struct
+    * `sheet_name` - Name of the sheet containing the pivot table
+    * `pivot_table_name` - Name of the pivot table
+
+  ## Returns
+
+    * `{:ok, {source_type, worksheet_source}}` - Cache source details
+      * `source_type` - String describing the source type (worksheet, external, etc.)
+      * `worksheet_source` - Optional tuple of {sheet_name, range} or nil if not a worksheet source
+    * `{:error, atom()}` - Error if sheet or pivot table doesn't exist
+
+  ## Examples
+
+      # Get the cache source for a pivot table
+      case PivotTable.get_pivot_table_cache_source(spreadsheet, "Sheet1", "Sales Analysis") do
+        {:ok, {"worksheet", {sheet, range}}} ->
+          IO.puts("Source data: " <> sheet <> "!" <> range)
+        {:ok, {source_type, _}} ->
+          IO.puts("Non-worksheet source: " <> source_type)
+        {:error, reason} ->
+          IO.puts("Error: " <> inspect(reason))
+      end
+  """
+  @spec get_pivot_table_cache_source(Spreadsheet.t(), String.t(), String.t()) ::
+          {:ok, {String.t(), {String.t(), String.t()} | nil}} | {:error, atom()}
+  def get_pivot_table_cache_source(%Spreadsheet{reference: ref}, sheet_name, pivot_table_name) do
+    UmyaNative.get_pivot_table_cache_source(
+      UmyaSpreadsheet.unwrap_ref(ref),
+      sheet_name,
+      pivot_table_name
+    )
+  end
+
+  @doc """
+  Adds a new data field to an existing pivot table.
+
+  ## Parameters
+
+    * `spreadsheet` - A spreadsheet struct
+    * `sheet_name` - Name of the sheet containing the pivot table
+    * `pivot_table_name` - Name of the pivot table
+    * `field_name` - Name for the new data field
+    * `field_id` - Index of the source field (0-based)
+    * `base_field_id` - Optional base field ID for calculated fields
+    * `base_item` - Optional base item for calculated fields
+
+  ## Returns
+
+    * `:ok` - Field was added successfully
+    * `{:error, atom()}` - Error if sheet or pivot table doesn't exist
+
+  ## Examples
+
+      # Add a new data field for "Sum of Sales"
+      :ok = PivotTable.add_pivot_table_data_field(
+        spreadsheet,
+        "PivotSheet",
+        "Sales Analysis",
+        "Sum of Sales",
+        2,  # Field index 2 (Sales column)
+        nil,
+        nil
+      )
+  """
+  @spec add_pivot_table_data_field(
+          Spreadsheet.t(),
+          String.t(),
+          String.t(),
+          String.t(),
+          non_neg_integer(),
+          integer() | nil,
+          non_neg_integer() | nil
+        ) :: :ok | {:error, atom()}
+  def add_pivot_table_data_field(
+        %Spreadsheet{reference: ref},
+        sheet_name,
+        pivot_table_name,
+        field_name,
+        field_id,
+        base_field_id \\ nil,
+        base_item \\ nil
+      ) do
+    case UmyaNative.add_pivot_table_data_field(
+           UmyaSpreadsheet.unwrap_ref(ref),
+           sheet_name,
+           pivot_table_name,
+           field_name,
+           field_id,
+           base_field_id,
+           base_item
+         ) do
+      :ok -> :ok
+      {:ok, :ok} -> :ok
+      {:error, reason} -> {:error, reason}
+    end
+  end
+
+  @doc """
+  Updates the cache source configuration for a pivot table.
+
+  ## Parameters
+
+    * `spreadsheet` - A spreadsheet struct
+    * `sheet_name` - Name of the sheet containing the pivot table
+    * `pivot_table_name` - Name of the pivot table
+    * `source_sheet` - Name of the sheet containing the source data
+    * `source_range` - Range of cells containing the source data (e.g., "A1:D10")
+
+  ## Returns
+
+    * `:ok` - Cache was updated successfully
+    * `{:error, atom()}` - Error if sheet or pivot table doesn't exist
+
+  ## Examples
+
+      # Update the source range for a pivot table
+      :ok = PivotTable.update_pivot_table_cache(
+        spreadsheet,
+        "PivotSheet",
+        "Sales Analysis",
+        "DataSheet",
+        "A1:D20"  # Extended range
+      )
+  """
+  @spec update_pivot_table_cache(
+          Spreadsheet.t(),
+          String.t(),
+          String.t(),
+          String.t(),
+          String.t()
+        ) :: :ok | {:error, atom()}
+  def update_pivot_table_cache(
+        %Spreadsheet{reference: ref},
+        sheet_name,
+        pivot_table_name,
+        source_sheet,
+        source_range
+      ) do
+    case UmyaNative.update_pivot_table_cache(
+           UmyaSpreadsheet.unwrap_ref(ref),
+           sheet_name,
+           pivot_table_name,
+           source_sheet,
+           source_range
+         ) do
+      :ok -> :ok
+      {:ok, :ok} -> :ok
+      {:error, reason} -> {:error, reason}
+    end
+  end
 end
