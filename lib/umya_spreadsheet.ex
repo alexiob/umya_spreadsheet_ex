@@ -437,6 +437,16 @@ defmodule UmyaSpreadsheet do
   defdelegate add_icon_set(spreadsheet, sheet_name, range, icon_style, thresholds),
     to: ConditionalFormatting
 
+  # Getter functions for conditional formatting
+  defdelegate get_color_scales(spreadsheet, sheet_name, range),
+    to: ConditionalFormatting
+
+  defdelegate get_data_bars(spreadsheet, sheet_name, range),
+    to: ConditionalFormatting
+
+  defdelegate get_icon_sets(spreadsheet, sheet_name, range),
+    to: ConditionalFormatting
+
   defdelegate add_above_below_average_rule(
                 spreadsheet,
                 sheet_name,

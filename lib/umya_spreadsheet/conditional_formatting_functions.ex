@@ -320,57 +320,62 @@ defmodule UmyaSpreadsheet.ConditionalFormatting do
         max_value,
         max_color
       ) do
-    # Process parameters to ensure they're in the right format
-    min_type_str = process_type(min_type, "min")
-    max_type_str = process_type(max_type, "max")
+    # Validate range parameter
+    if range == "" do
+      {:error, "Range cannot be empty"}
+    else
+      # Process parameters to ensure they're in the right format
+      min_type_str = process_type(min_type, "min")
+      max_type_str = process_type(max_type, "max")
 
-    min_value_str = process_value(min_value)
-    max_value_str = process_value(max_value)
+      min_value_str = process_value(min_value)
+      max_value_str = process_value(max_value)
 
-    min_color_map = convert_color(min_color)
-    max_color_map = convert_color(max_color)
+      min_color_map = convert_color(min_color)
+      max_color_map = convert_color(max_color)
 
-    # Call the NIF with explicit nil values for mid parameters
-    try do
-      case UmyaNative.add_color_scale(
-             ref,
-             sheet_name,
-             range,
-             min_type_str,
-             min_value_str,
-             min_color_map,
-             # mid_type
-             nil,
-             # mid_value
-             nil,
-             # mid_color
-             nil,
-             max_type_str,
-             max_value_str,
-             max_color_map
-           ) do
-        {:ok, :ok} ->
-          :ok
+      # Call the NIF with explicit nil values for mid parameters
+      try do
+        case UmyaNative.add_color_scale(
+               ref,
+               sheet_name,
+               range,
+               min_type_str,
+               min_value_str,
+               min_color_map,
+               # mid_type
+               nil,
+               # mid_value
+               nil,
+               # mid_color
+               nil,
+               max_type_str,
+               max_value_str,
+               max_color_map
+             ) do
+          {:ok, :ok} ->
+            :ok
 
-        {:ok, true} ->
-          :ok
+          {:ok, true} ->
+            :ok
 
-        :ok ->
-          :ok
+          :ok ->
+            :ok
 
-        {:error, reason} ->
-          {:error, reason}
+          {:error, reason} ->
+            {:error, reason}
 
-        other ->
-          IO.puts("Unexpected response from add_color_scale: #{inspect(other)}")
-          :ok
+          other ->
+            IO.puts("Unexpected response from add_color_scale: #{inspect(other)}")
+            :ok
+        end
+      rescue
+        e ->
+          IO.puts("Error in add_color_scale: #{inspect(e, pretty: true)}")
+          IO.puts("Min color: #{inspect(min_color_map, pretty: true)}")
+          IO.puts("Max color: #{inspect(max_color_map, pretty: true)}")
+          {:error, "Function call failed: #{Exception.message(e)}"}
       end
-    rescue
-      e ->
-        IO.puts("Error in add_color_scale: #{inspect(e, pretty: true)}")
-        IO.puts("Min color: #{inspect(min_color_map, pretty: true)}")
-        IO.puts("Max color: #{inspect(max_color_map, pretty: true)}")
-        {:error, "Function call failed: #{Exception.message(e)}"}
     end
   end
 
@@ -426,58 +431,63 @@ defmodule UmyaSpreadsheet.ConditionalFormatting do
         max_value,
         max_color
       ) do
-    # Process parameters to ensure they're in the right format
-    min_type_str = process_type(min_type, "min")
-    mid_type_str = process_type(mid_type, "percentile")
-    max_type_str = process_type(max_type, "max")
+    # Validate range parameter
+    if range == "" do
+      {:error, "Range cannot be empty"}
+    else
+      # Process parameters to ensure they're in the right format
+      min_type_str = process_type(min_type, "min")
+      mid_type_str = process_type(mid_type, "percentile")
+      max_type_str = process_type(max_type, "max")
 
-    min_value_str = process_value(min_value)
-    mid_value_str = process_value(mid_value)
-    max_value_str = process_value(max_value)
+      min_value_str = process_value(min_value)
+      mid_value_str = process_value(mid_value)
+      max_value_str = process_value(max_value)
 
-    min_color_map = convert_color(min_color)
-    mid_color_map = convert_color(mid_color)
-    max_color_map = convert_color(max_color)
+      min_color_map = convert_color(min_color)
+      mid_color_map = convert_color(mid_color)
+      max_color_map = convert_color(max_color)
 
-    # Call the NIF with explicit error handling
-    try do
-      case UmyaNative.add_color_scale(
-             ref,
-             sheet_name,
-             range,
-             min_type_str,
-             min_value_str,
-             min_color_map,
-             mid_type_str,
-             mid_value_str,
-             mid_color_map,
-             max_type_str,
-             max_value_str,
-             max_color_map
-           ) do
-        {:ok, :ok} ->
-          :ok
+      # Call the NIF with explicit error handling
+      try do
+        case UmyaNative.add_color_scale(
+               ref,
+               sheet_name,
+               range,
+               min_type_str,
+               min_value_str,
+               min_color_map,
+               mid_type_str,
+               mid_value_str,
+               mid_color_map,
+               max_type_str,
+               max_value_str,
+               max_color_map
+             ) do
+          {:ok, :ok} ->
+            :ok
 
-        {:ok, true} ->
-          :ok
+          {:ok, true} ->
+            :ok
 
-        :ok ->
-          :ok
+          :ok ->
+            :ok
 
-        {:error, reason} ->
-          {:error, reason}
+          {:error, reason} ->
+            {:error, reason}
 
-        other ->
-          IO.puts("Unexpected response from add_color_scale (3-color): #{inspect(other)}")
-          :ok
+          other ->
+            IO.puts("Unexpected response from add_color_scale (3-color): #{inspect(other)}")
+            :ok
+        end
+      rescue
+        e ->
+          IO.puts("Error in add_color_scale (3-color): #{inspect(e, pretty: true)}")
+          IO.puts("Min color: #{inspect(min_color_map, pretty: true)}")
+          IO.puts("Mid color: #{inspect(mid_color_map, pretty: true)}")
+          IO.puts("Max color: #{inspect(max_color_map, pretty: true)}")
+          {:error, "Function call failed: #{Exception.message(e)}"}
       end
-    rescue
-      e ->
-        IO.puts("Error in add_color_scale (3-color): #{inspect(e, pretty: true)}")
-        IO.puts("Min color: #{inspect(min_color_map, pretty: true)}")
-        IO.puts("Mid color: #{inspect(mid_color_map, pretty: true)}")
-        IO.puts("Max color: #{inspect(max_color_map, pretty: true)}")
-        {:error, "Function call failed: #{Exception.message(e)}"}
     end
   end
 
@@ -769,8 +779,7 @@ defmodule UmyaSpreadsheet.ConditionalFormatting do
   """
   def get_color_scales(%Spreadsheet{reference: ref}, sheet_name, range \\ nil) do
     case UmyaNative.get_color_scales(ref, sheet_name, range) do
-      {:ok, rules} -> rules
-      {:error, reason} -> {:error, reason}
+      result when is_list(result) -> {:ok, result}
       result -> result
     end
   end
@@ -805,8 +814,7 @@ defmodule UmyaSpreadsheet.ConditionalFormatting do
   """
   def get_data_bars(%Spreadsheet{reference: ref}, sheet_name, range \\ nil) do
     case UmyaNative.get_data_bars(ref, sheet_name, range) do
-      {:ok, rules} -> rules
-      {:error, reason} -> {:error, reason}
+      result when is_list(result) -> {:ok, result}
       result -> result
     end
   end
@@ -840,8 +848,7 @@ defmodule UmyaSpreadsheet.ConditionalFormatting do
   """
   def get_icon_sets(%Spreadsheet{reference: ref}, sheet_name, range \\ nil) do
     case UmyaNative.get_icon_sets(ref, sheet_name, range) do
-      {:ok, rules} -> rules
-      {:error, reason} -> {:error, reason}
+      result when is_list(result) -> {:ok, result}
       result -> result
     end
   end

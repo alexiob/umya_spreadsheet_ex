@@ -16,6 +16,23 @@
   - **Comprehensive Testing** - Added thorough test suite for new pivot table functionality
   - **Improved Documentation** - Updated pivot table guide with detailed documentation for all new enhanced features
 
+### Fixed
+
+- **Conditional Formatting API Consistency**:
+  - **Return Type Standardization** - Fixed inconsistent return types for conditional formatting getter functions
+    - Functions `get_color_scales/2-3`, `get_data_bars/2-3`, and `get_icon_sets/2-3` now consistently return `{:ok, list()}` tuples
+    - Previously these functions returned raw lists while other similar functions returned `{:ok, list()}` tuples
+    - This change ensures consistent error handling patterns across all conditional formatting getter functions
+    - Updated all related tests to handle the new consistent API
+    - **Breaking Change**: Code using these functions must now pattern match on `{:ok, results}` instead of expecting direct lists
+
+### Documentation
+
+- **Conditional Formatting Guide**:
+  - Updated documentation to reflect the new consistent return types for getter functions
+  - Added clear examples showing the correct pattern matching for `{:ok, list}` returns
+  - Enhanced documentation with version notes about API consistency improvements
+
 ## 0.6.16 - 2025-06-02
 
 ### Added

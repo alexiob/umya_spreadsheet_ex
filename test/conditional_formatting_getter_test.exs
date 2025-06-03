@@ -116,12 +116,12 @@ defmodule UmyaSpreadsheet.ConditionalFormattingGetterTest do
     assert rule.formula == "50"
 
     # Test getting color scales
-    color_scales = ConditionalFormatting.get_color_scales(spreadsheet, "Sheet1")
+    {:ok, color_scales} = ConditionalFormatting.get_color_scales(spreadsheet, "Sheet1")
     assert is_list(color_scales)
     assert length(color_scales) == 1
 
     # Test getting data bars
-    data_bars = ConditionalFormatting.get_data_bars(spreadsheet, "Sheet1")
+    {:ok, data_bars} = ConditionalFormatting.get_data_bars(spreadsheet, "Sheet1")
     assert is_list(data_bars)
     assert length(data_bars) == 1
     assert hd(data_bars).range == "C1:C10"
@@ -241,7 +241,7 @@ defmodule UmyaSpreadsheet.ConditionalFormattingGetterTest do
     assert length(rules) == 1
     assert hd(rules).range == "A1:A5"
 
-    data_bars = ConditionalFormatting.get_data_bars(read_spreadsheet, "Sheet1")
+    {:ok, data_bars} = ConditionalFormatting.get_data_bars(read_spreadsheet, "Sheet1")
     assert length(data_bars) == 1
     assert hd(data_bars).range == "A1:A5"
 

@@ -1,4 +1,4 @@
-use rustler::{Atom, Encoder, ResourceArc};
+use rustler::{Atom, Encoder, Error as NifError, NifResult, ResourceArc, Term};
 use std::panic::{self, AssertUnwindSafe};
 use umya_spreadsheet::{
     ConditionalFormatValueObjectValues, ConditionalFormatValues,
@@ -666,7 +666,7 @@ pub fn get_color_scales_nif<'a>(
     resource: ResourceArc<UmyaSpreadsheet>,
     sheet_name: String,
     range: Option<String>,
-) -> Result<Vec<rustler::Term<'a>>, (Atom, String)> {
+) -> NifResult<Vec<rustler::Term<'a>>> {
     let result = panic::catch_unwind(AssertUnwindSafe(
         || -> Result<Vec<rustler::Term<'a>>, String> {
             let spreadsheet_guard = resource.spreadsheet.lock().unwrap();
@@ -705,11 +705,11 @@ pub fn get_color_scales_nif<'a>(
 
     match result {
         Ok(Ok(rules)) => Ok(rules),
-        Ok(Err(msg)) => Err((atoms::error(), msg)),
-        Err(_) => Err((
+        Ok(Err(msg)) => Err(NifError::Term(Box::new((atoms::error(), msg)))),
+        Err(_) => Err(NifError::Term(Box::new((
             atoms::error(),
             "Error occurred in get_color_scales".to_string(),
-        )),
+        )))),
     }
 }
 
@@ -719,7 +719,7 @@ pub fn get_data_bars_nif<'a>(
     resource: ResourceArc<UmyaSpreadsheet>,
     sheet_name: String,
     range: Option<String>,
-) -> Result<Vec<rustler::Term<'a>>, (Atom, String)> {
+) -> NifResult<Vec<rustler::Term<'a>>> {
     let result = panic::catch_unwind(AssertUnwindSafe(
         || -> Result<Vec<rustler::Term<'a>>, String> {
             let spreadsheet_guard = resource.spreadsheet.lock().unwrap();
@@ -758,11 +758,11 @@ pub fn get_data_bars_nif<'a>(
 
     match result {
         Ok(Ok(rules)) => Ok(rules),
-        Ok(Err(msg)) => Err((atoms::error(), msg)),
-        Err(_) => Err((
+        Ok(Err(msg)) => Err(NifError::Term(Box::new((atoms::error(), msg)))),
+        Err(_) => Err(NifError::Term(Box::new((
             atoms::error(),
             "Error occurred in get_data_bars".to_string(),
-        )),
+        )))),
     }
 }
 
@@ -772,7 +772,7 @@ pub fn get_icon_sets_nif<'a>(
     resource: ResourceArc<UmyaSpreadsheet>,
     sheet_name: String,
     range: Option<String>,
-) -> Result<Vec<rustler::Term<'a>>, (Atom, String)> {
+) -> NifResult<Vec<rustler::Term<'a>>> {
     let result = panic::catch_unwind(AssertUnwindSafe(
         || -> Result<Vec<rustler::Term<'a>>, String> {
             let spreadsheet_guard = resource.spreadsheet.lock().unwrap();
@@ -811,11 +811,11 @@ pub fn get_icon_sets_nif<'a>(
 
     match result {
         Ok(Ok(rules)) => Ok(rules),
-        Ok(Err(msg)) => Err((atoms::error(), msg)),
-        Err(_) => Err((
+        Ok(Err(msg)) => Err(NifError::Term(Box::new((atoms::error(), msg)))),
+        Err(_) => Err(NifError::Term(Box::new((
             atoms::error(),
             "Error occurred in get_icon_sets".to_string(),
-        )),
+        )))),
     }
 }
 

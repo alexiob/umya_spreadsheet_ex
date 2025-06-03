@@ -259,11 +259,11 @@ rules = ConditionalFormatting.get_conditional_formatting_rules(spreadsheet, "She
 # Get conditional formatting rules for a specific range
 rules = ConditionalFormatting.get_conditional_formatting_rules(spreadsheet, "Sheet1", "A1:A10")
 
-# Get rules of specific types
+# Get rules of specific types - these functions return {:ok, list} tuples
 cell_value_rules = ConditionalFormatting.get_cell_value_rules(spreadsheet, "Sheet1")
-color_scales = ConditionalFormatting.get_color_scales(spreadsheet, "Sheet1")
-data_bars = ConditionalFormatting.get_data_bars(spreadsheet, "Sheet1")
-icon_sets = ConditionalFormatting.get_icon_sets(spreadsheet, "Sheet1")
+{:ok, color_scales} = ConditionalFormatting.get_color_scales(spreadsheet, "Sheet1")
+{:ok, data_bars} = ConditionalFormatting.get_data_bars(spreadsheet, "Sheet1")
+{:ok, icon_sets} = ConditionalFormatting.get_icon_sets(spreadsheet, "Sheet1")
 top_bottom_rules = ConditionalFormatting.get_top_bottom_rules(spreadsheet, "Sheet1")
 above_below_average_rules = ConditionalFormatting.get_above_below_average_rules(spreadsheet, "Sheet1")
 text_rules = ConditionalFormatting.get_text_rules(spreadsheet, "Sheet1")
@@ -271,7 +271,9 @@ text_rules = ConditionalFormatting.get_text_rules(spreadsheet, "Sheet1")
 
 ### Getter Response Schemas
 
-Each of the getter functions returns a list of maps, with each map representing a conditional formatting rule. The structure of these maps depends on the type of rule. Below are the detailed schemas for each rule type.
+**Return Type Consistency**: As of version 0.6.17, the specific type getter functions (`get_color_scales`, `get_data_bars`, and `get_icon_sets`) now consistently return `{:ok, list()}` tuples for successful results, maintaining consistency with other getter patterns in the library.
+
+Each of the getter functions returns either a list of maps directly (for general getters) or `{:ok, list}` tuples (for specific type getters), with each map representing a conditional formatting rule. The structure of these maps depends on the type of rule. Below are the detailed schemas for each rule type.
 
 #### Cell Value Rules
 
@@ -302,7 +304,7 @@ Example:
 
 #### Color Scale Rules
 
-`get_color_scales/2` and `get_color_scales/3` return a list of maps with the following structure:
+`get_color_scales/2` and `get_color_scales/3` return `{:ok, list}` tuples where each map in the list has the following structure:
 
 ```elixir
 %{
@@ -360,7 +362,7 @@ Example (three-color scale):
 
 #### Data Bar Rules
 
-`get_data_bars/2` and `get_data_bars/3` return a list of maps with the following structure:
+`get_data_bars/2` and `get_data_bars/3` return `{:ok, list}` tuples where each map in the list has the following structure:
 
 ```elixir
 %{
@@ -391,7 +393,7 @@ Example:
 
 #### Icon Set Rules
 
-`get_icon_sets/2` and `get_icon_sets/3` return a list of maps with the following structure:
+`get_icon_sets/2` and `get_icon_sets/3` return `{:ok, list}` tuples where each map in the list has the following structure:
 
 ```elixir
 %{
