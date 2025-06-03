@@ -2322,5 +2322,121 @@ defmodule UmyaNative do
   def count_data_validations(_spreadsheet, _sheet_name, _cell_range),
     do: error()
 
+  # Advanced fills functions
+  @spec set_gradient_fill(
+          reference(),
+          String.t(),
+          String.t(),
+          float(),
+          list({float(), String.t()})
+        ) ::
+          :ok | {:error, atom()}
+  def set_gradient_fill(_spreadsheet, _sheet_name, _cell_address, _degree, _gradient_stops),
+    do: error()
+
+  @spec set_linear_gradient_fill(
+          reference(),
+          String.t(),
+          String.t(),
+          String.t(),
+          String.t(),
+          float() | nil
+        ) ::
+          :ok | {:error, atom()}
+  def set_linear_gradient_fill(
+        _spreadsheet,
+        _sheet_name,
+        _cell_address,
+        _start_color,
+        _end_color,
+        _angle
+      ),
+      do: error()
+
+  @spec set_radial_gradient_fill(reference(), String.t(), String.t(), String.t(), String.t()) ::
+          :ok | {:error, atom()}
+  def set_radial_gradient_fill(
+        _spreadsheet,
+        _sheet_name,
+        _cell_address,
+        _center_color,
+        _edge_color
+      ),
+      do: error()
+
+  @spec set_three_color_gradient_fill(
+          reference(),
+          String.t(),
+          String.t(),
+          String.t(),
+          String.t(),
+          String.t(),
+          float() | nil
+        ) ::
+          :ok | {:error, atom()}
+  def set_three_color_gradient_fill(
+        _spreadsheet,
+        _sheet_name,
+        _cell_address,
+        _start_color,
+        _middle_color,
+        _end_color,
+        _angle
+      ),
+      do: error()
+
+  @spec set_custom_gradient_fill(
+          reference(),
+          String.t(),
+          String.t(),
+          float(),
+          list({float(), String.t()}),
+          boolean() | nil
+        ) ::
+          :ok | {:error, atom()}
+  def set_custom_gradient_fill(
+        _spreadsheet,
+        _sheet_name,
+        _cell_address,
+        _angle,
+        _stops,
+        _validate_positions
+      ),
+      do: error()
+
+  @spec get_gradient_fill(reference(), String.t(), String.t()) ::
+          {float(), list({float(), String.t()})} | {:error, atom()}
+  def get_gradient_fill(_spreadsheet, _sheet_name, _cell_address),
+    do: error()
+
+  @spec set_pattern_fill(
+          reference(),
+          String.t(),
+          String.t(),
+          String.t(),
+          String.t() | nil,
+          String.t() | nil
+        ) ::
+          :ok | {:error, atom()}
+  def set_pattern_fill(
+        _spreadsheet,
+        _sheet_name,
+        _cell_address,
+        _pattern_type,
+        _foreground_color,
+        _background_color
+      ),
+      do: error()
+
+  @spec get_pattern_fill(reference(), String.t(), String.t()) ::
+          {String.t(), String.t() | nil, String.t() | nil} | {:error, atom()}
+  def get_pattern_fill(_spreadsheet, _sheet_name, _cell_address),
+    do: error()
+
+  @spec clear_fill(reference(), String.t(), String.t()) ::
+          :ok | {:error, atom()}
+  def clear_fill(_spreadsheet, _sheet_name, _cell_address),
+    do: error()
+
   defp error(), do: :erlang.nif_error(:nif_not_loaded)
 end

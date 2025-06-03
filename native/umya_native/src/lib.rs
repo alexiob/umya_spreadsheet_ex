@@ -2,6 +2,7 @@ use std::sync::Mutex;
 use umya_spreadsheet;
 
 // Import modules
+mod advanced_fills;
 mod auto_filter_functions;
 mod cell_formatting;
 mod cell_functions;
@@ -224,6 +225,16 @@ rustler::init!(
         styling_operations::set_font_name,
         styling_operations::copy_row_styling,
         styling_operations::copy_column_styling,
+        // Advanced fills
+        advanced_fills::set_gradient_fill,
+        advanced_fills::set_linear_gradient_fill,
+        advanced_fills::set_radial_gradient_fill,
+        advanced_fills::set_three_color_gradient_fill,
+        advanced_fills::set_custom_gradient_fill,
+        advanced_fills::get_gradient_fill,
+        advanced_fills::set_pattern_fill,
+        advanced_fills::get_pattern_fill,
+        advanced_fills::clear_fill,
         // Row/column operations
         row_column_operations::set_row_height,
         row_column_operations::set_row_style,
@@ -562,5 +573,15 @@ rustler::init!(
         file_format_options::get_compression_level,
         file_format_options::is_encrypted,
         file_format_options::get_encryption_algorithm,
+        // Advanced fills functions
+        advanced_fills::set_gradient_fill,
+        advanced_fills::set_linear_gradient_fill,
+        advanced_fills::set_radial_gradient_fill,
+        advanced_fills::set_three_color_gradient_fill,
+        advanced_fills::set_custom_gradient_fill,
+        advanced_fills::get_gradient_fill,
+        advanced_fills::set_pattern_fill,
+        advanced_fills::get_pattern_fill,
+        advanced_fills::clear_fill,
     ]
 );

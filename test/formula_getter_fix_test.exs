@@ -14,7 +14,6 @@ defmodule UmyaSpreadsheetTest.FormulaGetterFixTest do
     end
 
     test "is_formula function works without ArgumentError", %{spreadsheet: spreadsheet} do
-      # Test is_formula - this was one of the functions we fixed
       result = UmyaSpreadsheet.is_formula(spreadsheet, "Sheet1", "A1")
       assert is_boolean(result)
       assert result == true
@@ -26,7 +25,6 @@ defmodule UmyaSpreadsheetTest.FormulaGetterFixTest do
     end
 
     test "get_formula function works without ArgumentError", %{spreadsheet: spreadsheet} do
-      # Test get_formula - this was one of the functions we fixed
       result = UmyaSpreadsheet.get_formula(spreadsheet, "Sheet1", "A1")
       assert is_binary(result)
       # Formula includes the equals sign
@@ -34,13 +32,11 @@ defmodule UmyaSpreadsheetTest.FormulaGetterFixTest do
     end
 
     test "get_text function works without ArgumentError", %{spreadsheet: spreadsheet} do
-      # Test get_text - this was one of the functions we fixed
       result = UmyaSpreadsheet.get_text(spreadsheet, "Sheet1", "A1")
       assert is_binary(result)
     end
 
     test "get_formula_obj function works without ArgumentError", %{spreadsheet: spreadsheet} do
-      # Test get_formula_obj - this was one of the functions we fixed
       # The function returns a 4-tuple: {text, type, shared_index, reference}
       {formula, type, _shared_index, _reference} =
         UmyaSpreadsheet.get_formula_obj(spreadsheet, "Sheet1", "A1")
@@ -55,7 +51,6 @@ defmodule UmyaSpreadsheetTest.FormulaGetterFixTest do
     test "get_formula_shared_index function works without ArgumentError", %{
       spreadsheet: spreadsheet
     } do
-      # Test get_formula_shared_index - this was one of the functions we fixed
       result = UmyaSpreadsheet.get_formula_shared_index(spreadsheet, "Sheet1", "A1")
       # This might return nil for a non-shared formula
       assert is_nil(result) or is_integer(result)

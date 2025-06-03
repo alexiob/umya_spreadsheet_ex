@@ -33,6 +33,7 @@ defmodule UmyaSpreadsheet do
   │   └── Native Rust Library (umya-spreadsheet)
   │
   └── Specialized Function Modules:
+      ├── AdvancedFillFunctions - Advanced gradient and pattern fills
       ├── AutoFilterFunctions - Data filtering and sorting
       ├── BackgroundFunctions - Cell background colors and patterns
       ├── BorderFunctions - Cell border styling and formatting
@@ -133,6 +134,7 @@ defmodule UmyaSpreadsheet do
   alias UmyaNative
 
   # Import specialized function modules
+  alias UmyaSpreadsheet.AdvancedFillFunctions
   alias UmyaSpreadsheet.AutoFilterFunctions
   alias UmyaSpreadsheet.BackgroundFunctions
   alias UmyaSpreadsheet.BorderFunctions
@@ -1208,6 +1210,106 @@ defmodule UmyaSpreadsheet do
 
   defdelegate get_cell_pattern_type(spreadsheet, sheet_name, cell_address),
     to: BackgroundFunctions
+
+  # Advanced Fill Functions delegation
+  defdelegate set_gradient_fill(spreadsheet, sheet_name, cell_address, degree, gradient_stops),
+    to: AdvancedFillFunctions
+
+  defdelegate set_linear_gradient_fill(
+                spreadsheet,
+                sheet_name,
+                cell_address,
+                start_color,
+                end_color
+              ),
+              to: AdvancedFillFunctions
+
+  defdelegate set_linear_gradient_fill(
+                spreadsheet,
+                sheet_name,
+                cell_address,
+                start_color,
+                end_color,
+                angle
+              ),
+              to: AdvancedFillFunctions
+
+  defdelegate set_radial_gradient_fill(
+                spreadsheet,
+                sheet_name,
+                cell_address,
+                center_color,
+                edge_color
+              ),
+              to: AdvancedFillFunctions
+
+  defdelegate set_three_color_gradient_fill(
+                spreadsheet,
+                sheet_name,
+                cell_address,
+                start_color,
+                middle_color,
+                end_color
+              ),
+              to: AdvancedFillFunctions
+
+  defdelegate set_three_color_gradient_fill(
+                spreadsheet,
+                sheet_name,
+                cell_address,
+                start_color,
+                middle_color,
+                end_color,
+                angle
+              ),
+              to: AdvancedFillFunctions
+
+  defdelegate set_custom_gradient_fill(
+                spreadsheet,
+                sheet_name,
+                cell_address,
+                degree,
+                gradient_stops
+              ),
+              to: AdvancedFillFunctions
+
+  defdelegate set_custom_gradient_fill(
+                spreadsheet,
+                sheet_name,
+                cell_address,
+                degree,
+                gradient_stops,
+                validate_positions
+              ),
+              to: AdvancedFillFunctions
+
+  defdelegate get_gradient_fill(spreadsheet, sheet_name, cell_address),
+    to: AdvancedFillFunctions
+
+  defdelegate set_pattern_fill(
+                spreadsheet,
+                sheet_name,
+                cell_address,
+                pattern_type,
+                foreground_color
+              ),
+              to: AdvancedFillFunctions
+
+  defdelegate set_pattern_fill(
+                spreadsheet,
+                sheet_name,
+                cell_address,
+                pattern_type,
+                foreground_color,
+                background_color
+              ),
+              to: AdvancedFillFunctions
+
+  defdelegate get_pattern_fill(spreadsheet, sheet_name, cell_address),
+    to: AdvancedFillFunctions
+
+  defdelegate clear_fill(spreadsheet, sheet_name, cell_address),
+    to: AdvancedFillFunctions
 
   # Comment functions
   @doc """
