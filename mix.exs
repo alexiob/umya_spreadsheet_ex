@@ -37,7 +37,20 @@ defmodule UmyaSpreadsheet.MixProject do
     [
       umya_native: [
         path: "native/umya_native",
-        mode: if(Mix.env() == :prod, do: :release, else: :debug)
+        mode: if(Mix.env() == :prod, do: :release, else: :debug),
+        targets: [
+          # Linux
+          "aarch64-unknown-linux-gnu",
+          "arm-unknown-linux-gnueabihf", 
+          "riscv64gc-unknown-linux-gnu",
+          "x86_64-unknown-linux-gnu",
+          # macOS
+          "aarch64-apple-darwin",
+          "x86_64-apple-darwin",
+          # Windows
+          "x86_64-pc-windows-gnu",
+          "x86_64-pc-windows-msvc"
+        ]
       ]
     ]
   end
