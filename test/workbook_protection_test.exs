@@ -43,6 +43,11 @@ defmodule UmyaSpreadsheetTest.WorkbookProtectionTest do
       # Get protection details
       {:ok, protection_details} = UmyaSpreadsheet.get_workbook_protection_details(spreadsheet)
       assert is_map(protection_details)
+
+      # Check that protection_details contains expected keys and values
+      assert Map.has_key?(protection_details, "lock_structure")
+      assert Map.has_key?(protection_details, "lock_windows")
+      assert Map.has_key?(protection_details, "lock_revision")
     end
 
     test "write password-protected workbook", %{spreadsheet: spreadsheet} do
