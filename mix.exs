@@ -80,6 +80,7 @@ defmodule UmyaSpreadsheet.MixProject do
   defp docs do
     [
       main: "readme",
+      assets: %{"docs/assets" => "assets"},
       extras: [
         "README.md",
         "CHANGELOG.md",

@@ -5,7 +5,7 @@
 [![Hex Docs](https://img.shields.io/badge/hex-docs-blue.svg)](https://hexdocs.pm/umya_spreadsheet_ex/)
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 
-![UmyaSpreadsheetEx Logo](/docs/logo.png)
+![UmyaSpreadsheetEx Logo](assets/logo.png)
 
 Everything you ever needed (and probably more) to work with Excel files in Elixir, powered by Rust!
 
