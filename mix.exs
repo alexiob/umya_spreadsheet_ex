@@ -41,7 +41,7 @@ defmodule UmyaSpreadsheet.MixProject do
         targets: [
           # Linux
           "aarch64-unknown-linux-gnu",
-          "arm-unknown-linux-gnueabihf", 
+          "arm-unknown-linux-gnueabihf",
           "riscv64gc-unknown-linux-gnu",
           "x86_64-unknown-linux-gnu",
           # macOS

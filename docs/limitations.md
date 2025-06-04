@@ -160,6 +160,34 @@ validation_types = [
 | x86 (32-bit) | ❌ None | Not supported |
 | ARM 32-bit | ❌ None | Not supported |
 
+### Alpine Linux / musl libc
+
+**Current Status:** ❌ No precompiled binaries available
+
+Alpine Linux uses musl libc instead of glibc, which has limitations with Rust's `cdylib` crate type required for NIFs.
+
+**Workarounds:**
+
+1. **Compile from source** on Alpine:
+
+   ```bash
+   # Install build dependencies
+   apk add --no-cache build-base rust cargo
+
+   # Force compilation
+   export UMYA_SPREADSHEET_BUILD=true
+   mix deps.compile --force
+   ```
+
+2. **Use glibc-based containers** (recommended):
+
+   ```dockerfile
+   # Instead of alpine:latest
+   FROM debian:bullseye-slim
+   # or
+   FROM ubuntu:22.04
+   ```
+
 ### Compilation Requirements
 
 When building from source:
