@@ -4,7 +4,7 @@ defmodule UmyaSpreadsheet.MixProject do
   def project do
     [
       app: :umya_spreadsheet_ex,
-      version: "0.6.17",
+      version: "0.7.0",
       elixir: "~> 1.14",
       start_permanent: Mix.env() == :prod,
       deps: deps(),

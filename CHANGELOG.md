@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.7.0 - 2025-06-04
+
+First public release.
+
 ## 0.6.17 - 2025-06-03
 
 ### Added
