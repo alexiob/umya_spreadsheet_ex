@@ -51,7 +51,8 @@ defmodule UmyaSpreadsheet.MixProject do
 
   defp package do
     [
-      files: ~w(lib native .formatter.exs mix.exs README.md LICENSE),
+      files:
+        ~w(lib native/umya_native/src native/umya_native/Cargo.toml native/umya_native/Cargo.lock native/umya_native/Cross.toml native/umya_native/.cargo native/umya_native/README.md native/umya_native/.gitignore .formatter.exs mix.exs README.md LICENSE CHANGELOG.md checksum-Elixir.UmyaNative.exs),
       licenses: ["MIT"],
       links: %{
         "GitHub" => "https://github.com/alexiob/umya_spreadsheet_ex"
