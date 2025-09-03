@@ -5,12 +5,11 @@ defmodule UmyaNative do
   version = mix_config[:version]
   github_url = mix_config[:package][:links]["GitHub"]
 
-  use RustlerPrecompiled,
+  use Rustler,
     otp_app: :umya_spreadsheet_ex,
     crate: "umya_native",
-    version: version,
-    base_url: "#{github_url}/releases/download/v#{version}",
-    force_build: System.get_env("UMYA_SPREADSHEET_BUILD") in ["1", "true"]
+    skip_compilation?: true,
+    load_from: {:k256, "priv/native/libumya_native"}
 
   # Spreadsheet operations
   @spec new_file() :: reference()

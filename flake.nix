@@ -57,7 +57,7 @@
       };
     in rec {
       default = pkgs.beamPackages.mixRelease {
-        pname = "my-elixir-lib";
+        pname = "umya_spreadsheet_ex";
         # Elixir lib source path
         src = ./.;
         version = "0.1.0";
@@ -70,11 +70,11 @@
         # Before we configure and build the project,
         # create the priv/native dir, and copy the Rust binary we built above into it.
         # Then, modify the Rustler config to `skip_compilation` and tell it where to load the binary from.
-        preConfigure = ''
+        preBuild = ''
           mkdir priv && mkdir priv/native
-          cp ${umya_native}/lib/libumya_native.so priv/native/
+          cp -av ${umya_native}/lib/libumya_native.so priv/native/
 
-          substituteInPlace lib/umya_native.ex --replace "crate: \"umya_native\"," """
+	  substituteInPlace lib/umya_native.ex --replace-warn "crate: \"umya_native\"," """
               crate: \"umya_native\",
               skip_compilation?: true,
               load_from: {:k256, \"priv/native/libumya_native\"},

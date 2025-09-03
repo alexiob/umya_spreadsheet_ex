@@ -33,3 +33,6 @@ umya_spreadsheet_ex-*.tar
 
 # The checksum files for precompiled NIFs
 checksum-*.exs
+
+# Ignore build result nixos
+/result
