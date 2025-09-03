@@ -9,7 +9,7 @@ defmodule UmyaNative do
     otp_app: :umya_spreadsheet_ex,
     crate: "umya_native",
     skip_compilation?: true,
-    load_from: {:k256, "priv/native/libumya_native"}
+    load_from: {:umya_spreadsheet_ex, "priv/native/libumya_native"}
 
   # Spreadsheet operations
   @spec new_file() :: reference()
